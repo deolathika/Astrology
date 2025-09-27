@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Pastel color palette for Daily Secrets
+  // Updated brand colors - Bright yellow and white theme
+  static const Color brandYellow = Color(0xFFFFDD12);  // #ffdd12
+  static const Color brandWhite = Color(0xFFFFFFFF);   // Pure white
+  static const Color brandPurple = Color(0xFF6E3CBC);  // Keep purple for accents
+  static const Color surfaceLight = Color(0xFFF8F7FB);
+  static const Color surfaceDark = Color(0xFF12121A);
+  
+  // Legacy colors for compatibility
   static const Color lavender = Color(0xFFE6E6FA);
   static const Color cream = Color(0xFFF5F5DC);
   static const Color softBlue = Color(0xFFB0E0E6);
-  static const Color mysticalPurple = Color(0xFFDDA0DD);
-  static const Color cosmicPink = Color(0xFFFFB6C1);
-  static const Color starlightWhite = Color(0xFFFEFEFE);
+  static const Color mysticalPurple = Color(0xFF6E3CBC);
+  static const Color cosmicPink = Color(0xFFEC4899);
+  static const Color starlightWhite = Color(0xFFF8F7FB);
   static const Color cosmicDark = Color(0xFF2C3E50);
   
   // Dark mode colors
@@ -21,13 +28,13 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: mysticalPurple,
+        seedColor: brandPurple,
         brightness: Brightness.light,
-        primary: mysticalPurple,
-        secondary: cosmicPink,
-        tertiary: softBlue,
-        surface: starlightWhite,
-        background: cream,
+        primary: brandPurple,
+        secondary: brandYellow,
+        tertiary: cosmicPink,
+        surface: surfaceLight,
+        background: surfaceLight,
       ),
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
@@ -105,13 +112,13 @@ class AppTheme {
   static const LinearGradient cosmicGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [mysticalPurple, cosmicPink, softBlue],
+    colors: [brandPurple, brandYellow, cosmicPink],
   );
 
   static const LinearGradient lunarGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [starlightWhite, cream],
+    colors: [surfaceLight, starlightWhite],
   );
 
   static ThemeData get darkTheme {

@@ -819,3 +819,4 @@ class _EnhancedHomeScreenState extends State<EnhancedHomeScreen> with TickerProv
     return symbols[sign] ?? '♈';
   }
 }
+

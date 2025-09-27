@@ -402,3 +402,4 @@ enum NotificationType {
   community,
   system,
 }
+

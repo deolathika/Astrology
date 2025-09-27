@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ui/screens/onboarding_screen.dart';
 import 'ui/screens/enhanced_home_screen.dart';
 import 'ui/theme/app_theme.dart';
 import 'services/database_service.dart';
@@ -17,7 +18,9 @@ class DailySecretsApp extends StatelessWidget {
     return MaterialApp(
       title: 'Daily Secrets',
       theme: AppTheme.lightTheme,
-      home: const EnhancedHomeScreen(),
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      home: const OnboardingScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

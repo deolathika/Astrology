@@ -761,3 +761,4 @@ class CommunityProfile {
     this.connectionStatus,
   });
 }
+
