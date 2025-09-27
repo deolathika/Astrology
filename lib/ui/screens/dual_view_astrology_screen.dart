@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
-import '../../services/dr_dhuraimurugar_numerology_service.dart';
+import '../../services/advanced_modern_numerology_service.dart';
 import '../../services/advanced_astrology_service.dart';
 import '../../utils/zodiac_utils.dart';
 import '../../utils/vedic_zodiac_utils.dart';
@@ -10,7 +10,7 @@ import '../../utils/sri_lankan_zodiac_utils.dart';
 import '../components/animated_card.dart';
 
 /// Enhanced Dual-View Astrology and Numerology Screen
-/// Incorporates Dr. R.I. Dhuraimurugar's Modern Numerology expertise
+/// Incorporates Advanced Modern Numerology expertise
 /// Shows both Western and Vedic astrology side by side
 class DualViewAstrologyScreen extends StatefulWidget {
   final String fullName;
@@ -76,20 +76,20 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
 
   Future<void> _loadAnalysis() async {
     try {
-      // Load Dr. Dhuraimurugar's numerology analysis
-      final lifePathAnalysis = DrDhuraimurugarNumerologyService.calculateLifePathAnalysis(
+      // Load advanced numerology analysis
+      final lifePathAnalysis = AdvancedModernNumerologyService.calculateLifePathAnalysis(
         widget.birthDate, 
         widget.fullName
       );
       
-      final destinyAnalysis = DrDhuraimurugarNumerologyService.calculateDestinyAnalysis(widget.fullName);
-      final soulUrgeAnalysis = DrDhuraimurugarNumerologyService.calculateSoulUrgeAnalysis(widget.fullName);
-      final personalityAnalysis = DrDhuraimurugarNumerologyService.calculatePersonalityAnalysis(widget.fullName);
-      final personalYearAnalysis = DrDhuraimurugarNumerologyService.calculatePersonalYearAnalysis(
+      final destinyAnalysis = AdvancedModernNumerologyService.calculateDestinyAnalysis(widget.fullName);
+      final soulUrgeAnalysis = AdvancedModernNumerologyService.calculateSoulUrgeAnalysis(widget.fullName);
+      final personalityAnalysis = AdvancedModernNumerologyService.calculatePersonalityAnalysis(widget.fullName);
+      final personalYearAnalysis = AdvancedModernNumerologyService.calculatePersonalYearAnalysis(
         widget.birthDate, 
         DateTime.now().year
       );
-      final successBlueprint = DrDhuraimurugarNumerologyService.generateSuccessBlueprint(
+      final successBlueprint = AdvancedModernNumerologyService.generateSuccessBlueprint(
         widget.fullName, 
         widget.birthDate
       );
@@ -200,7 +200,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
           ),
           const SizedBox(height: 10),
           Text(
-            'Dr. R.I. Dhuraimurugar\'s Modern Numerology & Comprehensive Astrology',
+            'Advanced Modern Numerology & Comprehensive Astrology',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.white70,
               fontStyle: FontStyle.italic,
@@ -312,7 +312,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Incorporating Dr. R.I. Dhuraimurugar\'s 383-page expertise',
+                  'Incorporating comprehensive 383-page expertise',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.white70,
                     fontStyle: FontStyle.italic,
@@ -335,7 +335,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Dr. R.I. Dhuraimurugar\'s Numerology Analysis', 
+          _buildSectionTitle('Advanced Numerology Analysis', 
               'Your "Number Code" of Life'),
           const SizedBox(height: 20),
           
@@ -559,7 +559,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Enter your partner\'s details to get a comprehensive compatibility analysis using Dr. Dhuraimurugar\'s methods.',
+                    'Enter your partner\'s details to get a comprehensive compatibility analysis using advanced methods.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
                     ),
@@ -600,7 +600,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSectionTitle('Success Blueprint', 
-              'Dr. Dhuraimurugar\'s Path to Achievement'),
+              'Advanced Path to Achievement'),
           const SizedBox(height: 20),
           
           // Success Formula

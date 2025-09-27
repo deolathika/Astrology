@@ -1,14 +1,14 @@
 import 'dart:math';
 
-/// Dr. R.I. Dhuraimurugar's Modern Numerology Service
-/// Based on "Successful Life Modern Numerology" - 383 pages of expert content
+/// Advanced Modern Numerology Service
+/// Based on comprehensive numerology expertise - 383 pages of expert content
 /// Incorporates the "number code" of life approach for self-awareness, decision-making, and personal growth
-class DrDhuraimurugarNumerologyService {
+class AdvancedModernNumerologyService {
   
   /// Core principle: Numbers have spiritual meanings and energy
-  /// This service provides comprehensive numerological analysis based on Dr. Dhuraimurugar's expertise
+  /// This service provides comprehensive numerological analysis based on advanced numerology expertise
   
-  /// Calculate Life Path Number with Dr. Dhuraimurugar's enhanced methodology
+  /// Calculate Life Path Number with enhanced methodology
   static Map<String, dynamic> calculateLifePathAnalysis(DateTime birthDate, String fullName) {
     int lifePath = _calculateLifePathNumber(birthDate);
     
@@ -28,7 +28,7 @@ class DrDhuraimurugarNumerologyService {
     };
   }
 
-  /// Calculate Destiny/Expression Number with Dr. Dhuraimurugar's methodology
+  /// Calculate Destiny/Expression Number with advanced methodology
   static Map<String, dynamic> calculateDestinyAnalysis(String fullName) {
     int destiny = _calculateDestinyNumber(fullName);
     
@@ -45,7 +45,7 @@ class DrDhuraimurugarNumerologyService {
     };
   }
 
-  /// Calculate Soul Urge Number (Heart's Desire) with Dr. Dhuraimurugar's insights
+  /// Calculate Soul Urge Number (Heart's Desire) with advanced insights
   static Map<String, dynamic> calculateSoulUrgeAnalysis(String fullName) {
     int soulUrge = _calculateSoulUrgeNumber(fullName);
     
@@ -62,7 +62,7 @@ class DrDhuraimurugarNumerologyService {
     };
   }
 
-  /// Calculate Personality Number with Dr. Dhuraimurugar's approach
+  /// Calculate Personality Number with advanced approach
   static Map<String, dynamic> calculatePersonalityAnalysis(String fullName) {
     int personality = _calculatePersonalityNumber(fullName);
     
@@ -79,7 +79,7 @@ class DrDhuraimurugarNumerologyService {
     };
   }
 
-  /// Calculate Personal Year with Dr. Dhuraimurugar's timing insights
+  /// Calculate Personal Year with advanced timing insights
   static Map<String, dynamic> calculatePersonalYearAnalysis(DateTime birthDate, int year) {
     int personalYear = _calculatePersonalYear(birthDate, year);
     
@@ -98,7 +98,7 @@ class DrDhuraimurugarNumerologyService {
     };
   }
 
-  /// Comprehensive compatibility analysis using Dr. Dhuraimurugar's methods
+  /// Comprehensive compatibility analysis using advanced methods
   static Map<String, dynamic> calculateCompatibilityAnalysis(
     String person1Name, DateTime person1Birth,
     String person2Name, DateTime person2Birth
@@ -131,7 +131,7 @@ class DrDhuraimurugarNumerologyService {
     };
   }
 
-  /// Dr. Dhuraimurugar's success blueprint based on numerological analysis
+  /// Advanced success blueprint based on numerological analysis
   static Map<String, dynamic> generateSuccessBlueprint(String fullName, DateTime birthDate) {
     var lifePathAnalysis = calculateLifePathAnalysis(birthDate, fullName);
     var destinyAnalysis = calculateDestinyAnalysis(fullName);
@@ -266,7 +266,7 @@ class DrDhuraimurugarNumerologyService {
     return number == 11 || number == 22 || number == 33;
   }
 
-  // Dr. Dhuraimurugar's Life Path meanings based on his 383-page expertise
+  // Advanced Life Path meanings based on comprehensive 383-page expertise
   static String _getLifePathSpiritualMeaning(int number) {
     Map<int, String> meanings = {
       1: 'The Pioneer Soul - You came to Earth to lead, innovate, and break new ground. Your spiritual mission is to develop independence while inspiring others to follow their own unique paths.',
