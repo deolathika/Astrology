@@ -1,13 +1,25 @@
 {
-  "name": "daily-secrets-ocr-processor",
+  "name": "daily-secrets-app",
   "version": "1.0.0",
-  "description": "OCR-based data extraction for Daily Secrets app",
-  "main": "scripts/ocr-processor.js",
+  "description": "Daily Secrets - Real Astrology & Numerology App with Cosmic UI",
+  "main": "lib/main.dart",
   "scripts": {
+    "dev": "./run-dev.sh",
+    "dev:direct": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter run -d web-server --web-port=8120",
+    "dev:hot": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter run -d web-server --web-port=8120 --hot",
+    "build": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter build web --release",
+    "build:debug": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter build web --debug",
+    "clean": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter clean",
+    "get": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter pub get",
+    "doctor": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter doctor",
+    "analyze": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter analyze",
+    "test": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter test",
     "extract": "node scripts/ocr-processor.js",
     "validate": "node scripts/validate-schemas.js",
     "format": "prettier --write data/**/*.json docs/**/*.md",
-    "test": "node scripts/test-extraction.js"
+    "test:ocr": "node scripts/test-extraction.js",
+    "start": "npm run dev",
+    "serve": "npm run dev"
   },
   "dependencies": {
     "tesseract.js": "^4.1.1",
@@ -21,7 +33,20 @@
     "zod": "^3.22.0",
     "deep-diff": "^1.0.2"
   },
-  "keywords": ["ocr", "numerology", "astrology", "data-extraction"],
+  "keywords": [
+    "flutter",
+    "web",
+    "astrology",
+    "numerology",
+    "cosmic",
+    "ui",
+    "multi-language",
+    "ocr",
+    "data-extraction"
+  ],
   "author": "Daily Secrets Team",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
