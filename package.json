@@ -1,0 +1,27 @@
+{
+  "name": "daily-secrets-ocr-processor",
+  "version": "1.0.0",
+  "description": "OCR-based data extraction for Daily Secrets app",
+  "main": "scripts/ocr-processor.js",
+  "scripts": {
+    "extract": "node scripts/ocr-processor.js",
+    "validate": "node scripts/validate-schemas.js",
+    "format": "prettier --write data/**/*.json docs/**/*.md",
+    "test": "node scripts/test-extraction.js"
+  },
+  "dependencies": {
+    "tesseract.js": "^4.1.1",
+    "@thiagoelg/node-tesseract-ocr": "^2.2.0",
+    "sharp": "^0.32.6",
+    "jimp": "^0.22.10"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "ajv": "^8.12.0",
+    "zod": "^3.22.0",
+    "deep-diff": "^1.0.2"
+  },
+  "keywords": ["ocr", "numerology", "astrology", "data-extraction"],
+  "author": "Daily Secrets Team",
+  "license": "MIT"
+}

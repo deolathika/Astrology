@@ -137,7 +137,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
             Text(
               'Profile Required',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: AppTheme.cosmicDark,
+                color: Colors.black87,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -145,7 +145,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
             Text(
               'Please complete your profile to view Sri Lankan astrology insights.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.cosmicDark.withOpacity(0.7),
+                color: Colors.black87.withOpacity(0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -286,7 +286,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
                         sriLankanInfo['sinhalaName'] ?? 'Unknown',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.cosmicDark,
+                          color: Colors.black87,
                         ),
                       ),
                       Text(
@@ -316,7 +316,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
               child: Text(
                 sriLankanInfo['description'] ?? 'Sri Lankan zodiac information',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.cosmicDark,
+                  color: Colors.black87,
                   height: 1.6,
                 ),
                 textAlign: TextAlign.center,
@@ -365,7 +365,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
                   'Lucky Elements',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -439,7 +439,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
           Text(
             title,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -447,7 +447,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
           Text(
             items.take(2).join(', '),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.cosmicDark.withOpacity(0.8),
+              color: Colors.black87.withOpacity(0.8),
             ),
             textAlign: TextAlign.center,
             maxLines: 2,
@@ -495,7 +495,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
                   'Personality Traits',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -518,7 +518,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
               child: Text(
                 sriLankanInfo['traits'] ?? 'Personality traits',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.cosmicDark,
+                  color: Colors.black87,
                   height: 1.6,
                 ),
                 textAlign: TextAlign.center,
@@ -567,7 +567,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
                   'Career Guidance',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -590,7 +590,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
               child: Text(
                 sriLankanInfo['careerAdvice'] ?? 'Career guidance',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.cosmicDark,
+                  color: Colors.black87,
                   height: 1.6,
                 ),
                 textAlign: TextAlign.center,
@@ -641,7 +641,7 @@ class _SriLankanZodiacScreenState extends State<SriLankanZodiacScreen>
                   'Compatible Signs',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],

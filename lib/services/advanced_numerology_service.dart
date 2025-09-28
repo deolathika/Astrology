@@ -1,4 +1,3 @@
-import 'dart:math';
 
 /// Advanced Numerology Service with comprehensive calculations
 class AdvancedNumerologyService {
@@ -400,4 +399,5 @@ This year brings ${_getPersonalYearMeaning(numbers['personalYear']!)} energy.
     '''.trim();
   }
 }
+
 

@@ -1,0 +1,13 @@
+{
+  "fire": ["Aries", "Leo", "Sagittarius"],
+  "water": ["Cancer", "Scorpio", "Pisces"],
+  "air": ["Gemini", "Libra", "Aquarius"],
+  "earth": ["Taurus", "Virgo", "Capricorn"],
+  "house_triangle_mapping": {
+    "fire_house_ranges": ["Mar 21–Apr 20", "Jul 21–Aug 20", "Nov 21–Dec 20"],
+    "water_house_ranges": ["Jun 21–Jul 20", "Oct 21–Nov 20", "Feb 21–Mar 20"],
+    "air_house_ranges": ["May 21–Jun 20", "Sep 21–Oct 20", "Jan 21–Feb 20"],
+    "earth_house_ranges": ["Apr 21–May 20", "Aug 21–Sep 20", "Dec 21–Jan 20"]
+  },
+  "source": "zodiac_triangles_elements image"
+}

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../../services/translation_service.dart';
 import '../../services/database_service.dart';
 import '../../models/user.dart';
-import '../../utils/dream_interpretation_utils.dart';
-import '../../utils/zodiac_utils.dart';
 
 class DreamInterpretationScreen extends StatefulWidget {
   const DreamInterpretationScreen({super.key});
@@ -12,361 +11,899 @@ class DreamInterpretationScreen extends StatefulWidget {
   State<DreamInterpretationScreen> createState() => _DreamInterpretationScreenState();
 }
 
-class _DreamInterpretationScreenState extends State<DreamInterpretationScreen> {
-  User? currentUser;
-  String selectedSymbol = 'water';
-  String dreamDescription = '';
-  Map<String, dynamic>? dreamAnalysis;
-  bool isLoading = false;
+class _DreamInterpretationScreenState extends State<DreamInterpretationScreen> with TickerProviderStateMixin {
+  String _currentLanguage = 'en';
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  
+  int _selectedTab = 0;
+  final List<String> _tabs = ['Interpret', 'Dreams', 'Symbols', 'Journal'];
+  
+  final TextEditingController _dreamController = TextEditingController();
+  final List<Map<String, dynamic>> _dreamHistory = [];
+  
+  // Mock dream symbols data
+  final List<Map<String, dynamic>> _dreamSymbols = [
+    {
+      'symbol': 'Water',
+      'meaning': 'Emotions, cleansing, renewal',
+      'category': 'Elements',
+      'color': AppTheme.celestialBlue,
+      'icon': Icons.water_drop,
+    },
+    {
+      'symbol': 'Flying',
+      'meaning': 'Freedom, liberation',
+      'category': 'Actions',
+      'color': AppTheme.auroraGreen,
+      'icon': Icons.flight,
+    },
+    {
+      'symbol': 'Animals',
+      'meaning': 'Instincts, nature, guidance',
+      'category': 'Creatures',
+      'color': AppTheme.supernovaGold,
+      'icon': Icons.pets,
+    },
+    {
+      'symbol': 'House',
+      'meaning': 'Self, security, family',
+      'category': 'Places',
+      'color': AppTheme.electricViolet,
+      'icon': Icons.home,
+    },
+    {
+      'symbol': 'Death',
+      'meaning': 'Transformation, endings, rebirth',
+      'category': 'Themes',
+      'color': AppTheme.nebulaPink,
+      'icon': Icons.auto_awesome,
+    },
+  ];
 
-  final List<String> dreamSymbols = [
-    'water', 'fire', 'snake', 'bird', 'tree', 'mountain', 'house', 'road'
+  final List<Map<String, dynamic>> _dreamHistoryData = [
+    {
+      'id': '1',
+      'title': 'Flying Over Ocean',
+      'date': '2024-01-10',
+      'description': 'I was flying over a vast ocean, feeling completely free and peaceful.',
+      'interpretation': 'This dream suggests you are experiencing emotional freedom and spiritual growth.',
+      'symbols': ['Flying', 'Water', 'Freedom'],
+      'mood': 'Peaceful',
+      'color': AppTheme.celestialBlue,
+    },
+    {
+      'id': '2',
+      'title': 'Lost in Forest',
+      'date': '2024-01-08',
+      'description': 'I was lost in a dark forest, but then I found a glowing path that led me home.',
+      'interpretation': 'This dream indicates you were feeling lost but have found your way through inner guidance.',
+      'symbols': ['Forest', 'Path', 'Light'],
+      'mood': 'Hopeful',
+      'color': AppTheme.auroraGreen,
+    },
+    {
+      'id': '3',
+      'title': 'Meeting Ancestors',
+      'date': '2024-01-05',
+      'description': 'I met my ancestors in a beautiful garden, and they gave me wisdom and blessings.',
+      'interpretation': 'This dream shows connection to your roots and receiving spiritual guidance from your lineage.',
+      'symbols': ['Ancestors', 'Garden', 'Wisdom'],
+      'mood': 'Blessed',
+      'color': AppTheme.supernovaGold,
+    },
   ];
 
   @override
   void initState() {
     super.initState();
-    _loadUser();
-  }
-
-  void _loadUser() {
-    currentUser = DatabaseService.getCurrentUser();
-    if (currentUser != null) {
-      _analyzeDream();
-    }
-  }
-
-  void _analyzeDream() {
-    if (currentUser == null) return;
+    _currentLanguage = TranslationService.currentLanguage;
     
-    setState(() {
-      isLoading = true;
-    });
-
-    final zodiacSign = ZodiacUtils.getWesternZodiacSign(currentUser!.dateOfBirth);
-    final analysis = DreamInterpretationUtils.getComprehensiveDreamAnalysis(
-      dreamSymbol: selectedSymbol,
-      zodiacSign: zodiacSign,
-      dreamDate: DateTime.now(),
-      dreamDescription: dreamDescription,
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
     );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    
+    _animationController.forward();
+  }
 
-    setState(() {
-      dreamAnalysis = analysis;
-      isLoading = false;
-    });
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _dreamController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.cream,
+      backgroundColor: AppTheme.deepSpaceBlack,
       appBar: AppBar(
-        title: const Text('Dream Interpretation'),
+        title: Text(TranslationService.translate('dreams')),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        foregroundColor: AppTheme.starlightWhite,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
       ),
-      body: currentUser == null
-          ? Center(
-              child: Column(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppTheme.deepSpaceBlack,
+              AppTheme.cosmicNavy,
+              AppTheme.nebulaDark,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Column(
+              children: [
+                _buildTranslationBar(),
+                _buildTabBar(),
+                Expanded(
+                  child: _buildTabContent(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTranslationBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.electricViolet.withOpacity(0.1),
+            AppTheme.cosmicPurple.withOpacity(0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.electricViolet.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      margin: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Icon(Icons.translate, color: AppTheme.electricViolet, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            TranslationService.translate('language'),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppTheme.electricViolet,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+          DropdownButton<String>(
+            value: _currentLanguage,
+            dropdownColor: AppTheme.cosmicNavy,
+            style: TextStyle(
+              color: AppTheme.starlightWhite,
+              fontSize: 14,
+            ),
+            underline: Container(),
+            icon: Icon(Icons.keyboard_arrow_down, color: AppTheme.electricViolet),
+            items: [
+              DropdownMenuItem(
+                value: 'en',
+                child: Text('English', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+              DropdownMenuItem(
+                value: 'si',
+                child: Text('සිංහල', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+              DropdownMenuItem(
+                value: 'ta',
+                child: Text('தமிழ்', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+              DropdownMenuItem(
+                value: 'hi',
+                child: Text('हिन्दी', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+            ],
+            onChanged: (String? newLanguage) {
+              if (newLanguage != null) {
+                setState(() {
+                  _currentLanguage = newLanguage;
+                });
+                TranslationService.setLanguage(newLanguage);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.electricViolet.withOpacity(0.1),
+            AppTheme.cosmicPurple.withOpacity(0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.electricViolet.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: _tabs.asMap().entries.map((entry) {
+            int index = entry.key;
+            String tab = entry.value;
+            bool isSelected = _selectedTab == index;
+            
+            return GestureDetector(
+              onTap: () => setState(() => _selectedTab = index),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  gradient: isSelected
+                      ? LinearGradient(
+                          colors: [AppTheme.electricViolet, AppTheme.cosmicPurple],
+                        )
+                      : null,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  tab,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: isSelected ? Colors.white : AppTheme.starlightWhite,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabContent() {
+    switch (_selectedTab) {
+      case 0:
+        return _buildInterpretTab();
+      case 1:
+        return _buildDreamsTab();
+      case 2:
+        return _buildSymbolsTab();
+      case 3:
+        return _buildJournalTab();
+      default:
+        return _buildInterpretTab();
+    }
+  }
+
+  Widget _buildInterpretTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Dream Interpretation', Icons.auto_awesome, AppTheme.electricViolet),
+          const SizedBox(height: 16),
+          _buildDreamInput(),
+          const SizedBox(height: 24),
+          _buildInterpretationResult(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDreamsTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Your Dream History', Icons.history, AppTheme.celestialBlue),
+          const SizedBox(height: 16),
+          ..._dreamHistoryData.map((dream) => _buildDreamCard(dream)).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSymbolsTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Dream Symbols', Icons.psychology, AppTheme.supernovaGold),
+          const SizedBox(height: 16),
+          ..._dreamSymbols.map((symbol) => _buildSymbolCard(symbol)).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildJournalTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Dream Journal', Icons.book, AppTheme.auroraGreen),
+          const SizedBox(height: 16),
+          _buildJournalEntry(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDreamInput() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.cosmicNavy.withOpacity(0.8),
+            AppTheme.nebulaDark.withOpacity(0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.electricViolet.withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.electricViolet.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Describe Your Dream',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppTheme.starlightWhite,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _dreamController,
+            maxLines: 5,
+            style: TextStyle(color: AppTheme.starlightWhite),
+            decoration: InputDecoration(
+              hintText: 'Write your dream in detail...',
+              hintStyle: TextStyle(color: AppTheme.cosmicSilver),
+              filled: true,
+              fillColor: AppTheme.stellarGray.withOpacity(0.1),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.electricViolet.withOpacity(0.3)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.electricViolet.withOpacity(0.3)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.electricViolet, width: 2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: _interpretDream,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppTheme.electricViolet, AppTheme.cosmicPurple],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.electricViolet.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.person_outline,
-                    size: 64,
-                    color: AppTheme.mysticalPurple.withOpacity(0.5),
-                  ),
-                  const SizedBox(height: 16),
+                  const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
                   Text(
-                    'Please complete your profile to access dream interpretation.',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppTheme.cosmicDark,
+                    'Interpret Dream',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
-            )
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      gradient: AppTheme.cosmicGradient,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Dream Interpretation ✨',
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Discover the hidden meanings in your dreams',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Dream Symbol Selection
-                  _buildSymbolSelection(),
-                  const SizedBox(height: 24),
-
-                  // Dream Description
-                  _buildDreamDescription(),
-                  const SizedBox(height: 24),
-
-                  // Analysis Button
-                  _buildAnalysisButton(),
-                  const SizedBox(height: 24),
-
-                  // Dream Analysis Results
-                  if (dreamAnalysis != null) _buildDreamAnalysis(),
-                ],
-              ),
             ),
-    );
-  }
-
-  Widget _buildSymbolSelection() {
-    return Card(
-      elevation: 4,
-      shadowColor: AppTheme.mysticalPurple.withOpacity(0.2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Select Dream Symbol',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppTheme.cosmicDark,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: dreamSymbols.map((symbol) {
-                final isSelected = selectedSymbol == symbol;
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedSymbol = symbol;
-                    });
-                    _analyzeDream();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppTheme.mysticalPurple : AppTheme.lavender.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected ? AppTheme.mysticalPurple : AppTheme.lavender,
-                        width: 2,
-                      ),
-                    ),
-                    child: Text(
-                      symbol.toUpperCase(),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : AppTheme.cosmicDark,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildDreamDescription() {
-    return Card(
-      elevation: 4,
-      shadowColor: AppTheme.cosmicPink.withOpacity(0.2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Describe Your Dream',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppTheme.cosmicDark,
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: 'Describe your dream in detail...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+  Widget _buildInterpretationResult() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.supernovaGold.withOpacity(0.1),
+            AppTheme.stellarYellow.withOpacity(0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.supernovaGold.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.lightbulb, color: AppTheme.supernovaGold, size: 24),
+              const SizedBox(width: 8),
+              Text(
+                'Dream Interpretation',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppTheme.supernovaGold,
+                  fontWeight: FontWeight.bold,
                 ),
-                filled: true,
-                fillColor: AppTheme.lavender.withOpacity(0.3),
               ),
-              onChanged: (value) {
-                setState(() {
-                  dreamDescription = value;
-                });
-              },
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Your dream reveals deep insights about your subconscious mind and spiritual journey. The symbols and themes suggest you are experiencing a period of transformation and growth.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppTheme.starlightWhite,
+              height: 1.5,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          _buildSymbolAnalysis(),
+        ],
       ),
     );
   }
 
-  Widget _buildAnalysisButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : _analyzeDream,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.mysticalPurple,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-              )
-            : const Text(
-                'Analyze Dream',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-      ),
-    );
-  }
-
-  Widget _buildDreamAnalysis() {
-    if (dreamAnalysis == null) return const SizedBox();
-
-    final interpretation = dreamAnalysis!['interpretation'];
-    final philosophicalMeaning = dreamAnalysis!['philosophical_meaning'];
-    final meditationGuidance = dreamAnalysis!['meditation_guidance'];
-    final actionAdvice = dreamAnalysis!['action_advice'];
-
+  Widget _buildSymbolAnalysis() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // General Interpretation
-        _buildAnalysisCard(
-          'Dream Interpretation',
-          interpretation['general_meaning'] ?? '',
-          Icons.psychology,
-          AppTheme.mysticalPurple,
+        Text(
+          'Key Symbols:',
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: AppTheme.supernovaGold,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(height: 16),
-
-        // Zodiac-Specific Meaning
-        _buildAnalysisCard(
-          'Your Zodiac Meaning',
-          interpretation['zodiac_meaning'] ?? '',
-          Icons.star,
-          AppTheme.cosmicPink,
-        ),
-        const SizedBox(height: 16),
-
-        // Philosophical Meaning
-        _buildAnalysisCard(
-          'Philosophical Meaning',
-          philosophicalMeaning,
-          Icons.lightbulb,
-          AppTheme.softBlue,
-        ),
-        const SizedBox(height: 16),
-
-        // Meditation Guidance
-        _buildAnalysisCard(
-          'Meditation Guidance',
-          meditationGuidance,
-          Icons.self_improvement,
-          AppTheme.lavender,
-        ),
-        const SizedBox(height: 16),
-
-        // Action Advice
-        _buildAnalysisCard(
-          'Action Advice',
-          actionAdvice,
-          Icons.directions,
-          AppTheme.mysticalPurple,
-        ),
-        const SizedBox(height: 16),
-
-        // Cultural Context
-        _buildAnalysisCard(
-          'Cultural Context',
-          interpretation['cultural_context'] ?? '',
-          Icons.public,
-          AppTheme.cosmicPink,
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _buildSymbolChip('Transformation', AppTheme.electricViolet),
+            _buildSymbolChip('Growth', AppTheme.auroraGreen),
+            _buildSymbolChip('Guidance', AppTheme.celestialBlue),
+            _buildSymbolChip('Freedom', AppTheme.supernovaGold),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildAnalysisCard(String title, String content, IconData icon, Color color) {
-    return Card(
-      elevation: 4,
-      shadowColor: color.withOpacity(0.2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: color, size: 24),
-                const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              content,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.cosmicDark,
-                height: 1.6,
-              ),
-            ),
-          ],
+  Widget _buildSymbolChip(String symbol, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Text(
+        symbol,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: color,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
+
+  Widget _buildDreamCard(Map<String, dynamic> dream) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.cosmicNavy.withOpacity(0.8),
+            AppTheme.nebulaDark.withOpacity(0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: dream['color'].withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: dream['color'].withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [dream['color'], dream['color'].withOpacity(0.7)],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.auto_awesome,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      dream['title'],
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppTheme.starlightWhite,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      dream['date'],
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.cosmicSilver,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: dream['color'].withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  dream['mood'],
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: dream['color'],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            dream['description'],
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppTheme.starlightWhite,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            dream['interpretation'],
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppTheme.cosmicSilver,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: (dream['symbols'] as List<String>).map((symbol) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: dream['color'].withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  symbol,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: dream['color'],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSymbolCard(Map<String, dynamic> symbol) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            symbol['color'].withOpacity(0.1),
+            symbol['color'].withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: symbol['color'].withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [symbol['color'], symbol['color'].withOpacity(0.7)],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              symbol['icon'],
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  symbol['symbol'],
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppTheme.starlightWhite,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  symbol['meaning'],
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppTheme.cosmicSilver,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: symbol['color'].withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    symbol['category'],
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: symbol['color'],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildJournalEntry() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.auroraGreen.withOpacity(0.1),
+            AppTheme.stellarTeal.withOpacity(0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.auroraGreen.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Dream Journal Entry',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppTheme.auroraGreen,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            maxLines: 8,
+            style: TextStyle(color: AppTheme.starlightWhite),
+            decoration: InputDecoration(
+              hintText: 'Write about your dream experience, emotions, and insights...',
+              hintStyle: TextStyle(color: AppTheme.cosmicSilver),
+              filled: true,
+              fillColor: AppTheme.stellarGray.withOpacity(0.1),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.auroraGreen.withOpacity(0.3)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.auroraGreen.withOpacity(0.3)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.auroraGreen, width: 2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _saveJournalEntry,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppTheme.auroraGreen, AppTheme.stellarTeal],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Save Entry',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: _clearJournalEntry,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: AppTheme.stellarGray.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppTheme.stellarGray.withOpacity(0.3)),
+                    ),
+                    child: Text(
+                      'Clear',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.stellarGray,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Action methods
+  void _interpretDream() {
+    if (_dreamController.text.isNotEmpty) {
+      // Add interpretation logic here
+      print('Interpreting dream: ${_dreamController.text}');
+    }
+  }
+
+  void _saveJournalEntry() {
+    // Save journal entry logic
+    print('Saving journal entry');
+  }
+
+  void _clearJournalEntry() {
+    // Clear journal entry logic
+    print('Clearing journal entry');
+  }
 }
-
-

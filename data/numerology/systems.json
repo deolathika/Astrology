@@ -1,0 +1,32 @@
+{
+  "pythagorean": {
+    "desc": "Western numerology system based on Greek mathematician Pythagoras",
+    "alphabet_rule": "A=1, B=2, C=3, D=4, E=5, F=6, G=7, H=8, I=9, J=1, K=2, L=3, M=4, N=5, O=6, P=7, Q=8, R=9, S=1, T=2, U=3, V=4, W=5, X=6, Y=7, Z=8",
+    "notes": "Most commonly used system in Western numerology"
+  },
+  "chaldean": {
+    "desc": "Ancient Babylonian numerology system with different letter values",
+    "alphabet_rule": "A=1, B=2, C=3, D=4, E=5, F=8, G=3, H=5, I=1, J=1, K=2, L=3, M=4, N=5, O=7, P=8, Q=1, R=2, S=3, T=4, U=6, V=6, W=6, X=5, Y=1, Z=7",
+    "notes": "Older system that doesn't use 9, focuses on 1-8"
+  },
+  "kabbalah": {
+    "desc": "Hebrew-based mystical numerology system",
+    "alphabet_rule": "Hebrew alphabet values: Aleph=1, Bet=2, Gimel=3, Dalet=4, He=5, Vav=6, Zayin=7, Chet=8, Tet=9, Yod=10, Kaf=20, Lamed=30, Mem=40, Nun=50, Samekh=60, Ayin=70, Pe=80, Tzadi=90, Qof=100, Resh=200, Shin=300, Tav=400",
+    "notes": "Based on Hebrew gematria and mystical traditions"
+  },
+  "tamil": {
+    "desc": "South Indian numerology system with regional variations",
+    "alphabet_rule": "Tamil script values: அ=1, ஆ=2, இ=3, ஈ=4, உ=5, ஊ=6, எ=7, ஏ=8, ஐ=9, ஒ=10, ஓ=11, ஔ=12, க=13, ங=14, ச=15, ஞ=16, ட=17, ண=18, த=19, ந=20, ப=21, ம=22, ய=23, ர=24, ல=25, வ=26, ழ=27, ள=28, ற=29, ன=30",
+    "notes": "Regional system used in Tamil-speaking regions"
+  },
+  "chinese": {
+    "desc": "Chinese numerology based on symbolic meanings and sounds",
+    "alphabet_rule": "Based on Chinese characters and their symbolic meanings, not alphabetical values",
+    "notes": "Focuses on symbolic meanings rather than numerical calculations"
+  },
+  "vedic": {
+    "desc": "Indian Vedic numerology linked to Jyotish astrology",
+    "alphabet_rule": "Linked to planetary influences: A=1 (Sun), B=2 (Moon), C=3 (Jupiter), D=4 (Rahu), E=5 (Mercury), F=6 (Venus), G=7 (Ketu), H=8 (Saturn), I=9 (Mars)",
+    "notes": "Integrates with Vedic astrology and planetary influences"
+  }
+}

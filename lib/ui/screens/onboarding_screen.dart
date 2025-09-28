@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../components/animated_card.dart';
 import 'user_profile_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -10,13 +9,7 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late AnimationController _slideController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
-
+class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentStep = 0;
   final PageController _pageController = PageController();
   final TextEditingController _phoneController = TextEditingController();
@@ -24,43 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   final TextEditingController _otpController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    
-    _slideController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeOut,
-    ));
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOut,
-    ));
-    
-    _fadeController.forward();
-    _slideController.forward();
-  }
-
-  @override
   void dispose() {
-    _fadeController.dispose();
-    _slideController.dispose();
     _pageController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
@@ -172,24 +129,18 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               
               // Content
               Expanded(
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: PageView(
-                      controller: _pageController,
-                      onPageChanged: (index) {
-                        setState(() {
-                          _currentStep = index;
-                        });
-                      },
-                      children: [
-                        _buildWelcomeStep(),
-                        _buildContactStep(),
-                        _buildOTPStep(),
-                      ],
-                    ),
-                  ),
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentStep = index;
+                    });
+                  },
+                  children: [
+                    _buildWelcomeStep(),
+                    _buildContactStep(),
+                    _buildOTPStep(),
+                  ],
                 ),
               ),
               
@@ -370,14 +321,26 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           const SizedBox(height: 40),
           
           // Phone input
-          AnimatedCard(
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Phone Number',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -385,8 +348,16 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 TextField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,
+                  ),
                   decoration: InputDecoration(
                     hintText: '+94 77 123 4567',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 16,
+                    ),
                     prefixIcon: const Icon(Icons.phone, color: AppTheme.mysticalPurple),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -403,14 +374,26 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           const SizedBox(height: 20),
           
           // Email input
-          AnimatedCard(
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Email Address',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -418,8 +401,16 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'your@email.com',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 16,
+                    ),
                     prefixIcon: const Icon(Icons.email, color: AppTheme.mysticalPurple),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -465,14 +456,26 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           const SizedBox(height: 40),
           
           // OTP input
-          AnimatedCard(
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Verification Code',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -482,12 +485,19 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
+                    color: Colors.black87,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 8,
                   ),
                   decoration: InputDecoration(
                     hintText: '000000',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 8,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -500,7 +510,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 Text(
                   'Didn\'t receive the code? Resend in 30s',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.cosmicDark.withOpacity(0.7),
+                    color: Colors.black87.withOpacity(0.7),
                   ),
                 ),
               ],

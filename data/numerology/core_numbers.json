@@ -1,0 +1,30 @@
+{
+  "life_path": {
+    "definition": "Most important; derived from birth date",
+    "calc": "Reduce birth date (YYYY+MM+DD) to single digit, keep 11/22/33 as master numbers"
+  },
+  "expression_destiny": {
+    "definition": "Derived from full birth name",
+    "calc": "Pythagorean sum of all letters in your full birth name"
+  },
+  "soul_urge": {
+    "definition": "Derived from vowels in your full name",
+    "calc": "Pythagorean sum of vowels only in your full birth name"
+  },
+  "personality": {
+    "definition": "Derived from consonants in your full name",
+    "calc": "Pythagorean sum of consonants only in your full birth name"
+  },
+  "birthday": {
+    "definition": "Day of the month you were born",
+    "calc": "Day of the month you were born (1-31)"
+  },
+  "maturity": {
+    "definition": "Derived from Life Path + Expression Number",
+    "calc": "Life Path Number + Expression Number"
+  },
+  "current_name": {
+    "definition": "From the name you go by today (can change over time)",
+    "calc": "Pythagorean sum of all letters in your current display name"
+  }
+}

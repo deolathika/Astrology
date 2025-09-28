@@ -5,14 +5,91 @@ import '../models/user.dart';
 
 /// Payment Processing Service with Stripe integration
 class PaymentService {
-  static const String _stripeSecretKey = 'YOUR_STRIPE_SECRET_KEY'; // Replace with actual key
-  static const String _stripePublishableKey = 'YOUR_STRIPE_PUBLISHABLE_KEY'; // Replace with actual key
+  // Stripe Configuration - Replace with your actual keys
+  static const String _stripeSecretKey = 'sk_test_51234567890abcdef'; // Test key - replace with your actual secret key
+  static const String _stripePublishableKey = 'pk_test_51234567890abcdef'; // Test key - replace with your actual publishable key
   static const String _stripeBaseUrl = 'https://api.stripe.com/v1';
+  
+  // Subscription Plans
+  static const Map<String, Map<String, dynamic>> subscriptionPlans = {
+    'basic': {
+      'name': 'Basic Plan',
+      'price': 9.99,
+      'currency': 'USD',
+      'interval': 'month',
+      'features': ['Daily Horoscope', 'Basic Numerology', 'Zodiac Compatibility']
+    },
+    'premium': {
+      'name': 'Premium Plan',
+      'price': 19.99,
+      'currency': 'USD',
+      'interval': 'month',
+      'features': ['All Basic Features', 'Advanced Numerology', 'Dream Interpretation', 'Priority Support']
+    },
+    'cosmic': {
+      'name': 'Cosmic Plan',
+      'price': 39.99,
+      'currency': 'USD',
+      'interval': 'month',
+      'features': ['All Premium Features', 'Personal Astrologer Chat', 'Custom Birth Charts', 'Exclusive Content']
+    }
+  };
   
   /// Initialize payment service
   static Future<void> initialize() async {
     // Initialize payment service
     await _loadPaymentSettings();
+  }
+  
+  /// Get available subscription plans
+  static Map<String, Map<String, dynamic>> getSubscriptionPlans() {
+    return subscriptionPlans;
+  }
+  
+  /// Create subscription
+  static Future<Map<String, dynamic>> createSubscription({
+    required String planId,
+    required String customerId,
+    required String paymentMethodId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_stripeBaseUrl/subscriptions'),
+        headers: {
+          'Authorization': 'Bearer $_stripeSecretKey',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'customer': customerId,
+          'items[0][price]': _getPriceIdForPlan(planId),
+          'default_payment_method': paymentMethodId,
+          'expand[]': 'latest_invoice.payment_intent',
+        },
+      );
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to create subscription: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Subscription creation failed: $e');
+    }
+  }
+  
+  /// Get price ID for plan
+  static String _getPriceIdForPlan(String planId) {
+    // In production, these would be actual Stripe price IDs
+    switch (planId) {
+      case 'basic':
+        return 'price_basic_monthly';
+      case 'premium':
+        return 'price_premium_monthly';
+      case 'cosmic':
+        return 'price_cosmic_monthly';
+      default:
+        return 'price_basic_monthly';
+    }
   }
   
   /// Create payment intent
@@ -104,8 +181,8 @@ class PaymentService {
     }
   }
   
-  /// Create subscription
-  static Future<Map<String, dynamic>> createSubscription({
+  /// Create subscription with price ID
+  static Future<Map<String, dynamic>> createSubscriptionWithPrice({
     required String customerId,
     required String priceId,
     Map<String, String>? metadata,
@@ -463,4 +540,5 @@ class PaymentTransaction {
     this.metadata,
   });
 }
+
 

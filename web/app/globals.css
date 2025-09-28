@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-deep-space text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Cosmic Card Component */
+  .cosmic-card {
+    @apply bg-white/5 backdrop-blur-cosmic border border-electric-violet/20 rounded-2xl p-6 shadow-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    box-shadow: 
+      0 8px 32px rgba(123, 79, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .cosmic-card:hover {
+    @apply border-electric-violet/40;
+    box-shadow: 
+      0 12px 40px rgba(123, 79, 255, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+  
+  /* Cosmic Button */
+  .cosmic-button {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
+    background: linear-gradient(135deg, #7B4FFF 0%, #3FC5FF 100%);
+    box-shadow: 0 4px 15px rgba(123, 79, 255, 0.3);
+  }
+  
+  .cosmic-button:hover {
+    @apply transform -translate-y-1;
+    box-shadow: 0 8px 25px rgba(123, 79, 255, 0.4);
+  }
+  
+  .cosmic-button:active {
+    @apply transform translate-y-0;
+  }
+  
+  /* Cosmic Input */
+  .cosmic-input {
+    @apply w-full px-4 py-3 bg-white/10 border border-electric-violet/30 rounded-xl text-white placeholder-white/60 focus:border-electric-violet focus:ring-2 focus:ring-electric-violet/20 focus:outline-none transition-all duration-300;
+  }
+  
+  .cosmic-input:focus {
+    @apply bg-white/15;
+    box-shadow: 0 0 0 3px rgba(123, 79, 255, 0.1);
+  }
+  
+  /* Cosmic Glow Effect */
+  .cosmic-glow {
+    @apply relative;
+  }
+  
+  .cosmic-glow::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300;
+    background: linear-gradient(135deg, rgba(123, 79, 255, 0.3) 0%, rgba(63, 197, 255, 0.3) 100%);
+    filter: blur(20px);
+    z-index: -1;
+  }
+  
+  .cosmic-glow:hover::before {
+    @apply opacity-100;
+  }
+  
+  /* Nebula Border Animation */
+  .nebula-border {
+    @apply relative;
+    background: linear-gradient(45deg, #7B4FFF, #3FC5FF, #FFD75A, #FF6EC7, #76FF9C, #7B4FFF);
+    background-size: 400% 400%;
+    animation: nebula-shift 8s ease-in-out infinite;
+  }
+  
+  .nebula-border::before {
+    content: '';
+    @apply absolute inset-1 rounded-xl bg-deep-space;
+  }
+  
+  /* Star Field Background */
+  .star-field {
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+      radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: star-twinkle 20s linear infinite;
+  }
+  
+  /* Cosmic Text Gradient */
+  .cosmic-text {
+    background: linear-gradient(135deg, #7B4FFF 0%, #3FC5FF 50%, #FFD75A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Floating Animation */
+  .cosmic-float {
+    animation: cosmic-float 6s ease-in-out infinite;
+  }
+  
+  .cosmic-float:nth-child(2n) {
+    animation-delay: -2s;
+  }
+  
+  .cosmic-float:nth-child(3n) {
+    animation-delay: -4s;
+  }
+}
+
+@layer utilities {
+  /* Custom Scrollbar */
+  .cosmic-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .cosmic-scrollbar::-webkit-scrollbar-track {
+    @apply bg-white/10 rounded-full;
+  }
+  
+  .cosmic-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-electric-violet/50 rounded-full;
+  }
+  
+  .cosmic-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-electric-violet/70;
+  }
+  
+  /* Text Selection */
+  ::selection {
+    @apply bg-electric-violet/30 text-white;
+  }
+  
+  /* Focus Visible */
+  .focus-visible {
+    @apply outline-none ring-2 ring-electric-violet/50 ring-offset-2 ring-offset-deep-space;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-cosmic-glow,
+  .animate-nebula-shift,
+  .animate-star-twinkle,
+  .animate-cosmic-float {
+    animation: none;
+  }
+}
+
+/* Dark Mode Optimizations */
+@media (prefers-color-scheme: dark) {
+  .cosmic-card {
+    @apply bg-white/10;
+  }
+  
+  .cosmic-input {
+    @apply bg-white/15;
+  }
+}

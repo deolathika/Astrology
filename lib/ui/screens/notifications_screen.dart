@@ -102,7 +102,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> with TickerPr
           controller: _tabController,
           isScrollable: true,
           labelColor: AppTheme.mysticalPurple,
-          unselectedLabelColor: AppTheme.cosmicDark.withOpacity(0.6),
+          unselectedLabelColor: Colors.black87.withOpacity(0.6),
           indicatorColor: AppTheme.mysticalPurple,
           tabs: [
             Tab(text: 'All (${_allNotifications.length})'),
@@ -147,20 +147,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> with TickerPr
           Icon(
             Icons.notifications_none,
             size: 64,
-            color: AppTheme.cosmicDark.withOpacity(0.3),
+            color: Colors.black87.withOpacity(0.3),
           ),
           const SizedBox(height: 16),
           Text(
             'No notifications yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppTheme.cosmicDark.withOpacity(0.7),
+              color: Colors.black87.withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'We\'ll notify you when there\'s something new',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.cosmicDark.withOpacity(0.5),
+              color: Colors.black87.withOpacity(0.5),
             ),
             textAlign: TextAlign.center,
           ),
@@ -177,7 +177,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> with TickerPr
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: notification.isRead 
-              ? AppTheme.cosmicDark.withOpacity(0.1) 
+              ? Colors.black87.withOpacity(0.1) 
               : AppTheme.mysticalPurple.withOpacity(0.2),
         ),
         boxShadow: notification.isRead ? null : [
@@ -207,7 +207,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> with TickerPr
           notification.title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
-            color: AppTheme.cosmicDark,
+            color: Colors.black87,
           ),
         ),
         subtitle: Column(
@@ -217,7 +217,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> with TickerPr
             Text(
               notification.message,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.cosmicDark.withOpacity(0.7),
+                color: Colors.black87.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 8),
@@ -226,7 +226,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> with TickerPr
                 Text(
                   _formatTimestamp(notification.timestamp),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.cosmicDark.withOpacity(0.5),
+                    color: Colors.black87.withOpacity(0.5),
                   ),
                 ),
                 const Spacer(),
@@ -402,4 +402,5 @@ enum NotificationType {
   community,
   system,
 }
+
 

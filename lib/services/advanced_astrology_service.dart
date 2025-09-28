@@ -70,11 +70,27 @@ class AdvancedAstrologyService {
       transits[planet] = {
         'position': currentPos,
         'transit_degree': transit,
-        'aspects': _calculateAspects(birthPos, currentPos),
+        'aspects': _calculateSimpleAspects(birthPos, currentPos),
       };
     }
     
     return transits;
+  }
+
+  /// Calculate simple aspects between two positions
+  static Map<String, dynamic> _calculateSimpleAspects(double pos1, double pos2) {
+    double diff = (pos2 - pos1).abs();
+    if (diff > 180) diff = 360 - diff;
+    
+    Map<String, dynamic> aspects = {};
+    
+    if (diff <= 8) aspects['conjunction'] = true;
+    if (diff >= 172 && diff <= 188) aspects['opposition'] = true;
+    if (diff >= 58 && diff <= 68) aspects['sextile'] = true;
+    if (diff >= 118 && diff <= 128) aspects['trine'] = true;
+    if (diff >= 83 && diff <= 97) aspects['square'] = true;
+    
+    return aspects;
   }
 
   /// Calculate planetary aspects
@@ -350,4 +366,5 @@ These cosmic influences are shaping your current experiences and opportunities.
     return themes;
   }
 }
+
 

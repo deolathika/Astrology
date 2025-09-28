@@ -229,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -283,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'Your Western Sign',
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppTheme.cosmicDark,
+                        color: Colors.black87,
                       ),
                     ),
                     Text(
@@ -353,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               zodiacInfo['description'] ?? 'Your zodiac sign information',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.cosmicDark,
+                color: Colors.black87,
                 fontStyle: FontStyle.italic,
               ),
               textAlign: TextAlign.center,
@@ -378,14 +378,14 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
               fontWeight: FontWeight.w500,
             ),
           ),
           Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
               fontWeight: FontWeight.bold,
             ),
           ),

@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:math';
 import '../models/user.dart';
 import '../utils/zodiac_utils.dart';
-import '../utils/vedic_zodiac_utils.dart';
 import '../utils/chinese_zodiac_utils.dart';
 import '../utils/sri_lankan_zodiac_utils.dart';
 
@@ -237,25 +235,29 @@ class AIContentService {
   /// Generates day rules (dos and don'ts)
   static DayRules _generateDayRules(String westernSign, String sriLankanSign, String primarySystem) {
     final dos = [
-      'Trust your intuition',
-      'Express gratitude',
-      'Take time for self-care',
-      'Connect with nature',
-      'Practice mindfulness',
-      'Be kind to yourself',
-      'Embrace new opportunities',
-      'Listen to your heart',
+      'Trust your intuition and inner wisdom - the cosmic energy supports your natural instincts today',
+      'Express gratitude for the abundance in your life - this opens doors to even more blessings',
+      'Take time for self-care and spiritual practices - your soul needs nourishment',
+      'Connect with nature and the elements - earth energy will ground and center you',
+      'Practice mindfulness and present-moment awareness - the universe has messages for you',
+      'Be kind to yourself and others - compassion creates positive energy that returns to you',
+      'Embrace new opportunities that align with your highest good - the stars are opening doors',
+      'Listen to your heart and follow your authentic path - your soul knows the way',
+      'Engage in creative activities that bring you joy - artistic expression heals and uplifts',
+      'Communicate openly and honestly with loved ones - authentic connection is your strength',
     ];
     
     final donts = [
-      'Don\'t rush important decisions',
-      'Avoid negative self-talk',
-      'Don\'t ignore your feelings',
-      'Avoid unnecessary conflicts',
-      'Don\'t overcommit yourself',
-      'Avoid toxic environments',
-      'Don\'t suppress your emotions',
-      'Avoid making assumptions',
+      'Don\'t rush important decisions - take time to consider all aspects and trust your timing',
+      'Avoid negative self-talk and limiting beliefs - you are worthy of love and success',
+      'Don\'t ignore your feelings and emotions - they are valuable guidance from your soul',
+      'Avoid unnecessary conflicts and drama - peace and harmony serve your highest good',
+      'Don\'t overcommit yourself or people-please - boundaries protect your energy',
+      'Avoid toxic environments and negative influences - surround yourself with positive energy',
+      'Don\'t suppress your emotions or pretend everything is fine - authentic expression is healing',
+      'Avoid making assumptions about others\' intentions - ask for clarification when needed',
+      'Don\'t compare yourself to others - your journey is unique and perfectly timed',
+      'Avoid holding onto grudges or past hurts - forgiveness frees your heart and soul',
     ];
 
     return DayRules(
@@ -267,11 +269,11 @@ class AIContentService {
   /// Generates guidance for different areas
   static Guidance _generateGuidance(String westernSign, String sriLankanSign, String primarySystem) {
     return Guidance(
-      love: 'Your heart is open to new connections today. Trust in the power of love.',
-      career: 'Your professional skills shine today. Take initiative in your work.',
-      finances: 'Your financial intuition guides you today. Make wise decisions.',
-      health: 'Your body needs gentle care today. Listen to its signals.',
-      travel: 'Your adventurous spirit calls today. Explore new horizons.',
+      love: 'Your heart is open to new connections today. The cosmic energy supports emotional vulnerability and authentic expression. Trust in the power of love to transform your relationships. Venus aligns with your sign, bringing harmony and understanding to your closest bonds. This is an ideal time for deep conversations and meaningful connections.',
+      career: 'Your professional skills shine brightly today. The stars favor leadership and innovation in your work. Take initiative on projects that showcase your unique talents. Mercury\'s influence enhances your communication skills, making this perfect for presentations or important meetings. Trust your instincts when making career decisions.',
+      finances: 'Your financial intuition is heightened today. The cosmic energy supports wise money management and investment decisions. Venus brings opportunities for financial growth through creative endeavors. Avoid impulsive spending and focus on long-term stability. Consider consulting with a financial advisor about new investment opportunities.',
+      health: 'Your body needs gentle care and attention today. Listen to its signals and honor your physical needs. The moon\'s influence suggests focusing on emotional well-being as it affects your physical health. Consider gentle exercise, meditation, or spending time in nature. Pay attention to stress levels and take breaks when needed.',
+      travel: 'Your adventurous spirit calls for exploration today. The cosmic energy supports new experiences and cultural exchanges. Whether it\'s a local adventure or planning a future journey, the stars align for meaningful travel experiences. Trust your instincts about destinations and timing. Travel may bring unexpected opportunities for growth.',
     );
   }
 

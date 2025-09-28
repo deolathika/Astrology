@@ -76,7 +76,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
               Text(
                 'Profile Required',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppTheme.cosmicDark,
+                  color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -84,7 +84,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
               Text(
                 'Please complete your profile to view Vedic astrology insights.',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.cosmicDark.withOpacity(0.7),
+                  color: Colors.black87.withOpacity(0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -172,7 +172,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                       Text(
                         'Vedic Rashi (Moon Sign)',
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: AppTheme.cosmicDark,
+                          color: Colors.black87,
                         ),
                       ),
                       Text(
@@ -223,7 +223,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                 child: Text(
                   vedicInfo['description'] ?? 'Vedic astrology information',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                     fontStyle: FontStyle.italic,
                   ),
                   textAlign: TextAlign.center,
@@ -270,7 +270,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                       Text(
                         'Nakshatra (Lunar Mansion)',
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: AppTheme.cosmicDark,
+                          color: Colors.black87,
                         ),
                       ),
                       Text(
@@ -309,7 +309,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                 child: Text(
                   'Deity: ${nakshatraInfo['deity'] ?? 'Unknown'}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
@@ -353,7 +353,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                   'Planetary Positions',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -372,7 +372,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                         planet,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppTheme.cosmicDark,
+                          color: Colors.black87,
                         ),
                       ),
                     ),
@@ -381,7 +381,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                       child: Text(
                         '${data['sign']} ${data['degree']}°',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppTheme.cosmicDark,
+                          color: Colors.black87,
                         ),
                       ),
                     ),
@@ -390,7 +390,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                       child: Text(
                         'House ${data['house']}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.cosmicDark.withOpacity(0.7),
+                          color: Colors.black87.withOpacity(0.7),
                         ),
                       ),
                     ),
@@ -437,7 +437,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
                   'Vedic Traits & Characteristics',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -478,7 +478,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
           child: Text(
             content,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
             ),
           ),
         ),
@@ -498,7 +498,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -506,7 +506,7 @@ class _VedicZodiacScreenState extends State<VedicZodiacScreen> {
           Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
               fontWeight: FontWeight.bold,
             ),
           ),

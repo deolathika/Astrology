@@ -287,3 +287,4 @@ class _AnimatedBreadcrumbsState extends State<AnimatedBreadcrumbs>
   }
 }
 
+

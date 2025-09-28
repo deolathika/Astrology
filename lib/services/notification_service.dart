@@ -24,167 +24,104 @@ class NotificationService {
       iOS: iosSettings,
     );
     
-    await _localNotifications.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: _onNotificationTapped,
-    );
+    await _localNotifications.initialize(initSettings);
+    
+    // Initialize Firebase Messaging
+    await _initializeFirebaseMessaging();
     
     // Request permissions
     await _requestPermissions();
     
-    // Initialize Firebase messaging
-    await _initializeFirebaseMessaging();
+    // Set up message handlers
+    _setupMessageHandlers();
+  }
+  
+  /// Initialize Firebase Messaging
+  static Future<void> _initializeFirebaseMessaging() async {
+    // Get FCM token
+    String? token = await _firebaseMessaging.getToken();
+    print('FCM Token: $token');
+    
+    // Save token to preferences
+    if (token != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('fcm_token', token);
+    }
   }
   
   /// Request notification permissions
   static Future<void> _requestPermissions() async {
-    // Android 13+ permission
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-    
-    // iOS permission
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
-  }
-  
-  /// Initialize Firebase messaging
-  static Future<void> _initializeFirebaseMessaging() async {
-    // Request permission
+    // Request Firebase permissions
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
+      provisional: false,
     );
     
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      // Get FCM token
-      String? token = await _firebaseMessaging.getToken();
-      await _saveFCMToken(token);
-      
-      // Listen to messages
-      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
-      FirebaseMessaging.onMessageOpenedApp.listen(_handleBackgroundMessage);
+    print('Notification permission status: ${settings.authorizationStatus}');
+  }
+  
+  /// Set up message handlers
+  static void _setupMessageHandlers() {
+    // Handle background messages
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Received foreground message: ${message.notification?.title}');
+      _showLocalNotification(message);
+    });
+    
+    // Handle notification taps
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Notification tapped: ${message.notification?.title}');
+      _handleNotificationTap(message);
+    });
+  }
+  
+  /// Background message handler
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print('Handling background message: ${message.messageId}');
+  }
+  
+  /// Show local notification from Firebase message
+  static Future<void> _showLocalNotification(RemoteMessage message) async {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'daily_secrets_channel',
+      'Daily Secrets Notifications',
+      channelDescription: 'Notifications for Daily Secrets app',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+    
+    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+    
+    await _localNotifications.show(
+      message.hashCode,
+      message.notification?.title ?? 'Daily Secrets',
+      message.notification?.body ?? 'You have a new message',
+      notificationDetails,
+    );
+  }
+  
+  /// Handle notification tap
+  static void _handleNotificationTap(RemoteMessage message) {
+    // Handle navigation based on notification data
+    final data = message.data;
+    if (data.containsKey('screen')) {
+      // Navigate to specific screen
+      print('Navigate to: ${data['screen']}');
     }
-  }
-  
-  /// Schedule daily guidance notification
-  static Future<void> scheduleDailyGuidance({
-    required User user,
-    required int hour,
-    required int minute,
-  }) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'daily_guidance',
-      'Daily Guidance',
-      channelDescription: 'Your daily cosmic guidance',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-      color: Color(0xFFFFDD12), // Brand yellow
-    );
-    
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    
-    const NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-    
-    await _localNotifications.zonedSchedule(
-      1,
-      'Your Daily Secret is Ready! 🔮',
-      'Discover your cosmic guidance for today',
-      _nextInstanceOfTime(hour, minute),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-    );
-  }
-  
-  /// Schedule special day notification
-  static Future<void> scheduleSpecialDayNotification({
-    required String title,
-    required String body,
-    required DateTime date,
-  }) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'special_day',
-      'Special Days',
-      channelDescription: 'Astrological special days and events',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-      color: Color(0xFF6E3CBC), // Brand purple
-    );
-    
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    
-    const NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-    
-    await _localNotifications.zonedSchedule(
-      date.millisecondsSinceEpoch ~/ 1000,
-      title,
-      body,
-      date,
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-    );
-  }
-  
-  /// Schedule community notification
-  static Future<void> scheduleCommunityNotification({
-    required String title,
-    required String body,
-    required DateTime date,
-  }) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'community',
-      'Community',
-      channelDescription: 'Community updates and connections',
-      importance: Importance.medium,
-      priority: Priority.medium,
-      icon: '@mipmap/ic_launcher',
-      color: Color(0xFF3B82F6), // Blue
-    );
-    
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    
-    const NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-    
-    await _localNotifications.zonedSchedule(
-      date.millisecondsSinceEpoch ~/ 1000,
-      title,
-      body,
-      date,
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-    );
   }
   
   /// Send immediate notification
@@ -194,13 +131,11 @@ class NotificationService {
     String? payload,
   }) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'immediate',
-      'Immediate Notifications',
-      channelDescription: 'Immediate notifications and alerts',
+      'daily_secrets_channel',
+      'Daily Secrets Notifications',
+      channelDescription: 'Notifications for Daily Secrets app',
       importance: Importance.high,
       priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-      color: Color(0xFFFFDD12),
     );
     
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
@@ -209,7 +144,7 @@ class NotificationService {
       presentSound: true,
     );
     
-    const NotificationDetails details = NotificationDetails(
+    const NotificationDetails notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );
@@ -218,7 +153,7 @@ class NotificationService {
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title,
       body,
-      details,
+      notificationDetails,
       payload: payload,
     );
   }
@@ -237,184 +172,4 @@ class NotificationService {
   static Future<List<PendingNotificationRequest>> getPendingNotifications() async {
     return await _localNotifications.pendingNotificationRequests();
   }
-  
-  /// Handle notification tap
-  static void _onNotificationTapped(NotificationResponse response) {
-    // Handle notification tap based on payload
-    final payload = response.payload;
-    if (payload != null) {
-      _handleNotificationPayload(payload);
-    }
-  }
-  
-  /// Handle foreground message
-  static void _handleForegroundMessage(RemoteMessage message) {
-    // Show local notification for foreground messages
-    sendImmediateNotification(
-      title: message.notification?.title ?? 'Daily Secrets',
-      body: message.notification?.body ?? 'New message',
-      payload: message.data.toString(),
-    );
-  }
-  
-  /// Handle background message
-  static void _handleBackgroundMessage(RemoteMessage message) {
-    // Handle background message
-    _handleNotificationPayload(message.data.toString());
-  }
-  
-  /// Handle notification payload
-  static void _handleNotificationPayload(String payload) {
-    try {
-      final data = jsonDecode(payload);
-      final type = data['type'] as String?;
-      
-      switch (type) {
-        case 'daily_guidance':
-          // Navigate to home screen
-          break;
-        case 'community':
-          // Navigate to community screen
-          break;
-        case 'compatibility':
-          // Navigate to compatibility screen
-          break;
-        case 'dreams':
-          // Navigate to dreams screen
-          break;
-        default:
-          // Navigate to home screen
-          break;
-      }
-    } catch (e) {
-      // Handle error
-    }
-  }
-  
-  /// Save FCM token
-  static Future<void> _saveFCMToken(String? token) async {
-    if (token != null) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('fcm_token', token);
-    }
-  }
-  
-  /// Get FCM token
-  static Future<String?> getFCMToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('fcm_token');
-  }
-  
-  /// Schedule personalized notifications based on user preferences
-  static Future<void> schedulePersonalizedNotifications(User user) async {
-    // Daily guidance at user's preferred time
-    await scheduleDailyGuidance(
-      user: user,
-      hour: 7, // Default 7 AM
-      minute: 0,
-    );
-    
-    // Special day notifications
-    await scheduleSpecialDayNotification(
-      title: 'Special Cosmic Day! ✨',
-      body: 'Today holds special astrological significance for you',
-      date: DateTime.now().add(const Duration(days: 1)),
-    );
-    
-    // Community notifications
-    await scheduleCommunityNotification(
-      title: 'New Connection! 👥',
-      body: 'Someone wants to connect with you',
-      date: DateTime.now().add(const Duration(hours: 2)),
-    );
-  }
-  
-  /// Create notification channels (Android)
-  static Future<void> createNotificationChannels() async {
-    const AndroidNotificationChannel dailyChannel = AndroidNotificationChannel(
-      'daily_guidance',
-      'Daily Guidance',
-      description: 'Your daily cosmic guidance',
-      importance: Importance.high,
-    );
-    
-    const AndroidNotificationChannel specialChannel = AndroidNotificationChannel(
-      'special_day',
-      'Special Days',
-      description: 'Astrological special days and events',
-      importance: Importance.high,
-    );
-    
-    const AndroidNotificationChannel communityChannel = AndroidNotificationChannel(
-      'community',
-      'Community',
-      description: 'Community updates and connections',
-      importance: Importance.medium,
-    );
-    
-    const AndroidNotificationChannel immediateChannel = AndroidNotificationChannel(
-      'immediate',
-      'Immediate Notifications',
-      description: 'Immediate notifications and alerts',
-      importance: Importance.high,
-    );
-    
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(dailyChannel);
-    
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(specialChannel);
-    
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(communityChannel);
-    
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(immediateChannel);
-  }
-  
-  /// Get notification settings
-  static Future<Map<String, bool>> getNotificationSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    return {
-      'daily_guidance': prefs.getBool('notify_daily_guidance') ?? true,
-      'special_days': prefs.getBool('notify_special_days') ?? true,
-      'community': prefs.getBool('notify_community') ?? true,
-      'compatibility': prefs.getBool('notify_compatibility') ?? false,
-      'dreams': prefs.getBool('notify_dreams') ?? false,
-    };
-  }
-  
-  /// Update notification settings
-  static Future<void> updateNotificationSettings(Map<String, bool> settings) async {
-    final prefs = await SharedPreferences.getInstance();
-    for (final entry in settings.entries) {
-      await prefs.setBool('notify_${entry.key}', entry.value);
-    }
-  }
-  
-  /// Send test notification
-  static Future<void> sendTestNotification() async {
-    await sendImmediateNotification(
-      title: 'Test Notification 🔔',
-      body: 'This is a test notification from Daily Secrets',
-      payload: jsonEncode({'type': 'test'}),
-    );
-  }
 }
-
-/// Helper function to calculate next instance of time
-TZDateTime _nextInstanceOfTime(int hour, int minute) {
-  final now = TZDateTime.now(local);
-  var scheduledDate = TZDateTime(local, now.year, now.month, now.day, hour, minute);
-  
-  if (scheduledDate.isBefore(now)) {
-    scheduledDate = scheduledDate.add(const Duration(days: 1));
-  }
-  
-  return scheduledDate;
-}
-

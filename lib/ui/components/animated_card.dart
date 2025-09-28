@@ -376,3 +376,4 @@ class _ParallaxCardState extends State<ParallaxCard> {
   }
 }
 
+

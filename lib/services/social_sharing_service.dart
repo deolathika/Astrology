@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 /// Social Sharing Service for WhatsApp, Instagram, and other platforms
 class SocialSharingService {
   
-  /// Share to WhatsApp
+  /// Share to WhatsApp with enhanced features
   static Future<void> shareToWhatsApp({
     required String text,
     String? imagePath,
@@ -485,4 +485,5 @@ class ShareOptions {
     this.customData,
   });
 }
+
 

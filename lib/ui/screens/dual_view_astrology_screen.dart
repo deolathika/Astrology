@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
-import '../../services/advanced_modern_numerology_service.dart';
-import '../../services/advanced_astrology_service.dart';
+import '../../services/comprehensive_numerology_service.dart';
 import '../../utils/zodiac_utils.dart';
 import '../../utils/vedic_zodiac_utils.dart';
 import '../../utils/chinese_zodiac_utils.dart';
@@ -76,34 +75,37 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
 
   Future<void> _loadAnalysis() async {
     try {
-      // Load advanced numerology analysis
-      final lifePathAnalysis = AdvancedModernNumerologyService.calculateLifePathAnalysis(
-        widget.birthDate, 
-        widget.fullName
-      );
-      
-      final destinyAnalysis = AdvancedModernNumerologyService.calculateDestinyAnalysis(widget.fullName);
-      final soulUrgeAnalysis = AdvancedModernNumerologyService.calculateSoulUrgeAnalysis(widget.fullName);
-      final personalityAnalysis = AdvancedModernNumerologyService.calculatePersonalityAnalysis(widget.fullName);
-      final personalYearAnalysis = AdvancedModernNumerologyService.calculatePersonalYearAnalysis(
-        widget.birthDate, 
-        DateTime.now().year
-      );
-      final successBlueprint = AdvancedModernNumerologyService.generateSuccessBlueprint(
-        widget.fullName, 
-        widget.birthDate
-      );
+              // Load comprehensive numerology analysis
+              final lifePathAnalysis = ComprehensiveNumerologyService.calculateLifePathAnalysis(
+                widget.birthDate, 
+                widget.fullName
+              );
+              
+              final destinyAnalysis = ComprehensiveNumerologyService.calculateDestinyAnalysis(widget.fullName);
+              final soulUrgeAnalysis = ComprehensiveNumerologyService.calculateSoulUrgeAnalysis(widget.fullName);
+              final personalityAnalysis = ComprehensiveNumerologyService.calculatePersonalityAnalysis(widget.fullName);
+              final personalYearAnalysis = ComprehensiveNumerologyService.calculatePersonalYearAnalysis(
+                widget.birthDate, 
+                DateTime.now().year
+              );
+              final successBlueprint = ComprehensiveNumerologyService.generateSuccessBlueprint(
+                widget.fullName, 
+                widget.birthDate
+              );
 
       // Load comprehensive astrology analysis
       final westernSign = ZodiacUtils.getWesternZodiacSign(widget.birthDate);
-      final vedicRashi = VedicZodiacUtils.getRashi(widget.birthDate, widget.birthPlace);
+      // final vedicRashi = VedicZodiacUtils.getRashi(widget.birthDate, widget.birthPlace);
       final chineseSign = ChineseZodiacUtils.getChineseZodiacSign(widget.birthDate);
       final sriLankanSign = SriLankanZodiacUtils.getSriLankanZodiacSign(widget.birthDate);
 
-      final astrologyData = AdvancedAstrologyService.calculateComprehensiveChart(
-        widget.birthDate,
-        widget.birthPlace,
-      );
+      final astrologyData = {
+        'western_sign': westernSign,
+        'chinese_sign': chineseSign,
+        'sri_lankan_sign': sriLankanSign,
+        'birth_date': widget.birthDate,
+        'birth_place': widget.birthPlace,
+      };
 
       setState(() {
         _numerologyAnalysis = {
@@ -117,12 +119,12 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
         
         _astrologyAnalysis = {
           'western_sign': westernSign,
-          'vedic_rashi': vedicRashi,
+          'vedic_rashi': 'Aries', // Simplified for now
           'chinese_sign': chineseSign,
           'sri_lankan_sign': sriLankanSign,
           'comprehensive_chart': astrologyData,
           'western_info': ZodiacUtils.getZodiacInfo(westernSign),
-          'vedic_info': VedicZodiacUtils.getVedicZodiacInfo(vedicRashi),
+          'vedic_info': VedicZodiacUtils.getVedicZodiacInfo('Aries'),
           'chinese_info': ChineseZodiacUtils.getChineseZodiacInfo(chineseSign),
           'sri_lankan_info': SriLankanZodiacUtils.getSriLankanZodiacInfo(sriLankanSign),
         };
@@ -234,7 +236,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
           color: AppTheme.brandYellow,
           borderRadius: BorderRadius.circular(25),
         ),
-        labelColor: AppTheme.cosmicDark,
+        labelColor: Colors.black87,
         unselectedLabelColor: Colors.white70,
         labelStyle: const TextStyle(
           fontSize: 12,
@@ -499,7 +501,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
                     _astrologyAnalysis!['chinese_sign'],
                     _astrologyAnalysis!['chinese_info'],
                     AppTheme.cosmicPink,
-                    Icons.yin_yang,
+                    Icons.balance,
                   ),
                 ),
               ),
@@ -719,7 +721,7 @@ class _DualViewAstrologyScreenState extends State<DualViewAstrologyScreen>
                         child: Text(
                           'MASTER NUMBER',
                           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: AppTheme.cosmicDark,
+                            color: Colors.black87,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

@@ -57,7 +57,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
               Text(
                 'Profile Required',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppTheme.cosmicDark,
+                  color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -65,7 +65,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
               Text(
                 'Please complete your profile to view Chinese astrology insights.',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.cosmicDark.withOpacity(0.7),
+                  color: Colors.black87.withOpacity(0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -157,7 +157,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
                       Text(
                         'Chinese Zodiac Animal',
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: AppTheme.cosmicDark,
+                          color: Colors.black87,
                         ),
                       ),
                       Text(
@@ -171,7 +171,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
                         Text(
                           chineseInfo['chineseName'],
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppTheme.cosmicDark.withOpacity(0.7),
+                            color: Colors.black87.withOpacity(0.7),
                             fontStyle: FontStyle.italic,
                           ),
                         ),
@@ -204,7 +204,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
                 child: Text(
                   chineseInfo['description'] ?? 'Chinese zodiac information',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                     fontStyle: FontStyle.italic,
                   ),
                   textAlign: TextAlign.center,
@@ -248,7 +248,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
                   'Five Elements (Wu Xing)',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -327,7 +327,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
                   'Personality Traits',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -347,7 +347,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
               child: Text(
                 chineseInfo['personality'] ?? 'Personality information',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.cosmicDark,
+                  color: Colors.black87,
                   fontStyle: FontStyle.italic,
                 ),
                 textAlign: TextAlign.center,
@@ -392,7 +392,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
                   'Lucky Elements',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -460,7 +460,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
                   'Career & Compatibility',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.cosmicDark,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -507,7 +507,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
           child: Text(
             traits.join(', '),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
             ),
           ),
         ),
@@ -535,7 +535,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
           Text(
             items.join(', '),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
             ),
             textAlign: TextAlign.center,
           ),
@@ -564,7 +564,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
           Text(
             matches.join(', '),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
             ),
             textAlign: TextAlign.center,
           ),
@@ -585,7 +585,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -593,7 +593,7 @@ class _ChineseZodiacScreenState extends State<ChineseZodiacScreen> {
           Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.cosmicDark,
+              color: Colors.black87,
               fontWeight: FontWeight.bold,
             ),
           ),

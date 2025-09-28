@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../models/user.dart';
 import '../../services/database_service.dart';
+import '../../services/translation_service.dart';
 import '../theme/app_theme.dart';
+import '../components/location_selector.dart';
+import '../../services/location_service.dart';
+import 'enhanced_home_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -19,6 +23,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   bool _isLoading = false;
+  String? _selectedCountry;
+  String? _selectedCity;
+  String _currentLanguage = 'en';
 
   @override
   void initState() {
@@ -111,6 +118,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
 
     try {
+      // Get location data if available
+      String placeOfBirth = _placeOfBirthController.text.trim();
+      if (_selectedCountry != null && _selectedCity != null) {
+        final locationData = LocationService.getLocationData(_selectedCountry!, _selectedCity!);
+        placeOfBirth = '${_selectedCity}, ${_selectedCountry}';
+      }
+
       final user = User(
         fullName: _fullNameController.text.trim(),
         dateOfBirth: _selectedDate!,
@@ -123,7 +137,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 _selectedTime!.minute,
               )
             : null,
-        placeOfBirth: _placeOfBirthController.text.trim(),
+        placeOfBirth: placeOfBirth,
       );
 
       await DatabaseService.saveUser(user);
@@ -135,7 +149,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context);
+        // Navigate to the main app instead of just popping
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const EnhancedHomeScreen(),
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -162,23 +181,96 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     super.dispose();
   }
 
+  Widget _buildTranslationBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.electricViolet.withOpacity(0.1),
+            AppTheme.cosmicPurple.withOpacity(0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.electricViolet.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.translate, color: AppTheme.electricViolet, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            TranslationService.translate('language'),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppTheme.electricViolet,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+          DropdownButton<String>(
+            value: _currentLanguage,
+            dropdownColor: AppTheme.cosmicNavy,
+            style: TextStyle(
+              color: AppTheme.starlightWhite,
+              fontSize: 14,
+            ),
+            underline: Container(),
+            icon: Icon(Icons.keyboard_arrow_down, color: AppTheme.electricViolet),
+            items: [
+              DropdownMenuItem(
+                value: 'en',
+                child: Text('English', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+              DropdownMenuItem(
+                value: 'si',
+                child: Text('සිංහල', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+              DropdownMenuItem(
+                value: 'ta',
+                child: Text('தமிழ்', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+              DropdownMenuItem(
+                value: 'hi',
+                child: Text('हिन्दी', style: TextStyle(color: AppTheme.starlightWhite)),
+              ),
+            ],
+            onChanged: (String? newLanguage) {
+              if (newLanguage != null) {
+                setState(() {
+                  _currentLanguage = newLanguage;
+                });
+                TranslationService.setLanguage(newLanguage);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.cream,
       appBar: AppBar(
-        title: const Text('Your Profile'),
+        title: Text(TranslationService.translate('profile')),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 100), // Added bottom padding
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                _buildTranslationBar(),
+                const SizedBox(height: 20),
                 // Header Card
                 Container(
                   width: double.infinity,
@@ -236,7 +328,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         'Personal Information',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w700,
-                          color: AppTheme.cosmicDark,
+                          color: Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -244,11 +336,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       // Full Name Field
                       TextFormField(
                         controller: _fullNameController,
+                        style: const TextStyle(color: Colors.black87),
                         decoration: const InputDecoration(
                           labelText: 'Full Name *',
                           hintText: 'Enter your full name',
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.person_outline),
+                          labelStyle: TextStyle(color: Colors.black87),
+                          hintStyle: TextStyle(color: Colors.grey),
                         ),
                         validator: _validateFullName,
                         textCapitalization: TextCapitalization.words,
@@ -273,7 +368,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 : 'Select date of birth',
                             style: TextStyle(
                               color: _selectedDate != null 
-                                  ? AppTheme.cosmicDark 
+                                  ? Colors.black87 
                                   : Colors.grey[600],
                             ),
                           ),
@@ -296,7 +391,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 : 'Select time of birth (optional)',
                             style: TextStyle(
                               color: _selectedTime != null 
-                                  ? AppTheme.cosmicDark 
+                                  ? Colors.black87 
                                   : Colors.grey[600],
                             ),
                           ),
@@ -307,17 +402,38 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       // Place of Birth Field
                       TextFormField(
                         controller: _placeOfBirthController,
+                        style: const TextStyle(color: Colors.black87),
                         decoration: const InputDecoration(
                           labelText: 'Place of Birth *',
                           hintText: 'Enter your place of birth',
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.location_on_outlined),
+                          labelStyle: TextStyle(color: Colors.black87),
+                          hintStyle: TextStyle(color: Colors.grey),
                         ),
                         validator: _validatePlaceOfBirth,
                         textCapitalization: TextCapitalization.words,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
                         ],
+                      ),
+                      const SizedBox(height: 24),
+                      
+                      // Location Selector
+                      Container(
+                        constraints: const BoxConstraints(
+                          maxHeight: 200, // Limit height to prevent overflow
+                        ),
+                        child: LocationSelector(
+                          selectedCountry: _selectedCountry,
+                          selectedCity: _selectedCity,
+                          onLocationChanged: (String country, String city) {
+                            setState(() {
+                              _selectedCountry = country;
+                              _selectedCity = city;
+                            });
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -360,6 +476,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 }
+
 
 
 
