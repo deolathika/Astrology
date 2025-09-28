@@ -877,14 +877,13 @@ class _SimpleCosmicHomeScreenState extends State<SimpleCosmicHomeScreen> with Ti
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem(Icons.home, TranslationService.translate('home'), true),
-          _buildNavItem(Icons.people, TranslationService.translate('community'), false),
-          _buildNavItem(Icons.favorite, TranslationService.translate('compatibility'), false),
-          _buildNavItem(Icons.nights_stay, TranslationService.translate('dreams'), false),
-          _buildNavItem(Icons.person, TranslationService.translate('profile'), false),
-          _buildNavItem(Icons.settings, TranslationService.translate('settings'), false),
+          _buildNavItem(Icons.home, 'Home', true),
+          _buildNavItem(Icons.people, 'Community', false),
+          _buildNavItem(Icons.favorite, 'Compatibility', false),
+          _buildNavItem(Icons.nights_stay, 'Dreams', false),
+          _buildNavItem(Icons.settings, 'Settings', false),
         ],
       ),
     );
