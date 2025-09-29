@@ -9,10 +9,27 @@ import { useUser } from '@/hooks/use-user'
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
+  const [userProfile, setUserProfile] = useState(null)
   const { language, setLanguage } = useTranslation()
   const { user, loadUser } = useUser()
 
   useEffect(() => {
+    // Check if user has completed onboarding
+    const onboardingComplete = localStorage.getItem('daily-secrets-onboarding-complete')
+    const profile = localStorage.getItem('daily-secrets-profile')
+    
+    if (!onboardingComplete) {
+      // Redirect to onboarding if not completed
+      window.location.href = '/onboarding'
+      return
+    }
+
+    if (profile) {
+      const parsedProfile = JSON.parse(profile)
+      setUserProfile(parsedProfile)
+      setLanguage(parsedProfile.language || 'en')
+    }
+
     // Simulate loading time for cosmic journey
     const timer = setTimeout(() => {
       setIsLoading(false)
@@ -22,7 +39,7 @@ export default function HomePage() {
     loadUser()
 
     return () => clearTimeout(timer)
-  }, [loadUser])
+  }, [loadUser, setLanguage])
 
   if (isLoading) {
     return <LoadingScreen />
@@ -38,7 +55,7 @@ export default function HomePage() {
         className="min-h-screen"
       >
         <CosmicHomeScreen 
-          user={user}
+          user={userProfile || user}
           language={language}
           onLanguageChange={setLanguage}
         />

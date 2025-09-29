@@ -1,24 +1,28 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Home, Users, Heart, Moon, Settings } from 'lucide-react'
+import { Home, Users, Heart, Moon, Settings, User } from 'lucide-react'
 import { useState } from 'react'
 
 const navigationItems = [
-  { icon: Home, label: 'Home', active: true },
-  { icon: Users, label: 'Community', active: false },
-  { icon: Heart, label: 'Compatibility', active: false },
-  { icon: Moon, label: 'Dreams', active: false },
-  { icon: Settings, label: 'Settings', active: false },
+  { icon: Home, label: 'Home', active: true, route: '/' },
+  { icon: Users, label: 'Community', active: false, route: '/community' },
+  { icon: Heart, label: 'Compatibility', active: false, route: '/compatibility' },
+  { icon: Moon, label: 'Dreams', active: false, route: '/dreams' },
+  { icon: User, label: 'Profile', active: false, route: '/profile' },
+  { icon: Settings, label: 'Settings', active: false, route: '/settings' },
 ]
 
 export function CosmicNavigation() {
   const [activeItem, setActiveItem] = useState('Home')
 
-  const handleNavigation = (label: string) => {
+  const handleNavigation = (label: string, route: string) => {
     setActiveItem(label)
-    // Add navigation logic here
-    console.log(`Navigating to: ${label}`)
+    // Navigate to the route
+    if (typeof window !== 'undefined') {
+      window.location.href = route
+    }
+    console.log(`Navigating to: ${label} (${route})`)
   }
 
   return (
@@ -37,7 +41,7 @@ export function CosmicNavigation() {
             return (
               <motion.button
                 key={item.label}
-                onClick={() => handleNavigation(item.label)}
+                onClick={() => handleNavigation(item.label, item.route)}
                 className={`flex flex-col items-center space-y-1 p-3 rounded-xl transition-all duration-300 ${
                   isActive 
                     ? 'bg-electric-violet/20 text-electric-violet' 
