@@ -1,58 +1,71 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { 
-  Home, 
-  Users, 
-  Heart, 
-  Moon, 
-  Settings, 
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Home,
   User,
+  Heart,
+  Moon,
   Star,
+  Settings,
+  Search,
+  Plus,
+  Calendar,
+  MessageCircle,
+  Share2,
+  Bell,
+  Shield,
+  Zap,
+  Sparkles,
+  Calculator,
+  Users,
+  TrendingUp,
+  Filter,
   HelpCircle,
   Info,
-  MessageCircle,
-  FileText,
-  Shield,
-  CreditCard,
-  Calendar,
-  Search
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
-import { useState } from 'react'
 
-const mainNavigationItems = [
-  { icon: Home, label: 'Home', active: true, route: '/' },
-  { icon: Users, label: 'Community', active: false, route: '/community' },
-  { icon: Heart, label: 'Compatibility', active: false, route: '/compatibility' },
-  { icon: Moon, label: 'Dreams', active: false, route: '/dreams' },
-  { icon: User, label: 'Profile', active: false, route: '/profile' },
-]
+interface NavigationItem {
+  label: string
+  route: string
+  icon: React.ComponentType<any>
+  description?: string
+}
 
-const additionalPages = [
-  { icon: Star, label: 'Premium', route: '/premium' },
-  { icon: Users, label: 'Experts', route: '/experts' },
-  { icon: HelpCircle, label: 'FAQ', route: '/faq' },
-  { icon: Info, label: 'About', route: '/about' },
-  { icon: MessageCircle, label: 'Contact', route: '/contact' },
-  { icon: Settings, label: 'Settings', route: '/settings' },
-]
+interface ComprehensiveNavigationProps {
+  activeItem?: string
+  onNavigate?: (route: string) => void
+}
 
-const legalPages = [
-  { icon: FileText, label: 'Terms', route: '/legal/terms' },
-  { icon: Shield, label: 'Privacy', route: '/legal/privacy' },
-  { icon: CreditCard, label: 'Billing', route: '/billing' },
-]
-
-export function ComprehensiveNavigation() {
-  const [activeItem, setActiveItem] = useState('Home')
+export function ComprehensiveNavigation({ 
+  activeItem = 'Home', 
+  onNavigate 
+}: ComprehensiveNavigationProps) {
   const [showMore, setShowMore] = useState(false)
 
+  const mainNavigation: NavigationItem[] = [
+    { label: 'Home', route: '/', icon: Home, description: 'Your cosmic dashboard' },
+    { label: 'Profile', route: '/profile', icon: User, description: 'Your cosmic profile' },
+    { label: 'Today', route: '/today', icon: Star, description: 'Daily guidance' },
+    { label: 'Dreams', route: '/dreams', icon: Moon, description: 'Dream journal' },
+    { label: 'Community', route: '/community', icon: Users, description: 'Connect with others' },
+    { label: 'Settings', route: '/settings', icon: Settings, description: 'App preferences' }
+  ]
+
+  const additionalPages: NavigationItem[] = [
+    { label: 'Compatibility', route: '/compatibility', icon: Heart, description: 'Relationship insights' },
+    { label: 'Experts', route: '/experts', icon: Star, description: 'Consult with experts' },
+    { label: 'Premium', route: '/premium', icon: Zap, description: 'Unlock premium features' },
+    { label: 'FAQ', route: '/faq', icon: HelpCircle, description: 'Frequently asked questions' },
+    { label: 'Contact', route: '/contact', icon: MessageCircle, description: 'Get in touch' },
+    { label: 'About', route: '/about', icon: Info, description: 'Learn about the app' }
+  ]
+
   const handleNavigation = (label: string, route: string) => {
-    setActiveItem(label)
-    if (typeof window !== 'undefined') {
-      window.location.href = route
-    }
-    `)
+    onNavigate?.(route)
   }
 
   return (
@@ -60,12 +73,12 @@ export function ComprehensiveNavigation() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed bottom-0 left-0 right-0 z-50 cosmic-nav"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-cosmic-navy/95 backdrop-blur-md border-t border-electric-violet/20"
     >
-      <div className="container mx-auto px-4 py-2">
+      <div className="max-w-md mx-auto px-4 py-2">
         {/* Main Navigation */}
-        <div className="flex items-center justify-around mb-2">
-          {mainNavigationItems.map((item, index) => {
+        <div className="flex items-center justify-between">
+          {mainNavigation.map((item, index) => {
             const Icon = item.icon
             const isActive = activeItem === item.label
             
@@ -92,7 +105,6 @@ export function ComprehensiveNavigation() {
                     className="w-1 h-1 bg-electric-violet rounded-full"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
                   />
                 )}
               </motion.button>
@@ -124,52 +136,42 @@ export function ComprehensiveNavigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="cosmic-card mb-2"
+            transition={{ duration: 0.3 }}
+            className="mt-4 border-t border-electric-violet/20 pt-4"
           >
-            <div className="grid grid-cols-3 gap-2 p-4">
-              {additionalPages.map((page, index) => {
-                const Icon = page.icon
+            <div className="grid grid-cols-2 gap-2">
+              {additionalPages.map((item, index) => {
+                const Icon = item.icon
+                const isActive = activeItem === item.label
+                
                 return (
                   <motion.button
-                    key={page.label}
-                    onClick={() => handleNavigation(page.label, page.route)}
-                    className="flex flex-col items-center space-y-1 p-2 rounded-lg hover:bg-electric-violet/10 transition-all"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    key={item.label}
+                    onClick={() => {
+                      handleNavigation(item.label, item.route)
+                      setShowMore(false)
+                    }}
+                    className={`flex items-center space-x-2 p-3 rounded-lg transition-all duration-300 ${
+                      isActive 
+                        ? 'bg-electric-violet/20 text-electric-violet' 
+                        : 'text-cosmic-silver hover:text-electric-violet hover:bg-electric-violet/10'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    <Icon className="w-5 h-5 text-electric-violet" />
-                    <span className="text-xs text-stellar-gray-light">{page.label}</span>
+                    <Icon className="w-4 h-4" />
+                    <div className="text-left">
+                      <div className="text-sm font-medium">{item.label}</div>
+                      {item.description && (
+                        <div className="text-xs text-cosmic-silver/70">{item.description}</div>
+                      )}
+                    </div>
                   </motion.button>
                 )
               })}
-            </div>
-            
-            {/* Legal Pages */}
-            <div className="border-t border-electric-violet/20 p-4">
-              <div className="text-xs text-stellar-gray-light mb-2">Legal & Support</div>
-              <div className="flex space-x-4">
-                {legalPages.map((page, index) => {
-                  const Icon = page.icon
-                  return (
-                    <motion.button
-                      key={page.label}
-                      onClick={() => handleNavigation(page.label, page.route)}
-                      className="flex items-center space-x-2 text-xs text-stellar-gray-light hover:text-electric-violet transition-all"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{page.label}</span>
-                    </motion.button>
-                  )
-                })}
-              </div>
             </div>
           </motion.div>
         )}

@@ -185,10 +185,9 @@ function getMoonPhase(date: Date): string {
   return phases[phaseIndex]
 }
 
-function getPlanetaryHours(date: Date, latitude: number, longitude: number): string[] {
+function getPlanetaryHours(date: Date): string[] {
   // Simplified planetary hours
   const hours = ['Sun', 'Venus', 'Mercury', 'Moon', 'Saturn', 'Jupiter', 'Mars']
-  const hour = date.getHours()
   const dayOfWeek = date.getDay()
   const startIndex = dayOfWeek % 7
   return hours.slice(startIndex).concat(hours.slice(0, startIndex))

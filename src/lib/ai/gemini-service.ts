@@ -52,7 +52,6 @@ export class GeminiService {
         timestamp: new Date()
       }
     } catch (error) {
-      console.error('Gemini API error:', error)
       return this.getOfflineContent(request)
     }
   }
@@ -73,7 +72,6 @@ export class GeminiService {
         timestamp: new Date()
       }
     } catch (error) {
-      console.error('Gemini API error:', error)
       return this.getOfflineContent(request)
     }
   }
@@ -94,7 +92,6 @@ export class GeminiService {
         timestamp: new Date()
       }
     } catch (error) {
-      console.error('Gemini API error:', error)
       return this.getOfflineContent(request)
     }
   }

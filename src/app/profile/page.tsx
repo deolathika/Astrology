@@ -1,10 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUser } from '@/components/user-provider'
 import { useTranslation } from '@/components/translation-provider'
-import { Clock, Globe, Lock, User, Share2, Settings, Sun, Moon, Star, Download, Trash2, Save, X, Edit3 } from 'lucide-react'
 interface CosmicProfileProps {
   user?: any
 }

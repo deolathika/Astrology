@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { EyeOff, Unlock, AlertTriangle, Shield, Database, Download, Trash2, Lock, CheckCircle } from 'lucide-react'
 const privacySettings = [
   {
     id: 'profile_visibility',

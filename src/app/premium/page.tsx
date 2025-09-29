@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Shield, MessageCircle, Calendar, Gift, Crown, Star, Zap, Check, X, Users, CreditCard } from 'lucide-react'
 const subscriptionPlans = [
   {
     id: 'free',

@@ -2,8 +2,6 @@
 
 import { Component, ReactNode } from 'react'
 import { motion } from 'framer-motion'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
-
 interface Props {
   children: ReactNode
   fallback?: ReactNode
@@ -25,8 +23,7 @@ export class OptimizedErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: any) {
-    console.error('Error caught by boundary:', error, errorInfo)
-  }
+    }
 
   handleRetry = () => {
     this.setState({ hasError: false, error: undefined })

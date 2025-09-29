@@ -1,7 +1,5 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect } from 'react'
-
 interface User {
   id?: string
   fullName?: string
@@ -41,8 +39,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setUser(JSON.parse(savedUser))
       }
     } catch (error) {
-      console.error('Error loading user:', error)
-    }
+      }
   }
 
   const saveUser = (userData: User) => {
@@ -50,8 +47,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setUser(userData)
       localStorage.setItem('daily-secrets-user', JSON.stringify(userData))
     } catch (error) {
-      console.error('Error saving user:', error)
-    }
+      }
   }
 
   const clearUser = () => {
@@ -59,8 +55,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setUser(null)
       localStorage.removeItem('daily-secrets-user')
     } catch (error) {
-      console.error('Error clearing user:', error)
-    }
+      }
   }
 
   useEffect(() => {

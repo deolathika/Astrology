@@ -1,18 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Sparkles, 
-  Heart, 
-  Star, 
-  Share2, 
-  ThumbsUp, 
-  Smile, 
-  Heart as HeartIcon,
-  ChevronDown,
-  ChevronUp
-} from 'lucide-react'
 import { SocialShare } from './social-share'
 
 interface TodaysSecretCardProps {

@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Settings, Palette, Bell, Globe, Shield, User, CreditCard, LogOut, HelpCircle, Info } from 'lucide-react'
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState({
     dailyGuidance: true,

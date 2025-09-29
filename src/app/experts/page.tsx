@@ -1,10 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Search, Users, Star, Calendar, MessageCircle } from 'lucide-react'
-
 const experts = [
   {
     id: 1,

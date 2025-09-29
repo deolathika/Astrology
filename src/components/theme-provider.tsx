@@ -1,7 +1,5 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect } from 'react'
-
 interface ThemeContextType {
   theme: 'light' | 'dark'
   setTheme: (theme: 'light' | 'dark') => void

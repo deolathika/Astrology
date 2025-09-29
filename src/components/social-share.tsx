@@ -5,22 +5,7 @@
  * Provides sharing functionality for cosmic content
  */
 
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Share2, 
-  X, 
-  MessageCircle, 
-  Instagram, 
-  Twitter, 
-  Facebook, 
-  Mail, 
-  Copy, 
-  Check,
-  Heart,
-  Sparkles
-} from 'lucide-react'
-
 interface SocialShareProps {
   content?: {
     title: string
@@ -128,8 +113,7 @@ export function SocialShare({ content, title, text, url, onShare }: SocialShareP
       setTimeout(() => setCopied(false), 2000)
       onShare?.('copy')
     } catch (error) {
-      console.error('Failed to copy to clipboard:', error)
-    }
+      }
   }
 
   return (

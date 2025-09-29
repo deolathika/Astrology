@@ -1,8 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { User, Star } from 'lucide-react'
-
 interface User {
   id?: string
   fullName?: string

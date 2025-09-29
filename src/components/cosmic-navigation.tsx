@@ -1,9 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Home, Users, Heart, Moon, Settings, User } from 'lucide-react'
-import { useState } from 'react'
-
 const navigationItems = [
   { icon: Home, label: 'Home', active: true, route: '/' },
   { icon: Users, label: 'Community', active: false, route: '/community' },
@@ -22,7 +19,7 @@ export function CosmicNavigation() {
     if (typeof window !== 'undefined') {
       window.location.href = route
     }
-    console.log(`Navigating to: ${label} (${route})`)
+    `)
   }
 
   return (

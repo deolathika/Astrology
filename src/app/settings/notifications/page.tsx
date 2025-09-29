@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { BellOff, Shield, Bell, Calendar, Settings } from 'lucide-react'
 const notificationTypes = [
   {
     id: 'daily_guidance',

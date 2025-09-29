@@ -1,10 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Plus, Moon, BookOpen, Calendar, Star, Sparkles, Eye, Brain, Heart } from 'lucide-react'
-
 const dreamCategories = [
   { id: 'flying', name: 'Flying', symbol: '🕊️', color: 'celestial-blue' },
   { id: 'water', name: 'Water', symbol: '🌊', color: 'stellar-teal' },

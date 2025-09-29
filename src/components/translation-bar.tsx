@@ -2,8 +2,6 @@
 
 import { motion } from 'framer-motion'
 import { Languages, ChevronDown } from 'lucide-react'
-import { useState } from 'react'
-
 interface TranslationBarProps {
   currentLanguage: string
   onLanguageChange: (language: string) => void

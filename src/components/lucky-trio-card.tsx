@@ -1,8 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Palette, Hash, Gift, HelpCircle } from 'lucide-react'
-
 interface LuckyTrioCardProps {
   user?: any
 }

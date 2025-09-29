@@ -5,18 +5,7 @@
  * Generates beautiful shareable cards for social media
  */
 
-import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Download, 
-  Share2, 
-  Heart, 
-  Sparkles, 
-  Star,
-  Moon,
-  Sun
-} from 'lucide-react'
-
 interface ShareCardProps {
   content: {
     title: string
@@ -74,8 +63,7 @@ export function ShareCard({ content, onShare, onDownload }: ShareCardProps) {
       // For now, we'll just trigger the download callback
       onDownload?.()
     } catch (error) {
-      console.error('Failed to download card:', error)
-    }
+      }
   }
 
   return (

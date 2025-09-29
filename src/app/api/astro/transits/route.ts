@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function calculateMoonPhase(date: Date) {
+function calculateMoonPhase() {
   // Simplified moon phase calculation
   const phases = [
     { name: 'New Moon', illumination: 0, ageDays: 0 },
@@ -111,7 +111,7 @@ function calculateTithi(date: Date) {
   }
 }
 
-function calculatePlanetaryHours(date: Date, latitude: number, longitude: number) {
+function calculatePlanetaryHours() {
   // Simplified planetary hours calculation
   const planets = ['Sun', 'Venus', 'Mercury', 'Moon', 'Saturn', 'Jupiter', 'Mars']
   const hours = []

@@ -5,10 +5,7 @@
  * Optimized for WhatsApp sharing with Sri Lankan context
  */
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { MessageCircle, Copy, Check, Sparkles } from 'lucide-react'
-
 interface WhatsAppShareProps {
   content: {
     title: string
@@ -69,8 +66,7 @@ ${content.description}${dateStr}${zodiacStr}${lifePathStr}
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
-      console.error('Failed to copy message:', error)
-    }
+      }
   }
 
   return (
