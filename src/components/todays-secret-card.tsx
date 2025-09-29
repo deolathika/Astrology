@@ -9,7 +9,6 @@ import {
   Share2, 
   ThumbsUp, 
   Smile, 
-  Pray, 
   Heart as HeartIcon,
   ChevronDown,
   ChevronUp
@@ -161,7 +160,7 @@ export function TodaysSecretCard({ user }: TodaysSecretCardProps) {
                     : 'bg-cosmic-navy/30 text-stellar-gray-light hover:bg-cosmic-navy/50'
                 }`}
               >
-                <Pray className="w-4 h-4" />
+                <ThumbsUp className="w-4 h-4" />
                 <span className="text-sm">{reactions.pray}</span>
               </button>
               <button
