@@ -47,8 +47,8 @@ A comprehensive astrology and numerology application built with **Next.js 14**, 
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/daily-secrets-app.git
-cd daily-secrets-app
+git clone https://github.com/deolathika/Astrology.git
+cd Astrology
 ```
 
 2. **Install dependencies**
@@ -59,7 +59,7 @@ npm install
 3. **Set up environment variables**
 ```bash
 # Copy environment template
-cp env.dev .env.local
+cp env.production.example .env.local
 
 # Edit .env.local with your API keys
 ```
