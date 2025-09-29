@@ -1,10 +1,7 @@
 'use client'
 
-// import { Analytics } from '@vercel/analytics/react'
-
 export const VercelAnalytics = () => {
   return null
-  // return <Analytics />
 }
 
 export const trackEvent = (name: string, properties?: Record<string, any>) => {
