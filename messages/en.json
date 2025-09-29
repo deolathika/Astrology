@@ -1,0 +1,113 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "continue": "Continue",
+    "skip": "Skip",
+    "done": "Done"
+  },
+  "navigation": {
+    "home": "Home",
+    "community": "Community",
+    "compatibility": "Compatibility",
+    "dreams": "Dreams",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Daily Secrets",
+    "subtitle": "Your cosmic journey begins here",
+    "dailyGuidance": "Daily Guidance",
+    "quickActions": "Quick Actions",
+    "cosmicProfile": "Cosmic Profile",
+    "zodiacSystems": "Zodiac Systems",
+    "numerology": "Numerology"
+  },
+  "settings": {
+    "title": "Settings",
+    "notifications": "Notifications",
+    "privacy": "Privacy & Security",
+    "account": "Account",
+    "appearance": "Appearance",
+    "language": "Language",
+    "about": "About"
+  },
+  "notifications": {
+    "title": "Notification Settings",
+    "dailyGuidance": "Daily Guidance",
+    "dreamAlerts": "Dream Alerts",
+    "compatibilityUpdates": "Compatibility Updates",
+    "cosmicEvents": "Cosmic Events",
+    "pushNotifications": "Push Notifications",
+    "emailNotifications": "Email Notifications",
+    "quietHours": "Quiet Hours",
+    "frequency": "Frequency"
+  },
+  "privacy": {
+    "title": "Privacy & Security",
+    "profileVisibility": "Profile Visibility",
+    "dataSharing": "Data Sharing",
+    "analytics": "Analytics",
+    "crashReports": "Crash Reports",
+    "exportData": "Export Data",
+    "deleteAccount": "Delete Account"
+  },
+  "astrology": {
+    "title": "Astrology",
+    "western": "Western",
+    "vedic": "Vedic",
+    "chinese": "Chinese",
+    "sriLankan": "Sri Lankan",
+    "sunSign": "Sun Sign",
+    "moonSign": "Moon Sign",
+    "risingSign": "Rising Sign",
+    "planets": "Planets",
+    "houses": "Houses",
+    "aspects": "Aspects"
+  },
+  "numerology": {
+    "title": "Numerology",
+    "lifePath": "Life Path",
+    "destiny": "Destiny",
+    "soulUrge": "Soul Urge",
+    "personality": "Personality",
+    "birthday": "Birthday",
+    "currentName": "Current Name",
+    "pythagorean": "Pythagorean",
+    "chaldean": "Chaldean"
+  },
+  "dreams": {
+    "title": "Dream Interpretation",
+    "recordDream": "Record Dream",
+    "interpretation": "Interpretation",
+    "symbols": "Symbols",
+    "emotionalTone": "Emotional Tone",
+    "significance": "Significance"
+  },
+  "community": {
+    "title": "Community",
+    "posts": "Posts",
+    "likes": "Likes",
+    "comments": "Comments",
+    "shares": "Shares",
+    "createPost": "Create Post"
+  },
+  "compatibility": {
+    "title": "Compatibility",
+    "checkCompatibility": "Check Compatibility",
+    "score": "Score",
+    "strengths": "Strengths",
+    "challenges": "Challenges",
+    "advice": "Advice"
+  }
+}

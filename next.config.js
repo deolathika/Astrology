@@ -136,6 +136,10 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  i18n: {
+    locales: ['en', 'si', 'ta', 'hi', 'zh'],
+    defaultLocale: 'en',
+  },
   images: {
     domains: ['localhost', 'dailysecrets.com'],
     formats: ['image/webp', 'image/avif'],

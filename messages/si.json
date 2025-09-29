@@ -1,0 +1,113 @@
+{
+  "common": {
+    "loading": "පූරණය වෙමින්...",
+    "error": "දෝෂය",
+    "success": "සාර්ථකයි",
+    "save": "සුරකින්න",
+    "cancel": "අවලංගු කරන්න",
+    "delete": "මකන්න",
+    "edit": "සංස්කරණය",
+    "close": "වසන්න",
+    "back": "ආපසු",
+    "next": "ඊළඟ",
+    "previous": "පෙර",
+    "submit": "ඉදිරිපත් කරන්න",
+    "continue": "ඉදිරියට",
+    "skip": "මඟ හරින්න",
+    "done": "අවසන්"
+  },
+  "navigation": {
+    "home": "මුල් පිටුව",
+    "community": "ප්‍රජාව",
+    "compatibility": "ගැළපුම",
+    "dreams": "සිහින",
+    "profile": "පැතිකඩ",
+    "settings": "සැකසුම්"
+  },
+  "home": {
+    "title": "දිනකට රහස්",
+    "subtitle": "ඔබේ අභ්‍යවකාශ ගමන ආරම්භ වේ",
+    "dailyGuidance": "දිනකට මගපෙන්වීම",
+    "quickActions": "ක්‍රියාවන්",
+    "cosmicProfile": "අභ්‍යවකාශ පැතිකඩ",
+    "zodiacSystems": "රාශි පද්ධති",
+    "numerology": "අංක විද්‍යාව"
+  },
+  "settings": {
+    "title": "සැකසුම්",
+    "notifications": "දැනුම්දීම්",
+    "privacy": "පෞද්ගලිකත්වය සහ ආරක්ෂාව",
+    "account": "ගිණුම",
+    "appearance": "පෙනුම",
+    "language": "භාෂාව",
+    "about": "පිළිබඳ"
+  },
+  "notifications": {
+    "title": "දැනුම්දීම් සැකසුම්",
+    "dailyGuidance": "දිනකට මගපෙන්වීම",
+    "dreamAlerts": "සිහින අනතුරු ඇඟවීම්",
+    "compatibilityUpdates": "ගැළපුම යාවත්කාලීන",
+    "cosmicEvents": "අභ්‍යවකාශ සිදුවීම්",
+    "pushNotifications": "පුෂ් දැනුම්දීම්",
+    "emailNotifications": "ඊමේල් දැනුම්දීම්",
+    "quietHours": "නිහඬ පැය",
+    "frequency": "අධික සංඛ්‍යාව"
+  },
+  "privacy": {
+    "title": "පෞද්ගලිකත්වය සහ ආරක්ෂාව",
+    "profileVisibility": "පැතිකඩ දෘශ්‍යතාව",
+    "dataSharing": "දත්ත හුවමාරුව",
+    "analytics": "විශ්ලේෂණ",
+    "crashReports": "බිඳවැටීම් වාර්තා",
+    "exportData": "දත්ත අපනයනය",
+    "deleteAccount": "ගිණුම මකන්න"
+  },
+  "astrology": {
+    "title": "ජ්‍යෝතිෂ්‍යය",
+    "western": "බටහිර",
+    "vedic": "වෛදික",
+    "chinese": "චීන",
+    "sriLankan": "ශ්‍රී ලාංකික",
+    "sunSign": "සූර්‍ය ලකුණ",
+    "moonSign": "චන්ද්‍ර ලකුණ",
+    "risingSign": "උදය ලකුණ",
+    "planets": "ග්‍රහ",
+    "houses": "ගෘහ",
+    "aspects": "දෘෂ්ටි"
+  },
+  "numerology": {
+    "title": "අංක විද්‍යාව",
+    "lifePath": "ජීවන මාර්ගය",
+    "destiny": "අදහස",
+    "soulUrge": "ආත්ම ආශාව",
+    "personality": "පෞරුෂය",
+    "birthday": "උපන් දිනය",
+    "currentName": "වර්තමාන නම",
+    "pythagorean": "පයිතගරස්",
+    "chaldean": "චල්දියන්"
+  },
+  "dreams": {
+    "title": "සිහින අර්ථකථනය",
+    "recordDream": "සිහින ලියන්න",
+    "interpretation": "අර්ථකථනය",
+    "symbols": "සංකේත",
+    "emotionalTone": "චිත්තවේගීය තානය",
+    "significance": "වැදගත්කම"
+  },
+  "community": {
+    "title": "ප්‍රජාව",
+    "posts": "පෝස්ට්",
+    "likes": "කැමති",
+    "comments": "අදහස්",
+    "shares": "බෙදාගැනීම්",
+    "createPost": "පෝස්ට් සාදන්න"
+  },
+  "compatibility": {
+    "title": "ගැළපුම",
+    "checkCompatibility": "ගැළපුම පරීක්ෂා කරන්න",
+    "score": "ලකුණු",
+    "strengths": "ශක්තිය",
+    "challenges": "අභියෝග",
+    "advice": "උපදෙස්"
+  }
+}

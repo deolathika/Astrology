@@ -73,14 +73,11 @@
     "next-pwa": "^5.6.0",
     "prisma": "^5.6.0",
     "@prisma/client": "^5.6.0",
-    "swiss-ephemeris": "^2.0.0",
-    "google-maps": "^1.0.0",
     "@googlemaps/js-api-loader": "^1.16.2",
     "dexie": "^3.2.4",
     "firebase": "^10.7.0",
     "@sentry/nextjs": "^7.77.0",
     "@vercel/analytics": "^1.1.0",
-    "web-llm": "^0.2.0",
     "@xenova/transformers": "^2.6.0"
   },
   "devDependencies": {
