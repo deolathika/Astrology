@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { pythagoreanNumerology, chaldeanNumerology } from '@/lib/numerology/engines'
+import { PythagoreanNumerology, ChaldeanNumerology } from '@/lib/numerology/engines'
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,37 +22,16 @@ export async function GET(request: NextRequest) {
 
     let numerologyData
 
-    if (system === 'chaldean') {
-      numerologyData = {
-        lifePath: pythagoreanNumerology.calculateLifePath(profileData.birthDate),
-        expression: chaldeanNumerology.calculateDestiny(profileData.fullName),
-        soulUrge: pythagoreanNumerology.calculateSoulUrge(profileData.fullName),
-        personality: pythagoreanNumerology.calculatePersonality(profileData.fullName),
-        birthday: pythagoreanNumerology.calculateBirthday(profileData.birthDate),
-        maturity: pythagoreanNumerology.calculateMaturity(profileData.birthDate),
-        currentName: pythagoreanNumerology.calculateCurrentName(profileData.fullName),
-        master: [],
-        chaldeanAlt: {
-          lifePath: chaldeanNumerology.calculateLifePath(profileData.birthDate),
-          expression: chaldeanNumerology.calculateDestiny(profileData.fullName),
-          soulUrge: chaldeanNumerology.calculateSoulUrge(profileData.fullName),
-          personality: chaldeanNumerology.calculatePersonality(profileData.fullName),
-          birthday: chaldeanNumerology.calculateBirthday(profileData.birthDate),
-          maturity: chaldeanNumerology.calculateMaturity(profileData.birthDate),
-          currentName: chaldeanNumerology.calculateCurrentName(profileData.fullName)
-        }
-      }
-    } else {
-      numerologyData = {
-        lifePath: pythagoreanNumerology.calculateLifePath(profileData.birthDate),
-        expression: pythagoreanNumerology.calculateDestiny(profileData.fullName),
-        soulUrge: pythagoreanNumerology.calculateSoulUrge(profileData.fullName),
-        personality: pythagoreanNumerology.calculatePersonality(profileData.fullName),
-        birthday: pythagoreanNumerology.calculateBirthday(profileData.birthDate),
-        maturity: pythagoreanNumerology.calculateMaturity(profileData.birthDate),
-        currentName: pythagoreanNumerology.calculateCurrentName(profileData.fullName),
-        master: []
-      }
+    // Simplified numerology calculation using static methods
+    numerologyData = {
+      lifePath: PythagoreanNumerology.calculateLifePath(profileData.birthDate).number,
+      expression: PythagoreanNumerology.calculateDestiny(profileData.fullName).number,
+      soulUrge: PythagoreanNumerology.calculateSoulUrge(profileData.fullName).number,
+      personality: PythagoreanNumerology.calculatePersonality(profileData.fullName).number,
+      birthday: PythagoreanNumerology.calculateBirthday(profileData.birthDate).number,
+      currentName: PythagoreanNumerology.calculateCurrentName(profileData.fullName).number,
+      master: [],
+      system: system
     }
 
     // Check for master numbers

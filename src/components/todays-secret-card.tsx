@@ -180,7 +180,7 @@ export function TodaysSecretCard({ user }: TodaysSecretCardProps) {
             <SocialShare
               title="Today's Secret"
               text={todaysGuidance.shareCaption}
-              url={window.location.href}
+              url={typeof window !== 'undefined' ? window.location.href : ''}
             />
           </div>
         </motion.div>

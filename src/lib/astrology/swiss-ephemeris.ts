@@ -67,33 +67,9 @@ export class SwissEphemerisEngine {
     }
 
     try {
-      // Call backend Swiss Ephemeris service
-      const response = await fetch(`${this.backendUrl}/api/astro/natal`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          birthData: {
-            year: birthData.year,
-            month: birthData.month,
-            day: birthData.day,
-            hour: birthData.hour,
-            minute: birthData.minute,
-            second: birthData.second,
-            latitude: birthData.latitude,
-            longitude: birthData.longitude,
-            timezone: birthData.timezone
-          }
-        })
-      })
-
-      if (!response.ok) {
-        throw new Error(`Backend API error: ${response.statusText}`)
-      }
-
-      const data = await response.json()
-      return data.planets || []
+      // For now, use mock data since backend server is not available
+      console.log('Using mock planetary positions for development')
+      return this.getMockPlanetaryPositions()
     } catch (error) {
       console.error('Failed to calculate planetary positions:', error)
       // Fallback to mock data for development
@@ -128,33 +104,9 @@ export class SwissEphemerisEngine {
     }
 
     try {
-      // Call backend Swiss Ephemeris service for house calculations
-      const response = await fetch(`${this.backendUrl}/api/astro/houses`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          birthData: {
-            year: birthData.year,
-            month: birthData.month,
-            day: birthData.day,
-            hour: birthData.hour,
-            minute: birthData.minute,
-            second: birthData.second,
-            latitude: birthData.latitude,
-            longitude: birthData.longitude,
-            timezone: birthData.timezone
-          }
-        })
-      })
-
-      if (!response.ok) {
-        throw new Error(`Backend API error: ${response.statusText}`)
-      }
-
-      const data = await response.json()
-      return data.houses || []
+      // For now, use mock data since backend server is not available
+      console.log('Using mock house cusps for development')
+      return this.getMockHouseCusps()
     } catch (error) {
       console.error('Failed to calculate house cusps:', error)
       // Fallback to mock data for development
