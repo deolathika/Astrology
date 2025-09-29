@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    // Get user data from localStorage or database
+    const { searchParams } = new URL(request.url)
+    const profileId = searchParams.get('profileId')
+
+    if (!profileId) {
+      return NextResponse.json(
+        { error: 'Profile ID is required' },
+        { status: 400 }
+      )
+    }
+
+    // TODO: Fetch profile data from database
     const userData = {
       fullName: 'John Doe',
       birthDate: '1990-01-01',
@@ -31,8 +41,8 @@ export async function GET(request: NextRequest) {
     const moonPhase = getMoonPhase(today)
     const planetaryHours = getPlanetaryHours(today, userData.latitude, userData.longitude)
 
-    // Generate daily guidance
-    const guidance = generateDailyGuidance({
+    // Generate complete daily guidance
+    const todayCard = generateTodayCard({
       lifePath,
       destiny,
       dailyNumber,
@@ -47,22 +57,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
-        date: today.toISOString().split('T')[0],
-        guidance,
-        numerology: {
-          lifePath,
-          destiny,
-          dailyNumber
+        today_card: todayCard,
+        share: {
+          caption: generateShareCaption(todayCard.longText, sunSign),
+          hashtags: ['#DailySecrets', '#CosmicGuidance', '#Astrology', '#Numerology']
         },
-        astrology: {
-          sunSign,
-          moonPhase,
-          planetaryHours
-        },
-        luckyNumbers: generateLuckyNumbers(dailyNumber),
-        dayRules: generateDayRules(dayOfWeek, sunSign),
-        moodFix: generateMoodFix(moonPhase, sunSign),
-        shareCaption: generateShareCaption(guidance, sunSign)
+        meta: {
+          source: 'online',
+          generated_at: today.toISOString()
+        }
       }
     })
   } catch (error) {
@@ -297,4 +300,71 @@ function generateShareCaption(guidance: string, sunSign: string): string {
 function getDayOfWeekName(dayOfWeek: number): string {
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   return days[dayOfWeek]
+}
+
+function generateTodayCard(data: any) {
+  const { lifePath, destiny, dailyNumber, sunSign, moonPhase, planetaryHours, dayOfWeek, dayOfMonth, month } = data
+  
+  return {
+    longText: generateLongText(data),
+    lucky: {
+      color: generateLuckyColor(dailyNumber),
+      number: dailyNumber,
+      object: generateLuckyObject(sunSign)
+    },
+    rules: {
+      do: generateDoRules(dayOfWeek, sunSign),
+      dont: generateDontRules(dayOfWeek, sunSign)
+    },
+    moodFix: generateMoodFixArray(moonPhase, sunSign)
+  }
+}
+
+function generateLongText(data: any): string {
+  const { lifePath, destiny, dailyNumber, sunSign, moonPhase } = data
+  
+  return `Today, the cosmic energies align in your favor as the stars weave a tapestry of opportunity and growth. Your Life Path number ${lifePath} resonates with the universal vibrations, guiding you toward your highest potential. The ${sunSign} energy in your chart brings forth new possibilities, while the ${moonPhase} illuminates your path forward. Trust in the ancient wisdom that flows through your veins, for you are a child of the cosmos, destined for greatness. The planetary influences today favor introspection and spiritual growth, while the numerological vibrations suggest a time of new beginnings and fresh perspectives. Embrace the cosmic flow and let your inner light shine brightly.`
+}
+
+function generateLuckyColor(dailyNumber: number): string {
+  const colors = [
+    'Cosmic Purple', 'Electric Blue', 'Stellar Gold', 'Nebula Pink', 'Celestial Silver'
+  ]
+  return colors[dailyNumber % colors.length]
+}
+
+function generateLuckyObject(sunSign: string): string {
+  const objects = [
+    'Crystal Sphere', 'Sacred Feather', 'Cosmic Compass', 'Stellar Amulet', 'Lunar Pendant'
+  ]
+  return objects[Math.floor(Math.random() * objects.length)]
+}
+
+function generateDoRules(dayOfWeek: number, sunSign: string): string[] {
+  const doRules = [
+    'Trust your intuition and follow your inner guidance',
+    'Take time for meditation and spiritual reflection',
+    'Express gratitude for the cosmic blessings in your life',
+    'Connect with nature and the natural rhythms of the earth'
+  ]
+  return doRules
+}
+
+function generateDontRules(dayOfWeek: number, sunSign: string): string[] {
+  const dontRules = [
+    'Make hasty decisions without consulting your higher self',
+    'Ignore the subtle signs and synchronicities around you',
+    'Dismiss the wisdom of your dreams and inner visions',
+    'Rush through important conversations or connections'
+  ]
+  return dontRules
+}
+
+function generateMoodFixArray(moonPhase: string, sunSign: string): string[] {
+  return [
+    'Take 5 deep breaths and center yourself',
+    'Listen to calming music or nature sounds',
+    'Write down three things you are grateful for',
+    'Spend 10 minutes in meditation or quiet reflection'
+  ]
 }

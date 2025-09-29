@@ -26,32 +26,45 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  profiles     UserProfile[]
+  profiles     Profile[]
   readings     AstrologyReading[]
   numerology   NumerologyReading[]
   dreams       Dream[]
   settings     UserSettings[]
   notifications Notification[]
   subscriptions Subscription[]
+  matches      Match[]    @relation("UserMatches")
+  messages     ChatMessage[]
+  purchases    Purchase[]
+  donations    Donation[]
 
   @@map("users")
 }
 
-model UserProfile {
-  id          String   @id @default(cuid())
-  userId      String
-  zodiacSign  String?
-  zodiacSystem String? @default("western")
-  lifePath    Int?
-  destiny     Int?
-  soulUrge    Int?
-  personality Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Profile {
+  id           String  @id @default(cuid())
+  userId       String
+  name         String
+  birthDate    DateTime
+  birthTime    String        // "HH:mm"
+  placeLabel   String        // "Colombo, LK"
+  lat          Float
+  lng          Float
+  tzIana       String        // "Asia/Colombo"
+  systemPref   String        // "vedic" | "western" | "chinese" | "hybrid"
+  localePref   String        // e.g. "hi-IN"
+  privacy      Json          // consent flags
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // caches
+  natalCache   Json?         // full JSON of computed chart
+  numerology   Json?         // core numbers
+  todayCache   Json?         // last today output for fast load
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("user_profiles")
+  @@map("profiles")
 }
 
 model AstrologyReading {
@@ -187,6 +200,54 @@ model CommunityPost {
   updatedAt DateTime @updatedAt
 
   @@map("community_posts")
+}
+
+model Match {
+  id       String @id @default(cuid())
+  aId      String
+  bId      String
+  score    Int
+  summary  String
+  createdAt DateTime @default(now())
+
+  @@map("matches")
+}
+
+model ChatMessage {
+  id         String @id @default(cuid())
+  fromId     String
+  toId       String
+  body       String
+  emojiOnly  Boolean @default(true)
+  queued     Boolean @default(false)  // offline queue flag
+  createdAt  DateTime @default(now())
+
+  @@map("chat_messages")
+}
+
+model Purchase {
+  id        String @id @default(cuid())
+  userId    String
+  sku       String // "rectification", "compat_report", etc.
+  amount    Int    // cents
+  status    String // "paid" | "refunded"
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("purchases")
+}
+
+model Donation {
+  id        String @id @default(cuid())
+  userId    String
+  amount    Int
+  toPool    String // pool id/label
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("donations")
 }
 
 model Analytics {

@@ -22,6 +22,9 @@ import { ZodiacSystems } from './zodiac-systems'
 import { NumerologySection } from './numerology-section'
 import { QuickActions } from './quick-actions'
 import { CosmicNavigation } from './cosmic-navigation'
+import { TodaysSecretCard } from './todays-secret-card'
+import { LuckyTrioCard } from './lucky-trio-card'
+import { DayRulesCard } from './day-rules-card'
 
 interface User {
   id?: string
@@ -77,6 +80,15 @@ export function CosmicHomeScreen({
         >
           {/* Cosmic Header */}
           <CosmicHeader user={user} />
+
+          {/* Today's Secret - Main Feature */}
+          <TodaysSecretCard user={user} />
+
+          {/* Lucky Trio */}
+          <LuckyTrioCard user={user} />
+
+          {/* Day Rules */}
+          <DayRulesCard user={user} />
 
           {/* Daily Guidance */}
           <DailyGuidance />
