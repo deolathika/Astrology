@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PythagoreanNumerology, ChaldeanNumerology } from '@/lib/numerology/engines'
+import { PythagoreanNumerology } from '@/lib/numerology/engines'
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,10 +20,8 @@ export async function GET(request: NextRequest) {
       birthDate: '1990-01-01'
     }
 
-    let numerologyData
-
     // Simplified numerology calculation using static methods
-    numerologyData = {
+    const numerologyData = {
       lifePath: PythagoreanNumerology.calculateLifePath(profileData.birthDate).number,
       expression: PythagoreanNumerology.calculateDestiny(profileData.fullName).number,
       soulUrge: PythagoreanNumerology.calculateSoulUrge(profileData.fullName).number,
