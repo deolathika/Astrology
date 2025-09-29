@@ -1,5 +1,7 @@
 'use client'
 
+import { createContext, useContext } from 'react'
+
 interface AnalyticsContextType {
   track: (event: string, properties?: Record<string, any>) => void
   identify: (userId: string, traits?: Record<string, any>) => void
