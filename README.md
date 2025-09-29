@@ -1,288 +1,242 @@
-# Daily Secrets - Real Astrology & Numerology
+# 🌟 Daily Secrets - Real Astrology & Numerology App
 
-A comprehensive astrology and numerology application with real calculations using Swiss Ephemeris and advanced mathematical algorithms.
+A comprehensive astrology and numerology application built with **Next.js 14**, **React 18**, and **TypeScript**, featuring a cosmic-themed UI with multi-language support.
 
-## 🌌 Features
+## ✨ Features
 
-### ✅ **Real Astrology Calculations**
-- **Swiss Ephemeris Integration**: Accurate planetary positions using professional-grade ephemeris
-- **Tropical & Sidereal**: Western and Vedic astrology with configurable Ayanamsha
-- **House Systems**: Placidus, Whole Sign, Equal, and Porphyry house calculations
-- **Nakshatra & Dasha**: Complete Vedic astrology with 27 Nakshatras and Vimshottari Dasha
-- **Transits**: Real-time planetary transits and current positions
-- **Moon Phases**: Accurate lunar phase calculations and Tithi
-
-### ✅ **Advanced Numerology**
-- **Life Path Analysis**: Birth date reduction with master number preservation
-- **Expression/Destiny**: Full name Pythagorean and Chaldean calculations
-- **Soul Urge & Personality**: Vowel and consonant analysis
-- **Personal Year**: Current year themes and guidance
-- **Daily Numbers**: Deterministic lucky numbers and daily guidance
-
-### ✅ **Geolocation & Timezone**
-- **Google Places API**: City search with autocomplete
-- **Timezone Resolution**: Accurate IANA timezone detection
-- **Historical DST**: Proper timezone conversion for birth dates
-- **Reverse Geocoding**: Coordinate to city conversion
-
-### ✅ **Modern UI/UX**
-- **Cosmic Theme**: Deep space colors matching app icon
+### 🌌 **Cosmic UI/UX**
+- **Deep Space Theme**: Electric violet, celestial blue, supernova gold color palette
+- **Smooth Animations**: Framer Motion powered cosmic animations
 - **Responsive Design**: Mobile-first with desktop optimization
-- **Real-time Calculations**: Live astrology and numerology updates
-- **Offline Support**: Cached calculations and graceful fallbacks
+- **Dark Mode**: Immersive cosmic experience
+
+### 🌍 **Multi-Language Support**
+- **English** - Complete translations
+- **සිංහල (Sinhala)** - Full Sinhala translations
+- **தமிழ் (Tamil)** - Complete Tamil translations
+- **हिन्दी (Hindi)** - Full Hindi translations
+- **中文 (Chinese)** - Complete Chinese translations
+
+### 🔮 **Astrology Systems**
+- **Western Zodiac** - Traditional astrology
+- **Vedic Zodiac** - Ancient Indian astrology
+- **Chinese Zodiac** - Year-based calculations
+- **Sri Lankan Zodiac** - Custom implementation
+
+### 🔢 **Numerology Features**
+- **Life Path Numbers** - Birth date calculations
+- **Destiny Numbers** - Full name analysis
+- **Soul Urge & Personality** - Vowel/consonant analysis
+- **Master Numbers** - 11, 22, 33 support
+
+### 🚀 **Modern Tech Stack**
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **Framer Motion** - Smooth animations
+- **Vercel** - Production deployment
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20+
-- Flutter 3.2+
-- Firebase CLI
-- Google Cloud Console account
+- Node.js 18+
+- npm 8+
+- Git
 
 ### Installation
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/deolathika/Astrology.git
-cd Astrology
+git clone https://github.com/yourusername/daily-secrets-app.git
+cd daily-secrets-app
 ```
 
 2. **Install dependencies**
 ```bash
-# Backend (Firebase Functions)
-cd backend/functions
 npm install
-
-# Web Frontend
-cd ../../web
-npm install
-
-# Flutter App
-cd ../daily_secrets_app
-flutter pub get
 ```
 
-3. **Environment Setup**
+3. **Set up environment variables**
 ```bash
-# Backend environment
-cp backend/functions/.env.example backend/functions/.env.local
+# Copy environment template
+cp env.dev .env.local
 
-# Web environment
-cp web/.env.example web/.env.local
+# Edit .env.local with your API keys
 ```
 
-4. **Configure API Keys**
+4. **Start development server**
 ```bash
-# Required environment variables
-GOOGLE_MAPS_API_KEY=your_google_maps_key
-GOOGLE_PLACES_API_KEY=your_google_places_key
-GOOGLE_TIMEZONE_API_KEY=your_google_timezone_key
-FIREBASE_PROJECT_ID=your_firebase_project_id
+# Development environment
+npm run dev
+
+# Or with hot reload
+npm run dev:hot
 ```
 
-### Development Commands
+## 🔧 Development
 
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server (port 8120) |
+| `npm run dev:hot` | Start with hot reload |
+| `npm run build` | Build for production |
+| `npm run build:dev` | Build for development |
+| `npm run build:prod` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run type-check` | Run TypeScript checks |
+| `npm run test` | Run tests |
+| `npm run clean` | Clean build artifacts |
+
+### Environment Configuration
+
+#### Development Environment (`.env.local`)
+```env
+NODE_ENV=development
+NEXT_PUBLIC_APP_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:8120
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+# Add your development API keys
+```
+
+#### Production Environment
+```env
+NODE_ENV=production
+NEXT_PUBLIC_APP_ENV=production
+NEXT_PUBLIC_APP_URL=https://daily-secrets-app.vercel.app
+NEXT_PUBLIC_API_URL=https://daily-secrets-api.vercel.app/api
+# Add your production API keys
+```
+
+## 🌐 Deployment
+
+### Vercel Deployment
+
+1. **Connect to Vercel**
 ```bash
-# Start development servers
-npm run dev          # Next.js web app
-npm run serve        # Firebase Functions emulator
-flutter run          # Flutter mobile app
+# Install Vercel CLI
+npm i -g vercel
 
-# Run tests
-npm test             # Backend tests
-flutter test         # Flutter tests
+# Login to Vercel
+vercel login
 
-# Build for production
-npm run build        # Web build
-flutter build web    # Flutter web build
+# Deploy
+vercel --prod
 ```
 
-## 🧪 Testing
+2. **Environment Variables**
+Set the following in Vercel dashboard:
+- `NEXT_PUBLIC_APP_ENV`
+- `NEXT_PUBLIC_APP_URL`
+- `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_OPENAI_API_KEY`
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- And other API keys
 
-### Astrology Tests
-```bash
-npm test -- --testPathPattern=astrology
-```
+### GitHub Actions
 
-**Test Fixtures:**
-- **Fixture A**: 1961-08-04 19:24 Honolulu, USA
-- **Fixture B**: 1990-01-01 12:00 New York, USA
+The project includes automated CI/CD workflows:
 
-**Tolerance Requirements:**
-- Planet longitudes: ±0.1° vs Swiss Ephemeris
-- House cusps: ±0.2° (house system dependent)
-- Ascendant/MC: ±0.2°
-
-### Numerology Tests
-```bash
-npm test -- --testPathPattern=numerology
-```
-
-**Test Cases:**
-- Life Path calculations with master numbers
-- Pythagorean vs Chaldean mappings
-- Unicode and diacritics handling
-- Edge cases and error handling
-
-## 📊 API Endpoints
-
-### Astrology
-```typescript
-POST /api/astrology-chart
-{
-  "birthDate": "1990-01-01T12:00:00Z",
-  "latitude": 40.7128,
-  "longitude": -74.0060,
-  "timezone": "America/New_York",
-  "ayanamsha": "LAHIRI"
-}
-```
-
-### Numerology
-```typescript
-POST /api/numerology
-{
-  "fullName": "John Doe",
-  "birthDate": "1990-01-01",
-  "useChaldean": false
-}
-```
-
-### Geolocation
-```typescript
-GET /api/cities?query=New York
-GET /api/timezone?latitude=40.7128&longitude=-74.0060
-```
+- **Development**: Deploys to Vercel preview on `develop` branch
+- **Production**: Deploys to Vercel production on `main` branch
 
 ## 🎨 Design System
 
 ### Cosmic Color Palette
 ```css
 /* Deep Space Colors */
---deep-space: #0B0B0E      /* Background */
---electric-violet: #7B4FFF  /* Primary accent */
---celestial-blue: #3FC5FF   /* Links & highlights */
---aurora-green: #76FF9C     /* Success states */
---supernova-gold: #FFD75A   /* Call-to-action */
---nebula-pink: #FF6EC7      /* Emotional states */
-```
+--deep-space: #0A0A0F
+--cosmic-navy: #1A1A2E
+--stellar-gray: #2D2D3A
+--nebula-dark: #16213E
 
-### Typography
-- **Primary**: Inter (UI elements)
-- **Accent**: Cormorant Garamond (quotes & headings)
+/* Electric Cosmic Colors */
+--electric-violet: #7B4FFF
+--cosmic-purple: #9D4EDD
+--stellar-pink: #FF6EC7
+--nebula-pink: #EC4899
+
+/* Celestial Colors */
+--celestial-blue: #3FC5FF
+--cosmic-cyan: #00D4FF
+--stellar-teal: #00F5FF
+--aurora-green: #76FF9C
+
+/* Supernova Colors */
+--supernova-gold: #FFD75A
+--stellar-yellow: #FFE066
+--cosmic-orange: #FF8C42
+--nebula-red: #FF4757
+```
 
 ### Components
 - **Cosmic Cards**: Glass morphism with nebula borders
 - **Cosmic Buttons**: Gradient fills with hover effects
 - **Cosmic Inputs**: Transparent backgrounds with glow effects
+- **Cosmic Navigation**: Bottom navigation with cosmic styling
 
-## 🔧 Configuration
+## 📱 Mobile Support
 
-### Astrology Settings
-```typescript
-// Ayanamsha options
-LAHIRI = 1        // Default
-KRISHNAMURTI = 5
-RAMAN = 3
+### Progressive Web App (PWA)
+- **Service Worker**: Offline functionality
+- **App Manifest**: Installable web app
+- **Push Notifications**: Web push notifications
+- **Responsive Design**: Mobile-optimized interface
 
-// House systems
-PLACIDUS = 'P'    // Default
-WHOLE_SIGN = 'W'
-EQUAL = 'E'
-PORPHYRY = 'O'
-```
-
-### Numerology Settings
-```typescript
-// Calculation methods
-PYTHAGOREAN = true   // Default
-CHALDEAN = false
-
-// Master numbers preserved
-MASTER_NUMBERS = [11, 22, 33]
-```
-
-## 📱 Mobile App (Flutter)
-
-The Flutter app provides offline access to cached calculations:
-
-```dart
-// Real astrology calculations
-final chart = await AstrologyService.calculateChart(
-  birthDate: user.birthDate,
-  latitude: user.latitude,
-  longitude: user.longitude,
-  timezone: user.timezone,
-);
-
-// Advanced numerology
-final numerology = await NumerologyService.calculateProfile(
-  fullName: user.fullName,
-  birthDate: user.birthDate,
-);
-```
-
-## 🌐 Web App (Next.js)
-
-Modern React application with real-time calculations:
-
-```tsx
-// City search with Google Places
-<CitySearch onLocationSelect={handleLocationSelect} />
-
-// Real astrology chart
-<AstrologyChart profile={userProfile} />
-
-// Numerology analysis
-<NumerologyProfile profile={userProfile} />
-```
-
-## 🚀 Deployment
-
-### Firebase Functions
-```bash
-cd backend/functions
-npm run deploy
-```
-
-### Vercel (Web)
-```bash
-cd web
-vercel deploy
-```
-
-### Flutter Web
-```bash
-cd daily_secrets_app
-flutter build web --release
-```
-
-## 📈 Performance
-
-### Benchmarks
-- **Chart Calculation**: < 2s for complete natal chart
-- **City Search**: < 500ms for autocomplete
-- **Timezone Resolution**: < 200ms for coordinates
-- **Numerology**: < 100ms for full profile
-
-### Caching
-- **Offline Support**: 3 days of cached daily guidance
-- **Service Worker**: PWA with offline fallbacks
-- **IndexedDB**: Local storage for user profiles
+### Mobile Features
+- Touch-friendly navigation
+- Swipe gestures
+- Mobile-optimized animations
+- Responsive cosmic cards
 
 ## 🔒 Security
 
-- **API Keys**: Environment variables only
+### Data Protection
+- **Environment Variables**: Secure API key management
+- **HTTPS**: All communications encrypted
 - **CORS**: Configured for production domains
-- **Rate Limiting**: Implemented on all endpoints
-- **Data Privacy**: No personal data stored permanently
+- **Rate Limiting**: API rate limiting protection
 
-## 📚 Documentation
+### Privacy
+- **No Data Storage**: No personal data stored permanently
+- **Local Storage**: User preferences only
+- **GDPR Compliance**: European data protection compliance
 
-- **API Reference**: `/docs/api.md`
-- **Astrology Math**: `/docs/astrology-math.md`
-- **Numerology Guide**: `/docs/numerology-guide.md`
-- **Deployment**: `/docs/deployment.md`
+## 🧪 Testing
+
+### Test Commands
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+### Test Coverage
+- Unit tests for components
+- Integration tests for features
+- E2E tests for user flows
+
+## 📊 Performance
+
+### Optimization
+- **Code Splitting**: Automatic route-based splitting
+- **Image Optimization**: Next.js Image component
+- **Bundle Analysis**: Webpack bundle analyzer
+- **Lighthouse**: 90+ performance score
+
+### Metrics
+- **First Contentful Paint**: < 1.5s
+- **Largest Contentful Paint**: < 2.5s
+- **Cumulative Layout Shift**: < 0.1
+- **Time to Interactive**: < 3s
 
 ## 🤝 Contributing
 
@@ -298,12 +252,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Swiss Ephemeris**: Professional-grade astronomical calculations
-- **Google Maps API**: Geolocation and timezone services
-- **Firebase**: Backend infrastructure
-- **Flutter**: Cross-platform mobile development
-- **Next.js**: Modern React framework
+- **Next.js Team** - React framework
+- **Vercel** - Deployment platform
+- **Tailwind CSS** - Utility-first CSS
+- **Framer Motion** - Animation library
+- **Lucide React** - Icon library
 
 ---
 
-**Built with ❤️ for cosmic exploration and spiritual growth**
+## 🌟 **Your Cosmic Journey Awaits!**
+
+**Visit the app**: [http://localhost:8120](http://localhost:8120)
+
+**Production**: [Coming Soon]**
+
+**Built with ❤️ for cosmic exploration and spiritual growth** ✨
