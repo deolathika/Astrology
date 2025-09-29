@@ -22,21 +22,25 @@ import {
 } from 'lucide-react'
 
 interface SocialShareProps {
-  content: {
+  content?: {
     title: string
     description: string
     image?: string
     url?: string
   }
+  title?: string
+  text?: string
+  url?: string
   onShare?: (platform: string) => void
 }
 
-export function SocialShare({ content, onShare }: SocialShareProps) {
+export function SocialShare({ content, title, text, url, onShare }: SocialShareProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const shareUrl = content.url || window.location.href
-  const shareText = `${content.title} - ${content.description}`
+  // Handle both content object and individual props
+  const shareUrl = content?.url || url || (typeof window !== 'undefined' ? window.location.href : '')
+  const shareText = content ? `${content.title} - ${content.description}` : (text || title || '')
 
   const shareOptions = [
     {
