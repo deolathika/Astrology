@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, memo, useMemo, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Sparkles, 
@@ -19,7 +19,7 @@ interface TodaysSecretCardProps {
   user?: any
 }
 
-export const TodaysSecretCard = memo(function TodaysSecretCard({ user }: TodaysSecretCardProps) {
+function TodaysSecretCard({ user }: TodaysSecretCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [reactions, setReactions] = useState({
     sparkles: 0,
@@ -186,4 +186,6 @@ export const TodaysSecretCard = memo(function TodaysSecretCard({ user }: TodaysS
       </AnimatePresence>
     </motion.div>
   )
-})
+}
+
+export { TodaysSecretCard }

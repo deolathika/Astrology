@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, memo } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CosmicHomeScreen } from '@/components/cosmic-home-screen'
 import { LoadingScreen } from '@/components/loading-screen'
@@ -8,7 +8,7 @@ import { OptimizedErrorBoundary } from '@/components/optimized-error-boundary'
 import { useTranslation } from '@/components/translation-provider'
 import { useUser } from '@/components/user-provider'
 
-const HomePage = memo(function HomePage() {
+function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [userProfile, setUserProfile] = useState(null)
   const { language, setLanguage } = useTranslation()
@@ -65,6 +65,6 @@ const HomePage = memo(function HomePage() {
       </AnimatePresence>
     </OptimizedErrorBoundary>
   )
-})
+}
 
 export default HomePage
