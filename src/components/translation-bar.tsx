@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Translate, ChevronDown } from 'lucide-react'
+import { Languages, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 
 interface TranslationBarProps {
@@ -34,7 +34,7 @@ export function TranslationBar({ currentLanguage, onLanguageChange }: Translatio
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-electric-violet/20 rounded-lg">
-                <Translate className="w-5 h-5 text-electric-violet" />
+                <Languages className="w-5 h-5 text-electric-violet" />
               </div>
               <div>
                 <p className="text-sm text-stellar-gray-light">Language</p>

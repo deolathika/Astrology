@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CosmicHomeScreen } from '@/components/cosmic-home-screen'
 import { LoadingScreen } from '@/components/loading-screen'
-import { useTranslation } from '@/hooks/use-translation'
-import { useUser } from '@/hooks/use-user'
+import { useTranslation } from '@/components/translation-provider'
+import { useUser } from '@/components/user-provider'
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
