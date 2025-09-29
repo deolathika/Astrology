@@ -67,26 +67,26 @@ jobs:
       env:
         NODE_ENV: production
         NEXT_PUBLIC_APP_ENV: production
-        NEXT_PUBLIC_APP_URL: ${{ secrets.PROD_APP_URL || 'https://daily-secrets.vercel.app' }}
-        NEXT_PUBLIC_API_URL: ${{ secrets.PROD_API_URL || 'https://daily-secrets.vercel.app' }}
-        NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.PROD_FIREBASE_API_KEY || '' }}
-        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PROD_FIREBASE_AUTH_DOMAIN || '' }}
-        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.PROD_FIREBASE_PROJECT_ID || '' }}
-        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.PROD_FIREBASE_STORAGE_BUCKET || '' }}
-        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.PROD_FIREBASE_MESSAGING_SENDER_ID || '' }}
-        NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.PROD_FIREBASE_APP_ID || '' }}
-        NEXT_PUBLIC_OPENAI_API_KEY: ${{ secrets.PROD_OPENAI_API_KEY || '' }}
-        NEXT_PUBLIC_GEMINI_API_KEY: ${{ secrets.PROD_GEMINI_API_KEY || '' }}
-        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.PROD_STRIPE_PUBLISHABLE_KEY || '' }}
-        STRIPE_SECRET_KEY: ${{ secrets.PROD_STRIPE_SECRET_KEY || '' }}
-        NEXT_PUBLIC_GA_TRACKING_ID: ${{ secrets.PROD_GA_TRACKING_ID || '' }}
+        NEXT_PUBLIC_APP_URL: ${{ secrets.PROD_APP_URL }}
+        NEXT_PUBLIC_API_URL: ${{ secrets.PROD_API_URL }}
+        NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.PROD_FIREBASE_API_KEY }}
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PROD_FIREBASE_AUTH_DOMAIN }}
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.PROD_FIREBASE_PROJECT_ID }}
+        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.PROD_FIREBASE_STORAGE_BUCKET }}
+        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.PROD_FIREBASE_MESSAGING_SENDER_ID }}
+        NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.PROD_FIREBASE_APP_ID }}
+        NEXT_PUBLIC_OPENAI_API_KEY: ${{ secrets.PROD_OPENAI_API_KEY }}
+        NEXT_PUBLIC_GEMINI_API_KEY: ${{ secrets.PROD_GEMINI_API_KEY }}
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.PROD_STRIPE_PUBLISHABLE_KEY }}
+        STRIPE_SECRET_KEY: ${{ secrets.PROD_STRIPE_SECRET_KEY }}
+        NEXT_PUBLIC_GA_TRACKING_ID: ${{ secrets.PROD_GA_TRACKING_ID }}
         
     - name: Deploy to Vercel (Production)
       uses: amondnet/vercel-action@v25
       with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN || '' }}
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID || '' }}
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID || '' }}
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
         working-directory: ./
         vercel-args: '--prod=true'
         

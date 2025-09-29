@@ -1,8 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/api/today/route": "app/api/today/route.js",
-  "/compatibility/page": "app/compatibility/page.js",
-  "/dreams/page": "app/dreams/page.js",
-  "/settings/page": "app/settings/page.js"
-}
