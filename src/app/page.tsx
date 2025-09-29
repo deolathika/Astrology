@@ -15,12 +15,12 @@ export default function HomePage() {
 
   useEffect(() => {
     // Check if user has completed onboarding
-    const onboardingComplete = localStorage.getItem('daily-secrets-onboarding-complete')
-    const profile = localStorage.getItem('daily-secrets-profile')
+    const onboardingComplete = localStorage.getItem('onboardingComplete')
+    const profile = localStorage.getItem('userData')
     
     if (!onboardingComplete) {
       // Redirect to onboarding if not completed
-      window.location.href = '/onboarding'
+      window.location.href = '/onboarding/signup'
       return
     }
 

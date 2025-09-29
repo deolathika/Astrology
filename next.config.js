@@ -134,7 +134,7 @@ const withPWA = require('next-pwa')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    appDir: true,
+    // App directory is now stable in Next.js 14
   },
   i18n: {
     locales: ['en', 'si', 'ta', 'hi', 'zh'],
@@ -181,12 +181,7 @@ const nextConfig = {
     ]
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Add custom webpack configuration for Swiss Ephemeris
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'swiss-ephemeris': require.resolve('swiss-ephemeris'),
-    }
-    
+    // Add custom webpack configuration if needed
     return config
   },
 }
