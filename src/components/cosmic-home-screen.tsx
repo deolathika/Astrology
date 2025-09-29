@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, memo } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Star, 
@@ -44,7 +44,7 @@ interface CosmicHomeScreenProps {
   onLanguageChange: (language: string) => void
 }
 
-export function CosmicHomeScreen({ 
+export const CosmicHomeScreen = memo(function CosmicHomeScreen({ 
   user, 
   language, 
   onLanguageChange 
@@ -114,4 +114,4 @@ export function CosmicHomeScreen({
       </div>
     </div>
   )
-}
+})

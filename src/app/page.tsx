@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CosmicHomeScreen } from '@/components/cosmic-home-screen'
 import { LoadingScreen } from '@/components/loading-screen'
+import { OptimizedErrorBoundary } from '@/components/optimized-error-boundary'
 import { useTranslation } from '@/components/translation-provider'
 import { useUser } from '@/components/user-provider'
 
-export default function HomePage() {
+const HomePage = memo(function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [userProfile, setUserProfile] = useState(null)
   const { language, setLanguage } = useTranslation()
@@ -46,20 +47,24 @@ export default function HomePage() {
   }
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-        className="min-h-screen"
-      >
-        <CosmicHomeScreen 
-          user={userProfile || user}
-          language={language}
-          onLanguageChange={setLanguage}
-        />
-      </motion.div>
-    </AnimatePresence>
+    <OptimizedErrorBoundary>
+      <AnimatePresence mode="wait">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="min-h-screen"
+        >
+          <CosmicHomeScreen 
+            user={userProfile || user}
+            language={language}
+            onLanguageChange={setLanguage}
+          />
+        </motion.div>
+      </AnimatePresence>
+    </OptimizedErrorBoundary>
   )
-}
+})
+
+export default HomePage

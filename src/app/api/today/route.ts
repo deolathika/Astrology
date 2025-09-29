@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Cache for daily guidance to avoid recalculating
+const dailyCache = new Map<string, any>()
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -10,6 +13,16 @@ export async function GET(request: NextRequest) {
         { error: 'Profile ID is required' },
         { status: 400 }
       )
+    }
+
+    // Check cache first
+    const cacheKey = `${profileId}-${new Date().toDateString()}`
+    if (dailyCache.has(cacheKey)) {
+      return NextResponse.json(dailyCache.get(cacheKey), {
+        headers: {
+          'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+        }
+      })
     }
 
     // TODO: Fetch profile data from database
@@ -54,7 +67,7 @@ export async function GET(request: NextRequest) {
       month
     })
 
-    return NextResponse.json({
+    const response = {
       success: true,
       data: {
         today_card: todayCard,
@@ -66,6 +79,15 @@ export async function GET(request: NextRequest) {
           source: 'online',
           generated_at: today.toISOString()
         }
+      }
+    }
+
+    // Cache the response
+    dailyCache.set(cacheKey, response)
+
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
       }
     })
   } catch (error) {
