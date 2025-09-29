@@ -40,7 +40,6 @@ export async function POST(request: NextRequest) {
       data: numerologyData
     })
   } catch (error) {
-    console.error('Numerology calculation error:', error)
     return NextResponse.json(
       { error: 'Failed to calculate numerology data' },
       { status: 500 }

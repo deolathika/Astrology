@@ -2,20 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Star, 
-  Calendar, 
-  MapPin, 
-  Clock, 
-  Heart, 
-  Moon, 
-  Sun, 
-  Sparkles,
-  ArrowRight,
-  ArrowLeft,
-  Check
-} from 'lucide-react'
-
+import { Star, Sun, Moon, Check, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react'
 interface OnboardingData {
   fullName: string
   email: string

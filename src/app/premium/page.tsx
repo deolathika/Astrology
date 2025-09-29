@@ -2,21 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Crown, 
-  Star, 
-  Zap, 
-  Shield, 
-  Users, 
-  MessageCircle,
-  Calendar,
-  Check,
-  X,
-  CreditCard,
-  Gift
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-
+import { Shield, MessageCircle, Calendar, Gift, Crown, Star, Zap, Check, X, Users, CreditCard } from 'lucide-react'
 const subscriptionPlans = [
   {
     id: 'free',
@@ -132,13 +119,11 @@ export default function PremiumPage() {
 
   const handleSubscribe = (planId: string) => {
     // Implement subscription logic
-    console.log('Subscribing to plan:', planId)
     // Redirect to payment or show payment modal
   }
 
   const handleBookConsultation = (consultationId: string) => {
     // Implement booking logic
-    console.log('Booking consultation:', consultationId)
     // Redirect to booking page
   }
 

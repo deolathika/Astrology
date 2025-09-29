@@ -2,21 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Shield, 
-  Eye, 
-  EyeOff, 
-  Lock, 
-  Unlock,
-  Database,
-  Download,
-  Trash2,
-  AlertTriangle,
-  CheckCircle,
-  Settings
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-
+import { EyeOff, Unlock, AlertTriangle, Shield, Database, Download, Trash2, Lock, CheckCircle } from 'lucide-react'
 const privacySettings = [
   {
     id: 'profile_visibility',
@@ -94,14 +81,12 @@ export default function PrivacySettingsPage() {
   const handleDataExport = () => {
     setShowDataExport(true)
     // Implement data export logic
-    console.log('Exporting user data...')
-  }
+    }
 
   const handleDeleteAccount = () => {
     setShowDeleteAccount(true)
     // Implement account deletion logic
-    console.log('Deleting account...')
-  }
+    }
 
   return (
     <div className="min-h-screen bg-deep-space">

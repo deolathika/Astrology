@@ -21,8 +21,7 @@ export function useAnalytics() {
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const track = (event: string, properties?: Record<string, any>) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('Analytics Event:', event, properties)
-    }
+      }
     
     // Add your analytics tracking here (Google Analytics, Mixpanel, etc.)
     if (typeof window !== 'undefined' && window.gtag) {
@@ -32,16 +31,14 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
 
   const identify = (userId: string, traits?: Record<string, any>) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('Analytics Identify:', userId, traits)
-    }
+      }
     
     // Add your user identification here
   }
 
   const page = (name: string, properties?: Record<string, any>) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('Analytics Page:', name, properties)
-    }
+      }
     
     // Add your page tracking here
     if (typeof window !== 'undefined' && window.gtag) {

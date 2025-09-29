@@ -63,7 +63,6 @@ export async function GET(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Natal chart calculation error:', error)
     return NextResponse.json(
       { error: 'Failed to calculate natal chart' },
       { status: 500 }

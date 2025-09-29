@@ -2,20 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Users, 
-  MessageCircle, 
-  Heart, 
-  Star, 
-  Share2, 
-  Plus,
-  Search,
-  Filter,
-  TrendingUp,
-  Calendar,
-  MapPin
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { Search, Filter, Heart, MessageCircle, Share2, Star, Plus, TrendingUp, Users } from 'lucide-react'
 
 const communityPosts = [
   {

@@ -2,32 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  User, 
-  MapPin, 
-  Clock, 
-  Globe, 
-  Settings, 
-  Share2, 
-  Shield, 
-  Star,
-  Moon,
-  Sun,
-  Calculator,
-  Heart,
-  Zap,
-  BookOpen,
-  Users,
-  Lock,
-  Download,
-  Trash2,
-  Edit3,
-  Save,
-  X
-} from 'lucide-react'
 import { useUser } from '@/components/user-provider'
 import { useTranslation } from '@/components/translation-provider'
-
+import { Clock, Globe, Lock, User, Share2, Settings, Sun, Moon, Star, Download, Trash2, Save, X, Edit3 } from 'lucide-react'
 interface CosmicProfileProps {
   user?: any
 }

@@ -44,7 +44,6 @@ export async function POST(request: NextRequest) {
       throw new Error(`FCM request failed: ${response.statusText}`)
     }
   } catch (error) {
-    console.error('Push notification error:', error)
     return NextResponse.json(
       { error: 'Failed to send push notification' },
       { status: 500 }

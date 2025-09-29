@@ -2,21 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  MessageCircle, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Clock,
-  Send,
-  CheckCircle,
-  AlertCircle,
-  Users,
-  Globe,
-  Calendar,
-  Star
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { MessageCircle, CheckCircle, AlertCircle, Send, Mail, Globe, Clock } from 'lucide-react'
 
 const contactMethods = [
   {

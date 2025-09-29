@@ -2,23 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Star, 
-  MessageCircle, 
-  Calendar, 
-  Award, 
-  Clock, 
-  DollarSign,
-  Filter,
-  Search,
-  Heart,
-  Shield,
-  Zap,
-  Users,
-  BookOpen,
-  Globe
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { Search, Users, Star, Calendar, MessageCircle } from 'lucide-react'
 
 const experts = [
   {
@@ -170,12 +155,10 @@ export default function ExpertsPage() {
   })
 
   const handleBookConsultation = (expertId: number) => {
-    console.log('Booking consultation with expert:', expertId)
     // Implement booking logic
   }
 
   const handleSendMessage = (expertId: number) => {
-    console.log('Sending message to expert:', expertId)
     // Implement messaging logic
   }
 

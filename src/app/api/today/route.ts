@@ -91,7 +91,6 @@ export async function GET(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Daily guidance error:', error)
     return NextResponse.json(
       { error: 'Failed to generate daily guidance' },
       { status: 500 }
@@ -348,21 +347,21 @@ function generateLongText(data: any): string {
   return `Today, the cosmic energies align in your favor as the stars weave a tapestry of opportunity and growth. Your Life Path number ${lifePath} resonates with the universal vibrations, guiding you toward your highest potential. The ${sunSign} energy in your chart brings forth new possibilities, while the ${moonPhase} illuminates your path forward. Trust in the ancient wisdom that flows through your veins, for you are a child of the cosmos, destined for greatness. The planetary influences today favor introspection and spiritual growth, while the numerological vibrations suggest a time of new beginnings and fresh perspectives. Embrace the cosmic flow and let your inner light shine brightly.`
 }
 
-function generateLuckyColor(dailyNumber: number): string {
+function generateLuckyColor(): string {
   const colors = [
     'Cosmic Purple', 'Electric Blue', 'Stellar Gold', 'Nebula Pink', 'Celestial Silver'
   ]
   return colors[dailyNumber % colors.length]
 }
 
-function generateLuckyObject(sunSign: string): string {
+function generateLuckyObject(): string {
   const objects = [
     'Crystal Sphere', 'Sacred Feather', 'Cosmic Compass', 'Stellar Amulet', 'Lunar Pendant'
   ]
   return objects[Math.floor(Math.random() * objects.length)]
 }
 
-function generateDoRules(dayOfWeek: number, sunSign: string): string[] {
+function generateDoRules(): string[] {
   const doRules = [
     'Trust your intuition and follow your inner guidance',
     'Take time for meditation and spiritual reflection',
@@ -372,7 +371,7 @@ function generateDoRules(dayOfWeek: number, sunSign: string): string[] {
   return doRules
 }
 
-function generateDontRules(dayOfWeek: number, sunSign: string): string[] {
+function generateDontRules(): string[] {
   const dontRules = [
     'Make hasty decisions without consulting your higher self',
     'Ignore the subtle signs and synchronicities around you',
@@ -382,7 +381,7 @@ function generateDontRules(dayOfWeek: number, sunSign: string): string[] {
   return dontRules
 }
 
-function generateMoodFixArray(moonPhase: string, sunSign: string): string[] {
+function generateMoodFixArray(): string[] {
   return [
     'Take 5 deep breaths and center yourself',
     'Listen to calming music or nature sounds',

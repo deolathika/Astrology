@@ -2,21 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  HelpCircle, 
-  ChevronDown, 
-  ChevronUp,
-  Star,
-  Users,
-  Shield,
-  Zap,
-  Heart,
-  MessageCircle,
-  Calendar,
-  CreditCard,
-  Globe
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { HelpCircle, ChevronUp, ChevronDown, MessageCircle } from 'lucide-react'
 
 const faqCategories = [
   {
@@ -258,7 +245,7 @@ export default function FAQPage() {
             transition={{ delay: 0.6 }}
             className="max-w-4xl mx-auto space-y-4"
           >
-            {currentFAQs.map((faq, index) => (
+            {currentFAQs.map((faq) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}

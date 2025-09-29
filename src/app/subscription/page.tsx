@@ -74,7 +74,6 @@ export default function SubscriptionPage() {
   const [billingCycle, setBillingCycle] = useState('monthly')
 
   const handleSubscribe = (planId: string) => {
-    console.log(`Subscribing to ${planId} plan`)
     // Add subscription logic here
   }
 

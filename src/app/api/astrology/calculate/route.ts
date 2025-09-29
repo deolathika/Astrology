@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
       data: astrologyData
     })
   } catch (error) {
-    console.error('Astrology calculation error:', error)
     return NextResponse.json(
       { error: 'Failed to calculate astrology data' },
       { status: 500 }

@@ -2,21 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Bell, 
-  BellOff, 
-  Mail, 
-  Smartphone, 
-  Calendar,
-  Star,
-  Moon,
-  Heart,
-  Zap,
-  Shield,
-  Settings
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-
+import { BellOff, Shield, Bell, Calendar, Settings } from 'lucide-react'
 const notificationTypes = [
   {
     id: 'daily_guidance',

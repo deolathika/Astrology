@@ -1,21 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { 
-  Star, 
-  Users, 
-  Heart, 
-  Shield, 
-  Award, 
-  Globe,
-  Zap,
-  Target,
-  BookOpen,
-  MessageCircle,
-  Calendar,
-  CheckCircle
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { Target, Star, Users, MessageCircle, Calendar, Globe } from 'lucide-react'
 
 const teamMembers = [
   {

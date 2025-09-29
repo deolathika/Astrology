@@ -1,17 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { 
-  Shield, 
-  FileText, 
-  Lock, 
-  Users, 
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Info
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { FileText, AlertTriangle, CheckCircle, XCircle, Info } from 'lucide-react'
 
 const sections = [
   {

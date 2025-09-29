@@ -2,21 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Moon, 
-  Star, 
-  BookOpen, 
-  Plus, 
-  Search,
-  Calendar,
-  Sparkles,
-  Eye,
-  Brain,
-  Heart,
-  Zap,
-  Shield
-} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { Plus, Moon, BookOpen, Calendar, Star, Sparkles, Eye, Brain, Heart } from 'lucide-react'
 
 const dreamCategories = [
   { id: 'flying', name: 'Flying', symbol: '🕊️', color: 'celestial-blue' },
@@ -87,7 +74,6 @@ export default function DreamsPage() {
 
   const handleAddDream = () => {
     // Add dream logic here
-    console.log('Adding dream:', newDream)
     setNewDream({
       title: '',
       description: '',
