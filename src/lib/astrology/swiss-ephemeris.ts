@@ -40,16 +40,17 @@ export interface BirthData {
 
 export class SwissEphemerisEngine {
   private isInitialized = false
+  private backendUrl: string
 
   constructor() {
+    this.backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
     this.initialize()
   }
 
   private async initialize() {
     try {
-      // Initialize Swiss Ephemeris WASM
-      // This would load the Swiss Ephemeris library
-      console.log('Initializing Swiss Ephemeris...')
+      // Initialize Swiss Ephemeris via backend API
+      console.log('Initializing Swiss Ephemeris via backend...')
       this.isInitialized = true
     } catch (error) {
       console.error('Failed to initialize Swiss Ephemeris:', error)
@@ -65,26 +66,57 @@ export class SwissEphemerisEngine {
       await this.initialize()
     }
 
-    const planets: PlanetPosition[] = []
+    try {
+      // Call backend Swiss Ephemeris service
+      const response = await fetch(`${this.backendUrl}/api/astro/natal`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          birthData: {
+            year: birthData.year,
+            month: birthData.month,
+            day: birthData.day,
+            hour: birthData.hour,
+            minute: birthData.minute,
+            second: birthData.second,
+            latitude: birthData.latitude,
+            longitude: birthData.longitude,
+            timezone: birthData.timezone
+          }
+        })
+      })
 
-    // Swiss Ephemeris calculation would go here
-    // For now, we'll return mock data
+      if (!response.ok) {
+        throw new Error(`Backend API error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      return data.planets || []
+    } catch (error) {
+      console.error('Failed to calculate planetary positions:', error)
+      // Fallback to mock data for development
+      return this.getMockPlanetaryPositions()
+    }
+  }
+
+  /**
+   * Mock planetary positions for development/fallback
+   */
+  private getMockPlanetaryPositions(): PlanetPosition[] {
     const planetNames = [
       'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn',
       'Uranus', 'Neptune', 'Pluto', 'North Node', 'South Node'
     ]
 
-    planetNames.forEach((name, index) => {
-      planets.push({
-        name,
-        longitude: Math.random() * 360,
-        latitude: (Math.random() - 0.5) * 10,
-        distance: 1 + Math.random() * 2,
-        speed: Math.random() * 2 - 1
-      })
-    })
-
-    return planets
+    return planetNames.map((name, index) => ({
+      name,
+      longitude: Math.random() * 360,
+      latitude: (Math.random() - 0.5) * 10,
+      distance: 1 + Math.random() * 2,
+      speed: Math.random() * 2 - 1
+    }))
   }
 
   /**
@@ -95,16 +127,52 @@ export class SwissEphemerisEngine {
       await this.initialize()
     }
 
-    const houses: HouseCusp[] = []
+    try {
+      // Call backend Swiss Ephemeris service for house calculations
+      const response = await fetch(`${this.backendUrl}/api/astro/houses`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          birthData: {
+            year: birthData.year,
+            month: birthData.month,
+            day: birthData.day,
+            hour: birthData.hour,
+            minute: birthData.minute,
+            second: birthData.second,
+            latitude: birthData.latitude,
+            longitude: birthData.longitude,
+            timezone: birthData.timezone
+          }
+        })
+      })
 
-    // Calculate 12 house cusps
+      if (!response.ok) {
+        throw new Error(`Backend API error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      return data.houses || []
+    } catch (error) {
+      console.error('Failed to calculate house cusps:', error)
+      // Fallback to mock data for development
+      return this.getMockHouseCusps()
+    }
+  }
+
+  /**
+   * Mock house cusps for development/fallback
+   */
+  private getMockHouseCusps(): HouseCusp[] {
+    const houses: HouseCusp[] = []
     for (let i = 1; i <= 12; i++) {
       houses.push({
         house: i,
         longitude: Math.random() * 360
       })
     }
-
     return houses
   }
 

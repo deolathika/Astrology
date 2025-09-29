@@ -136,10 +136,7 @@ const nextConfig = {
   experimental: {
     // App directory is now stable in Next.js 14
   },
-  i18n: {
-    locales: ['en', 'si', 'ta', 'hi', 'zh'],
-    defaultLocale: 'en',
-  },
+  // i18n configuration removed - using App Router internationalization instead
   images: {
     domains: ['localhost', 'dailysecrets.com'],
     formats: ['image/webp', 'image/avif'],
