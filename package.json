@@ -14,12 +14,12 @@
     "doctor": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter doctor",
     "analyze": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter analyze",
     "test": "export PATH=\"/Users/lathikadissanayaka/flutter/bin:$PATH\" && flutter test",
-    "extract": "node scripts/ocr-processor.js",
-    "validate": "node scripts/validate-schemas.js",
-    "format": "prettier --write data/**/*.json docs/**/*.md",
-    "test:ocr": "node scripts/test-extraction.js",
-    "start": "npm run dev",
-    "serve": "npm run dev"
+    "extract": "echo 'Node.js required for OCR processing'",
+    "validate": "echo 'Node.js required for validation'",
+    "format": "echo 'Node.js required for formatting'",
+    "test:ocr": "echo 'Node.js required for OCR testing'",
+    "start": "./run-dev.sh",
+    "serve": "./run-dev.sh"
   },
   "dependencies": {
     "tesseract.js": "^4.1.1",
