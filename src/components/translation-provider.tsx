@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
 interface TranslationContextType {
   language: string
@@ -123,10 +123,33 @@ export function useTranslation() {
 
 export function TranslationProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState('en')
+  const [mounted, setMounted] = useState(false)
 
   const translate = (key: string): string => {
     const currentTranslations = translations[language as keyof typeof translations] || translations.en
     return currentTranslations[key as keyof typeof currentTranslations] || key
+  }
+
+  useEffect(() => {
+    setMounted(true)
+    // Load language from localStorage if available
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('daily-secrets-language')
+      if (savedLanguage && translations[savedLanguage as keyof typeof translations]) {
+        setLanguage(savedLanguage)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (mounted && typeof window !== 'undefined') {
+      localStorage.setItem('daily-secrets-language', language)
+    }
+  }, [language, mounted])
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return <>{children}</>
   }
 
   return (

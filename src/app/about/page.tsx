@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Target, Star, Users, MessageCircle, Calendar, Globe } from 'lucide-react'
+import { Target, Star, Users, MessageCircle, Calendar, Globe, Heart, Shield } from 'lucide-react'
 
 const teamMembers = [
   {

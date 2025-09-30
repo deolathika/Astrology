@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
 interface AnalyticsContextType {
   track: (event: string, properties?: Record<string, any>) => void
@@ -19,13 +19,15 @@ export function useAnalytics() {
 }
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false)
+
   const track = (event: string, properties?: Record<string, any>) => {
     if (process.env.NODE_ENV === 'development') {
       }
     
     // Add your analytics tracking here (Google Analytics, Mixpanel, etc.)
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', event, properties)
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', event, properties)
     }
   }
 
@@ -41,8 +43,8 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
       }
     
     // Add your page tracking here
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', process.env.NEXT_PUBLIC_GA_TRACKING_ID || '', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('config', process.env.NEXT_PUBLIC_GA_TRACKING_ID || '', {
         page_title: name,
         page_location: window.location.href,
         ...properties
@@ -51,6 +53,7 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    setMounted(true)
     // Initialize analytics
     if (typeof window !== 'undefined') {
       // Track page view
@@ -60,6 +63,11 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
       })
     }
   }, [])
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return <>{children}</>
+  }
 
   return (
     <AnalyticsContext.Provider value={{ track, identify, page }}>

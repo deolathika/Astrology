@@ -1,103 +1,138 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter, usePathname } from 'next/navigation'
 import { 
   Home, 
-  Users, 
+  Star, 
+  Calculator, 
+  Calendar, 
   Heart, 
-  Moon, 
+  Users, 
+  Bell, 
   Settings, 
-  User,
-  Star,
-  HelpCircle,
-  Info,
-  MessageCircle,
-  FileText,
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  Moon,
+  Sun,
+  Compass,
+  Target,
+  Gift,
+  BookOpen,
+  Zap,
   Shield,
-  CreditCard,
-  Calendar,
-  Search
+  Globe,
+  Smartphone,
+  Tablet,
+  Monitor,
+  Wifi,
+  Lock,
+  User,
+  Clock,
+  MapPin
 } from 'lucide-react'
-import { useState } from 'react'
 
-const mainNavigationItems = [
-  { icon: Home, label: 'Home', active: true, route: '/' },
-  { icon: Users, label: 'Community', active: false, route: '/community' },
-  { icon: Heart, label: 'Compatibility', active: false, route: '/compatibility' },
-  { icon: Moon, label: 'Dreams', active: false, route: '/dreams' },
-  { icon: User, label: 'Profile', active: false, route: '/profile' },
+interface NavigationItem {
+  label: string
+  route: string
+  icon: React.ComponentType<{ className?: string }>
+  category?: string
+  description?: string
+}
+
+const navigationItems: NavigationItem[] = [
+  { label: 'Home', route: '/home', icon: Home, category: 'main' },
+  { label: 'Today', route: '/today', icon: Star, category: 'main' },
+  { label: 'Profile', route: '/profile', icon: User, category: 'main' },
+  { label: 'Numerology', route: '/numerology', icon: Calculator, category: 'main' },
+  { label: 'Zodiac', route: '/zodiac-systems', icon: Moon, category: 'main' },
+  { label: 'Compatibility', route: '/compatibility', icon: Heart, category: 'features' },
+  { label: 'Community', route: '/community', icon: Users, category: 'features' },
+  { label: 'Dreams', route: '/dreams', icon: Moon, category: 'features' },
+  { label: 'Notifications', route: '/notifications', icon: Bell, category: 'features' },
+  { label: 'Settings', route: '/settings', icon: Settings, category: 'settings' },
+  { label: 'Privacy', route: '/legal/privacy', icon: Shield, category: 'legal' },
+  { label: 'Terms', route: '/legal/terms', icon: BookOpen, category: 'legal' },
+  { label: 'Contact', route: '/contact', icon: Globe, category: 'support' },
+  { label: 'Help', route: '/help', icon: Target, category: 'support' },
+  { label: 'Premium', route: '/premium', icon: Gift, category: 'premium' },
+  { label: 'Donations', route: '/donations', icon: Heart, category: 'premium' }
 ]
 
-const additionalPages = [
-  { icon: Star, label: 'Premium', route: '/premium' },
-  { icon: Users, label: 'Experts', route: '/experts' },
-  { icon: HelpCircle, label: 'FAQ', route: '/faq' },
-  { icon: Info, label: 'About', route: '/about' },
-  { icon: MessageCircle, label: 'Contact', route: '/contact' },
-  { icon: Settings, label: 'Settings', route: '/settings' },
-]
-
-const legalPages = [
-  { icon: FileText, label: 'Terms', route: '/legal/terms' },
-  { icon: Shield, label: 'Privacy', route: '/legal/privacy' },
-  { icon: CreditCard, label: 'Billing', route: '/billing' },
-]
+const mainItems = navigationItems.filter(item => item.category === 'main')
+const featureItems = navigationItems.filter(item => item.category === 'features')
+const settingsItems = navigationItems.filter(item => item.category === 'settings')
+const legalItems = navigationItems.filter(item => item.category === 'legal')
+const supportItems = navigationItems.filter(item => item.category === 'support')
+const premiumItems = navigationItems.filter(item => item.category === 'premium')
 
 export function ComprehensiveNavigation() {
-  const [activeItem, setActiveItem] = useState('Home')
+  const router = useRouter()
+  const pathname = usePathname()
+  const [activeItem, setActiveItem] = useState('')
   const [showMore, setShowMore] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    // Set active item based on current path
+    const currentItem = navigationItems.find(item => item.route === pathname)
+    if (currentItem) {
+      setActiveItem(currentItem.label)
+    }
+  }, [pathname])
 
   const handleNavigation = (label: string, route: string) => {
     setActiveItem(label)
-    if (typeof window !== 'undefined') {
-      window.location.href = route
-    }
-    `)
+    router.push(route)
+  }
+
+  const renderNavigationItem = (item: NavigationItem, index: number) => {
+    const Icon = item.icon
+    const isActive = activeItem === item.label
+    
+    return (
+      <motion.button
+        key={item.label}
+        onClick={() => handleNavigation(item.label, item.route)}
+        className={`flex flex-col items-center space-y-1 p-3 rounded-xl transition-all duration-300 ${
+          isActive 
+            ? 'bg-electric-violet/20 text-electric-violet' 
+            : 'text-cosmic-silver hover:text-electric-violet'
+        }`}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
+      >
+        <Icon className="w-6 h-6" />
+        <span className="text-xs font-medium">{item.label}</span>
+        {isActive && (
+          <motion.div
+            className="w-1 h-1 bg-electric-violet rounded-full"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.2 }}
+          />
+        )}
+      </motion.button>
+    )
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed bottom-0 left-0 right-0 z-50 cosmic-nav"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-deep-space/95 backdrop-blur-md border-t border-cosmic-silver/20"
+      initial={{ y: 100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <div className="container mx-auto px-4 py-2">
         {/* Main Navigation */}
-        <div className="flex items-center justify-around mb-2">
-          {mainNavigationItems.map((item, index) => {
-            const Icon = item.icon
-            const isActive = activeItem === item.label
-            
-            return (
-              <motion.button
-                key={item.label}
-                onClick={() => handleNavigation(item.label, item.route)}
-                className={`flex flex-col items-center space-y-1 p-3 rounded-xl transition-all duration-300 ${
-                  isActive 
-                    ? 'bg-electric-violet/20 text-electric-violet' 
-                    : 'text-cosmic-silver hover:text-electric-violet'
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Icon className="w-6 h-6" />
-                <span className="text-xs font-medium">{item.label}</span>
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className="w-1 h-1 bg-electric-violet rounded-full"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                  />
-                )}
-              </motion.button>
-            )
-          })}
+        <div className="flex items-center justify-center space-x-1">
+          {mainItems.map((item, index) => renderNavigationItem(item, index))}
           
           {/* More Button */}
           <motion.button
@@ -118,61 +153,50 @@ export function ComprehensiveNavigation() {
           </motion.button>
         </div>
 
-        {/* Additional Pages Dropdown */}
-        {showMore && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="cosmic-card mb-2"
-          >
-            <div className="grid grid-cols-3 gap-2 p-4">
-              {additionalPages.map((page, index) => {
-                const Icon = page.icon
-                return (
-                  <motion.button
-                    key={page.label}
-                    onClick={() => handleNavigation(page.label, page.route)}
-                    className="flex flex-col items-center space-y-1 p-2 rounded-lg hover:bg-electric-violet/10 transition-all"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Icon className="w-5 h-5 text-electric-violet" />
-                    <span className="text-xs text-stellar-gray-light">{page.label}</span>
-                  </motion.button>
-                )
-              })}
-            </div>
-            
-            {/* Legal Pages */}
-            <div className="border-t border-electric-violet/20 p-4">
-              <div className="text-xs text-stellar-gray-light mb-2">Legal & Support</div>
-              <div className="flex space-x-4">
-                {legalPages.map((page, index) => {
-                  const Icon = page.icon
-                  return (
-                    <motion.button
-                      key={page.label}
-                      onClick={() => handleNavigation(page.label, page.route)}
-                      className="flex items-center space-x-2 text-xs text-stellar-gray-light hover:text-electric-violet transition-all"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{page.label}</span>
-                    </motion.button>
-                  )
-                })}
+        {/* Expanded Navigation */}
+        <AnimatePresence>
+          {showMore && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-4 border-t border-cosmic-silver/20 pt-4"
+            >
+              <div className="grid grid-cols-2 gap-2">
+                {/* Features */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-cosmic-silver/70 uppercase tracking-wider">Features</h4>
+                  {featureItems.map((item, index) => renderNavigationItem(item, index))}
+                </div>
+
+                {/* Settings */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-cosmic-silver/70 uppercase tracking-wider">Settings</h4>
+                  {settingsItems.map((item, index) => renderNavigationItem(item, index))}
+                </div>
+
+                {/* Legal */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-cosmic-silver/70 uppercase tracking-wider">Legal</h4>
+                  {legalItems.map((item, index) => renderNavigationItem(item, index))}
+                </div>
+
+                {/* Support */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-cosmic-silver/70 uppercase tracking-wider">Support</h4>
+                  {supportItems.map((item, index) => renderNavigationItem(item, index))}
+                </div>
+
+                {/* Premium */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold text-cosmic-silver/70 uppercase tracking-wider">Premium</h4>
+                  {premiumItems.map((item, index) => renderNavigationItem(item, index))}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   )

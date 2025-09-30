@@ -16,3 +16,4 @@ describe('LoadingScreen', () => {
     expect(loadingContainer).toBeInTheDocument()
   })
 })
+

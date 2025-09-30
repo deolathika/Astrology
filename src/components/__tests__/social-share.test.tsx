@@ -51,3 +51,4 @@ describe('SocialShare', () => {
     expect(screen.getByText('WhatsApp')).toBeInTheDocument()
   })
 })
+

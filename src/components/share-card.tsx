@@ -6,6 +6,7 @@
  */
 
 import { motion } from 'framer-motion'
+import { Share2, Download, Sun, Moon, Heart, Star, Sparkles } from 'lucide-react'
 interface ShareCardProps {
   content: {
     title: string

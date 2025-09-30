@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       day: 1,
       hour: 12,
       minute: 0,
+      second: 0,
       latitude: 40.7128,
       longitude: -74.0060,
       timezone: -5

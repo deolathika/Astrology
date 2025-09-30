@@ -117,3 +117,4 @@ console.log('🔧 Fixing unused variables...\n');
 filesToFix.forEach(fixUnusedVars);
 
 console.log('\n✅ Unused variable fixes completed!');
+

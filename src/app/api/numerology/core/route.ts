@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PythagoreanNumerology } from '@/lib/numerology/engines'
+import { PythagoreanNumerology, ChaldeanNumerology } from '@/lib/numerology/engines'
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,12 +23,12 @@ export async function GET(request: NextRequest) {
     // Simplified numerology calculation using static methods
     const numerologyData = {
       lifePath: PythagoreanNumerology.calculateLifePath(profileData.birthDate).number,
-      expression: PythagoreanNumerology.calculateDestiny(profileData.fullName).number,
+      expression: ChaldeanNumerology.calculateDestiny(profileData.fullName).number,
       soulUrge: PythagoreanNumerology.calculateSoulUrge(profileData.fullName).number,
       personality: PythagoreanNumerology.calculatePersonality(profileData.fullName).number,
       birthday: PythagoreanNumerology.calculateBirthday(profileData.birthDate).number,
       currentName: PythagoreanNumerology.calculateCurrentName(profileData.fullName).number,
-      master: [],
+      master: [] as number[],
       system: system
     }
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       masterNumbers.push(numerologyData.soulUrge.toString())
     }
 
-    numerologyData.master = [...new Set(masterNumbers)]
+    numerologyData.master = Array.from(new Set(masterNumbers)).map(Number)
 
     return NextResponse.json({
       success: true,

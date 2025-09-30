@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Star, Moon, Heart, Users, Bell, Settings, Check, X, Zap, Smartphone, Mail, Calendar } from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
 const notificationTypes = [
   {

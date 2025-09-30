@@ -52,7 +52,6 @@ export class OpenAIService {
         timestamp: new Date()
       }
     } catch (error) {
-      console.error('OpenAI API error:', error)
       // Fallback to offline content
       return this.getOfflineContent(request)
     }
@@ -74,7 +73,6 @@ export class OpenAIService {
         timestamp: new Date()
       }
     } catch (error) {
-      console.error('OpenAI API error:', error)
       return this.getOfflineContent(request)
     }
   }
@@ -95,7 +93,6 @@ export class OpenAIService {
         timestamp: new Date()
       }
     } catch (error) {
-      console.error('OpenAI API error:', error)
       return this.getOfflineContent(request)
     }
   }

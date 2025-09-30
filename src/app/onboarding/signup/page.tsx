@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Sun, Moon, Check, ArrowRight } from 'lucide-react'
+import { Sun, Moon, Check, ArrowRight, User, Calendar, MapPin, Star } from 'lucide-react'
 
 const zodiacSigns = [
   { name: 'Aries', symbol: '♈', element: 'Fire', dates: 'Mar 21 - Apr 19' },

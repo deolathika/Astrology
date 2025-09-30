@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Lock, Shield, Eye, Users, Database, Globe, Key, Bell, Settings, Download, Trash2, CheckCircle } from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
 const privacySettings = [
   {

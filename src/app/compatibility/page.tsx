@@ -1,445 +1,349 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Heart, Sparkles, Zap, Shield, Users, Star, Flame } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Heart, Users, Star, Zap, Shield, ChevronRight, Plus, Search, Filter, Sun } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
-const zodiacSigns = [
-  { id: 'aries', name: 'Aries', symbol: '♈', element: 'Fire', color: 'nebula-red' },
-  { id: 'taurus', name: 'Taurus', symbol: '♉', element: 'Earth', color: 'aurora-green' },
-  { id: 'gemini', name: 'Gemini', symbol: '♊', element: 'Air', color: 'celestial-blue' },
-  { id: 'cancer', name: 'Cancer', symbol: '♋', element: 'Water', color: 'stellar-teal' },
-  { id: 'leo', name: 'Leo', symbol: '♌', element: 'Fire', color: 'supernova-gold' },
-  { id: 'virgo', name: 'Virgo', symbol: '♍', element: 'Earth', color: 'cosmic-cyan' },
-  { id: 'libra', name: 'Libra', symbol: '♎', element: 'Air', color: 'stellar-pink' },
-  { id: 'scorpio', name: 'Scorpio', symbol: '♏', element: 'Water', color: 'electric-violet' },
-  { id: 'sagittarius', name: 'Sagittarius', symbol: '♐', element: 'Fire', color: 'cosmic-orange' },
-  { id: 'capricorn', name: 'Capricorn', symbol: '♑', element: 'Earth', color: 'stellar-gray' },
-  { id: 'aquarius', name: 'Aquarius', symbol: '♒', element: 'Air', color: 'celestial-blue' },
-  { id: 'pisces', name: 'Pisces', symbol: '♓', element: 'Water', color: 'stellar-teal' }
-]
+interface CompatibilityProfile {
+  id: string
+  name: string
+  birthDate: string
+  zodiacSign: string
+  lifePathNumber: number
+  avatar: string
+  isOnline: boolean
+  lastSeen: string
+}
 
-const compatibilityResults = [
-  {
-    id: 1,
-    person1: { name: 'Alex', sign: 'Leo', avatar: '🦁' },
-    person2: { name: 'Sam', sign: 'Aquarius', avatar: '♒' },
-    compatibility: 85,
-    strengths: ['Intellectual connection', 'Shared values', 'Mutual respect'],
-    challenges: ['Different communication styles', 'Need for space'],
-    advice: 'Focus on your shared love for innovation and humanitarian causes. Give each other space to pursue individual interests.',
-    date: '2 days ago'
-  },
-  {
-    id: 2,
-    person1: { name: 'Maya', sign: 'Scorpio', avatar: '♏' },
-    person2: { name: 'Jordan', sign: 'Taurus', avatar: '♉' },
-    compatibility: 92,
-    strengths: ['Deep emotional bond', 'Physical chemistry', 'Loyalty'],
-    challenges: ['Stubbornness', 'Possessiveness'],
-    advice: 'Your connection is incredibly strong. Work on communication during conflicts and trust each other completely.',
-    date: '1 week ago'
-  }
-]
+interface CompatibilityResult {
+  overall: number
+  romantic: number
+  friendship: number
+  business: number
+  strengths: string[]
+  frictions: string[]
+  tips: string[]
+  weeklyRitual: string
+}
+
+const countryDefaults = {
+  'IN': 'vedic',
+  'LK': 'vedic', 
+  'CN': 'chinese',
+  'JP': 'hybrid',
+  'KR': 'hybrid',
+  'US': 'western',
+  'EU': 'western'
+}
 
 export default function CompatibilityPage() {
-  const [selectedSign1, setSelectedSign1] = useState('')
-  const [selectedSign2, setSelectedSign2] = useState('')
-  const [showResults, setShowResults] = useState(false)
-  const [compatibilityScore, setCompatibilityScore] = useState(0)
+  const [profiles, setProfiles] = useState<CompatibilityProfile[]>([])
+  const [selectedProfile, setSelectedProfile] = useState<CompatibilityProfile | null>(null)
+  const [compatibilityResult, setCompatibilityResult] = useState<CompatibilityResult | null>(null)
+  const [isCalculating, setIsCalculating] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterSystem, setFilterSystem] = useState('all')
 
-  const handleCompatibilityCheck = () => {
-    if (selectedSign1 && selectedSign2) {
+  useEffect(() => {
+    // Load user's profile and discover potential matches
+    loadUserProfile()
+    discoverMatches()
+  }, [])
+
+  const loadUserProfile = () => {
+    const userData = localStorage.getItem('userData')
+    if (userData) {
+      const profile = JSON.parse(userData)
+      // Set user's profile for compatibility calculations
+    }
+  }
+
+  const discoverMatches = async () => {
+    try {
+      const response = await fetch('/api/community/chat?action=discover_connections&userId=current', {
+        method: 'GET'
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setProfiles(data.connections || [])
+      }
+    } catch (error) {
+      // Mock data for development
+      setProfiles([
+        {
+          id: '1',
+          name: 'Alex Johnson',
+          birthDate: '1990-06-15',
+          zodiacSign: 'Gemini',
+          lifePathNumber: 7,
+          avatar: 'AJ',
+          isOnline: true,
+          lastSeen: 'now'
+        },
+        {
+          id: '2', 
+          name: 'Sarah Chen',
+          birthDate: '1988-12-03',
+          zodiacSign: 'Sagittarius',
+          lifePathNumber: 3,
+          avatar: 'SC',
+          isOnline: false,
+          lastSeen: '2 hours ago'
+        }
+      ])
+    }
+  }
+
+  const calculateCompatibility = async (profile: CompatibilityProfile) => {
+    setIsCalculating(true)
+    setSelectedProfile(profile)
+
+    try {
       // Simulate compatibility calculation
-      const score = Math.floor(Math.random() * 40) + 60 // 60-100 range
-      setCompatibilityScore(score)
-      setShowResults(true)
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
+      const result: CompatibilityResult = {
+        overall: Math.floor(Math.random() * 40) + 60, // 60-100
+        romantic: Math.floor(Math.random() * 40) + 60,
+        friendship: Math.floor(Math.random() * 40) + 60,
+        business: Math.floor(Math.random() * 40) + 60,
+        strengths: [
+          'Great communication chemistry',
+          'Complementary life paths',
+          'Shared values and goals',
+          'Emotional understanding'
+        ],
+        frictions: [
+          'Different communication styles',
+          'Varying energy levels',
+          'Different approaches to conflict'
+        ],
+        tips: [
+          'Focus on active listening',
+          'Plan regular check-ins',
+          'Celebrate each other\'s differences',
+          'Practice patience and understanding'
+        ],
+        weeklyRitual: 'Meditation together every Sunday morning'
+      }
+
+      setCompatibilityResult(result)
+    } catch (error) {
+      toast.error('Failed to calculate compatibility')
+    } finally {
+      setIsCalculating(false)
     }
   }
 
   const getCompatibilityColor = (score: number) => {
-    if (score >= 90) return 'text-aurora-green'
-    if (score >= 80) return 'text-supernova-gold'
-    if (score >= 70) return 'text-electric-violet'
-    if (score >= 60) return 'text-cosmic-orange'
-    return 'text-nebula-red'
+    if (score >= 90) return 'text-green-600'
+    if (score >= 80) return 'text-blue-600'
+    if (score >= 70) return 'text-yellow-600'
+    return 'text-red-600'
   }
 
-  const getCompatibilityMessage = (score: number) => {
-    if (score >= 90) return 'Cosmic Soulmates! Your connection is written in the stars.'
-    if (score >= 80) return 'Excellent compatibility! You have a strong cosmic bond.'
-    if (score >= 70) return 'Good compatibility with potential for growth.'
-    if (score >= 60) return 'Moderate compatibility. Communication is key.'
-    return 'Challenging but not impossible. Focus on understanding each other.'
+  const getCompatibilityLabel = (score: number) => {
+    if (score >= 90) return 'Exceptional'
+    if (score >= 80) return 'Very Good'
+    if (score >= 70) return 'Good'
+    if (score >= 60) return 'Moderate'
+    return 'Challenging'
   }
+
+  const filteredProfiles = profiles.filter(profile => {
+    const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesSearch
+  })
 
   return (
-    <div className="min-h-screen bg-deep-space">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-deep-space via-cosmic-navy to-nebula-dark" />
-      <div className="absolute inset-0 bg-cosmic-pattern opacity-30" />
-      
-      <div className="relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="container mx-auto px-4 py-8"
-        >
-          {/* Header */}
-          <div className="text-center mb-8">
-            <motion.h1
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl font-bold text-cosmic-gradient-text mb-4"
-            >
-              Cosmic Compatibility
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-stellar-gray-light"
-            >
-              Discover the cosmic connection between two souls
-            </motion.p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-gray-800 p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-6xl mx-auto py-8"
+      >
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gradient-primary flex items-center">
+              <Heart className="w-8 h-8 mr-3" />
+              Compatibility
+            </h1>
+            <p className="text-gray-600 mt-2">Discover your cosmic connections</p>
           </div>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search profiles..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+            <button className="btn btn-secondary flex items-center">
+              <Filter className="w-4 h-4 mr-2" />
+              Filter
+            </button>
+          </div>
+        </div>
 
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
-            {/* Compatibility Checker */}
-            <div className="lg:col-span-2">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="cosmic-card mb-8"
-              >
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="p-3 bg-stellar-pink/20 rounded-2xl">
-                    <Heart className="w-6 h-6 text-stellar-pink" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-starlight-white">
-                      Check Compatibility
-                    </h2>
-                    <p className="text-stellar-gray-light">
-                      Select two zodiac signs to analyze their cosmic connection
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
-                  {/* First Person */}
-                  <div>
-                    <label className="block text-stellar-gray-light text-sm font-semibold mb-4">
-                      First Person
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {zodiacSigns.map((sign) => (
-                        <button
-                          key={sign.id}
-                          onClick={() => setSelectedSign1(sign.id)}
-                          className={`p-3 rounded-xl border transition-all text-center ${
-                            selectedSign1 === sign.id
-                              ? 'border-electric-violet bg-electric-violet/20 text-electric-violet'
-                              : 'border-electric-violet/30 text-stellar-gray-light hover:border-electric-violet hover:text-electric-violet'
-                          }`}
-                        >
-                          <div className="text-2xl mb-1">{sign.symbol}</div>
-                          <div className="text-xs font-semibold">{sign.name}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Second Person */}
-                  <div>
-                    <label className="block text-stellar-gray-light text-sm font-semibold mb-4">
-                      Second Person
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {zodiacSigns.map((sign) => (
-                        <button
-                          key={sign.id}
-                          onClick={() => setSelectedSign2(sign.id)}
-                          className={`p-3 rounded-xl border transition-all text-center ${
-                            selectedSign2 === sign.id
-                              ? 'border-electric-violet bg-electric-violet/20 text-electric-violet'
-                              : 'border-electric-violet/30 text-stellar-gray-light hover:border-electric-violet hover:text-electric-violet'
-                          }`}
-                        >
-                          <div className="text-2xl mb-1">{sign.symbol}</div>
-                          <div className="text-xs font-semibold">{sign.name}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleCompatibilityCheck}
-                  disabled={!selectedSign1 || !selectedSign2}
-                  className="w-full cosmic-button disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <div className="flex items-center justify-center space-x-2">
-                    <Sparkles className="w-5 h-5" />
-                    <span>Check Compatibility</span>
-                  </div>
-                </button>
-              </motion.div>
-
-              {/* Results */}
-              {showResults && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Profiles List */}
+          <div className="lg:col-span-1">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Discover Matches</h2>
+            <div className="space-y-4">
+              {filteredProfiles.map((profile) => (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="cosmic-card"
+                  key={profile.id}
+                  whileHover={{ scale: 1.02 }}
+                  className="card p-4 cursor-pointer hover:shadow-lg transition-all"
+                  onClick={() => calculateCompatibility(profile)}
                 >
-                  <div className="text-center mb-6">
-                    <div className="text-6xl font-bold mb-4">
-                      <span className={getCompatibilityColor(compatibilityScore)}>
-                        {compatibilityScore}%
-                      </span>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-full bg-violet-500 text-white flex items-center justify-center font-semibold">
+                      {profile.avatar}
                     </div>
-                    <h3 className="text-xl font-bold text-starlight-white mb-2">
-                      Compatibility Score
-                    </h3>
-                    <p className="text-stellar-gray-light">
-                      {getCompatibilityMessage(compatibilityScore)}
-                    </p>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-lg font-semibold text-aurora-green mb-3 flex items-center space-x-2">
-                        <Zap className="w-5 h-5" />
-                        <span>Strengths</span>
-                      </h4>
-                      <ul className="space-y-2">
-                        <li className="flex items-center space-x-2 text-starlight-white">
-                          <div className="w-2 h-2 bg-aurora-green rounded-full" />
-                          <span>Strong emotional connection</span>
-                        </li>
-                        <li className="flex items-center space-x-2 text-starlight-white">
-                          <div className="w-2 h-2 bg-aurora-green rounded-full" />
-                          <span>Complementary personalities</span>
-                        </li>
-                        <li className="flex items-center space-x-2 text-starlight-white">
-                          <div className="w-2 h-2 bg-aurora-green rounded-full" />
-                          <span>Shared values and goals</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-semibold text-nebula-red mb-3 flex items-center space-x-2">
-                        <Shield className="w-5 h-5" />
-                        <span>Challenges</span>
-                      </h4>
-                      <ul className="space-y-2">
-                        <li className="flex items-center space-x-2 text-starlight-white">
-                          <div className="w-2 h-2 bg-nebula-red rounded-full" />
-                          <span>Different communication styles</span>
-                        </li>
-                        <li className="flex items-center space-x-2 text-starlight-white">
-                          <div className="w-2 h-2 bg-nebula-red rounded-full" />
-                          <span>Need for personal space</span>
-                        </li>
-                        <li className="flex items-center space-x-2 text-starlight-white">
-                          <div className="w-2 h-2 bg-nebula-red rounded-full" />
-                          <span>Different approaches to conflict</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 p-4 bg-electric-violet/10 rounded-xl border border-electric-violet/30">
-                    <h4 className="text-lg font-semibold text-electric-violet mb-2">
-                      Cosmic Advice
-                    </h4>
-                    <p className="text-starlight-white">
-                      Your cosmic connection is strong, but requires understanding and patience. 
-                      Focus on open communication and respect each other's differences. 
-                      The stars suggest that compromise and mutual support will strengthen your bond.
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Recent Checks */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="cosmic-card mt-8"
-              >
-                <div className="flex items-center space-x-3 mb-6">
-                  <Users className="w-6 h-6 text-electric-violet" />
-                  <h3 className="text-lg font-bold text-starlight-white">
-                    Recent Compatibility Checks
-                  </h3>
-                </div>
-
-                <div className="space-y-4">
-                  {compatibilityResults.map((result) => (
-                    <div key={result.id} className="p-4 bg-cosmic-navy/50 rounded-xl">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl">{result.person1.avatar}</span>
-                            <span className="text-starlight-white font-semibold">
-                              {result.person1.name}
-                            </span>
-                            <span className="text-stellar-gray-light">
-                              ({result.person1.sign})
-                            </span>
-                          </div>
-                          <Heart className="w-4 h-4 text-stellar-pink" />
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl">{result.person2.avatar}</span>
-                            <span className="text-starlight-white font-semibold">
-                              {result.person2.name}
-                            </span>
-                            <span className="text-stellar-gray-light">
-                              ({result.person2.sign})
-                            </span>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className={`text-2xl font-bold ${getCompatibilityColor(result.compatibility)}`}>
-                            {result.compatibility}%
-                          </div>
-                          <div className="text-stellar-gray-light text-sm">
-                            {result.date}
-                          </div>
-                        </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">{profile.name}</h3>
+                      <p className="text-sm text-gray-600">{profile.zodiacSign} • Life Path {profile.lifePathNumber}</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className={`w-2 h-2 rounded-full ${profile.isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
+                        <span className="text-xs text-gray-500">
+                          {profile.isOnline ? 'Online' : profile.lastSeen}
+                        </span>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Quick Stats */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="cosmic-card"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Star className="w-6 h-6 text-supernova-gold" />
-                  <h3 className="text-lg font-bold text-starlight-white">
-                    Compatibility Stats
-                  </h3>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-stellar-gray-light">Checks Today</span>
-                    <span className="text-starlight-white font-semibold">47</span>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-stellar-gray-light">Average Score</span>
-                    <span className="text-aurora-green font-semibold">78%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stellar-gray-light">Perfect Matches</span>
-                    <span className="text-supernova-gold font-semibold">12</span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Element Compatibility */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="cosmic-card"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Flame className="w-6 h-6 text-cosmic-orange" />
-                  <h3 className="text-lg font-bold text-starlight-white">
-                    Element Compatibility
-                  </h3>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-stellar-gray-light">Fire + Fire</span>
-                    <span className="text-nebula-red font-semibold">High</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-stellar-gray-light">Water + Water</span>
-                    <span className="text-stellar-teal font-semibold">High</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-stellar-gray-light">Air + Air</span>
-                    <span className="text-celestial-blue font-semibold">High</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-stellar-gray-light">Earth + Earth</span>
-                    <span className="text-aurora-green font-semibold">High</span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Tips */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                className="cosmic-card"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Sparkles className="w-6 h-6 text-electric-violet" />
-                  <h3 className="text-lg font-bold text-starlight-white">
-                    Compatibility Tips
-                  </h3>
-                </div>
-                
-                <div className="space-y-3 text-sm">
-                  <div className="p-3 bg-electric-violet/10 rounded-lg">
-                    <div className="text-electric-violet font-semibold mb-1">
-                      Communication
-                    </div>
-                    <div className="text-stellar-gray-light">
-                      Open and honest communication is key to any relationship.
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 bg-supernova-gold/10 rounded-lg">
-                    <div className="text-supernova-gold font-semibold mb-1">
-                      Understanding
-                    </div>
-                    <div className="text-stellar-gray-light">
-                      Respect each other's differences and unique qualities.
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 bg-aurora-green/10 rounded-lg">
-                    <div className="text-aurora-green font-semibold mb-1">
-                      Growth
-                    </div>
-                    <div className="text-stellar-gray-light">
-                      Support each other's personal and spiritual growth.
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </motion.div>
 
-        {/* Bottom spacing for navigation */}
-        <div className="h-24" />
+          {/* Compatibility Results */}
+          <div className="lg:col-span-2">
+            {!selectedProfile ? (
+              <div className="card p-8 text-center">
+                <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Profile</h3>
+                <p className="text-gray-500">Choose someone from the list to see your compatibility</p>
+              </div>
+            ) : isCalculating ? (
+              <div className="card p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Calculating Compatibility</h3>
+                <p className="text-gray-500">Analyzing your cosmic connection...</p>
+              </div>
+            ) : compatibilityResult ? (
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="card p-6">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-16 h-16 rounded-full bg-violet-500 text-white flex items-center justify-center font-semibold text-xl">
+                      {selectedProfile.avatar}
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-semibold text-gray-900">{selectedProfile.name}</h2>
+                      <p className="text-gray-600">{selectedProfile.zodiacSign} • Life Path {selectedProfile.lifePathNumber}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className={`text-4xl font-bold ${getCompatibilityColor(compatibilityResult.overall)}`}>
+                      {compatibilityResult.overall}%
+                    </div>
+                    <p className="text-lg text-gray-600">{getCompatibilityLabel(compatibilityResult.overall)} Compatibility</p>
+                  </div>
+                </div>
 
-        {/* Cosmic Navigation */}
-        <CosmicNavigation />
-      </div>
+                {/* Compatibility Scores */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="card p-4 text-center">
+                    <Heart className="w-8 h-8 text-pink-500 mx-auto mb-2" />
+                    <div className={`text-2xl font-bold ${getCompatibilityColor(compatibilityResult.romantic)}`}>
+                      {compatibilityResult.romantic}%
+                    </div>
+                    <p className="text-sm text-gray-600">Romantic</p>
+                  </div>
+                  
+                  <div className="card p-4 text-center">
+                    <Users className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                    <div className={`text-2xl font-bold ${getCompatibilityColor(compatibilityResult.friendship)}`}>
+                      {compatibilityResult.friendship}%
+                    </div>
+                    <p className="text-sm text-gray-600">Friendship</p>
+                  </div>
+                  
+                  <div className="card p-4 text-center">
+                    <Star className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                    <div className={`text-2xl font-bold ${getCompatibilityColor(compatibilityResult.business)}`}>
+                      {compatibilityResult.business}%
+                    </div>
+                    <p className="text-sm text-gray-600">Business</p>
+                  </div>
+                </div>
+
+                {/* Strengths */}
+                <div className="card p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <Zap className="w-5 h-5 mr-2 text-green-500" />
+                    Strengths
+                  </h3>
+                  <ul className="space-y-2">
+                    {compatibilityResult.strengths.map((strength, index) => (
+                      <li key={index} className="flex items-center text-gray-700">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                        {strength}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Frictions */}
+                <div className="card p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <Shield className="w-5 h-5 mr-2 text-orange-500" />
+                    Areas to Work On
+                  </h3>
+                  <ul className="space-y-2">
+                    {compatibilityResult.frictions.map((friction, index) => (
+                      <li key={index} className="flex items-center text-gray-700">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full mr-3" />
+                        {friction}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Tips */}
+                <div className="card p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Relationship Tips</h3>
+                  <ul className="space-y-2">
+                    {compatibilityResult.tips.map((tip, index) => (
+                      <li key={index} className="flex items-start text-gray-700">
+                        <div className="w-2 h-2 bg-violet-500 rounded-full mr-3 mt-2" />
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Weekly Ritual */}
+                <div className="card p-6 bg-gradient-to-r from-violet-50 to-purple-50">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Weekly Ritual</h3>
+                  <p className="text-gray-700">{compatibilityResult.weeklyRitual}</p>
+                  <button className="mt-4 btn btn-primary">
+                    Set Reminder
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </motion.div>
     </div>
   )
 }

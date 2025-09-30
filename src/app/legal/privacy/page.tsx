@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Shield, CheckCircle, Lock, Key, Globe } from 'lucide-react'
+import { Shield, CheckCircle, Lock, Key, Globe, Mail, Users, Eye, Database } from 'lucide-react'
 
 const sections = [
   {

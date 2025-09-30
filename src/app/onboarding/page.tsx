@@ -1,494 +1,591 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Sun, Moon, Check, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react'
-interface OnboardingData {
-  fullName: string
-  email: string
-  birthDate: string
-  birthTime: string
-  birthPlace: string
-  latitude: number
-  longitude: number
-  timezone: string
-  zodiacSystem: string
-  language: string
-  interests: string[]
+import { useRouter } from 'next/navigation'
+import { 
+  User, Calendar, Clock, MapPin, Star, Heart, Sparkles, 
+  ChevronRight, ChevronLeft, Check, X, Globe, Shield, CheckCircle,
+  Smartphone, Tablet, Monitor, Wifi, Bell, Users, Zap,
+  Sun, Moon, Compass, Target, Gift, BookOpen, Settings,
+  Crown
+} from 'lucide-react'
+
+interface OnboardingStep {
+  id: string
+  title: string
+  description: string
+  icon: React.ComponentType<any>
+  fields: {
+    id: string
+    label: string
+    type: string
+    placeholder: string
+    required: boolean
+    options?: string[]
+  }[]
+  mobileOptimized?: boolean
 }
 
-const zodiacSystems = [
-  { id: 'western', name: 'Western', description: 'Traditional Western astrology', icon: Sun },
-  { id: 'vedic', name: 'Vedic', description: 'Ancient Indian astrology', icon: Star },
-  { id: 'chinese', name: 'Chinese', description: 'Chinese zodiac system', icon: Moon },
-  { id: 'sri_lankan', name: 'Sri Lankan', description: 'Sri Lankan astrology', icon: Heart }
-]
+interface UserAccountType {
+  id: string
+  name: string
+  description: string
+  features: string[]
+  limitations: string[]
+  price: string
+  icon: React.ComponentType<any>
+  color: string
+  recommended?: boolean
+}
 
-const languages = [
-  { id: 'en', name: 'English', flag: '🇺🇸' },
-  { id: 'si', name: 'සිංහල', flag: '🇱🇰' },
-  { id: 'ta', name: 'தமிழ்', flag: '🇮🇳' },
-  { id: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-  { id: 'zh', name: '中文', flag: '🇨🇳' }
-]
-
-const interests = [
-  { id: 'daily_guidance', name: 'Daily Guidance', icon: Sun },
-  { id: 'numerology', name: 'Numerology', icon: Star },
-  { id: 'dreams', name: 'Dream Interpretation', icon: Moon },
-  { id: 'compatibility', name: 'Compatibility', icon: Heart },
-  { id: 'career', name: 'Career Guidance', icon: Sparkles },
-  { id: 'love', name: 'Love & Relationships', icon: Heart }
+const accountTypes: UserAccountType[] = [
+  {
+    id: 'free',
+    name: 'Free User',
+    description: 'Perfect for getting started with cosmic guidance',
+    features: [
+      'Daily cosmic insights',
+      'Basic numerology readings',
+      'Simple astrology charts',
+      'Community access',
+      'Basic compatibility check'
+    ],
+    limitations: [
+      '3 readings per day',
+      'Basic chart only',
+      'No expert consultations'
+    ],
+    price: 'Free',
+    icon: Heart,
+    color: 'from-slate-500 to-slate-600'
+  },
+  {
+    id: 'premium',
+    name: 'Premium User',
+    description: 'Complete cosmic guidance for your daily life',
+    features: [
+      'Unlimited daily insights',
+      'Advanced numerology analysis',
+      'Detailed astrology charts',
+      'Expert consultations (2/month)',
+      'Advanced compatibility analysis',
+      'AI-powered dream interpretations',
+      'Personalized cosmic calendar'
+    ],
+    limitations: [],
+    price: '$19.99/month',
+    icon: Crown,
+    color: 'from-violet-500 to-purple-600',
+    recommended: true
+  },
+  {
+    id: 'admin',
+    name: 'Admin Account',
+    description: 'Full control and customization for the entire application',
+    features: [
+      'All premium features',
+      'Unlimited expert consultations',
+      'Personal astrologer assigned',
+      'Advanced Vedic astrology',
+      'Custom cosmic rituals',
+      'Admin dashboard access',
+      'User management tools',
+      'Content moderation',
+      'Analytics and insights',
+      'Custom integrations'
+    ],
+    limitations: [],
+    price: 'Contact Us',
+    icon: Shield,
+    color: 'from-amber-500 to-orange-600'
+  }
 ]
 
 export default function OnboardingPage() {
+  const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0)
-  const [formData, setFormData] = useState<OnboardingData>({
-    fullName: '',
+  const [isMobile, setIsMobile] = useState(false)
+  const [selectedAccountType, setSelectedAccountType] = useState<string>('')
+  const [formData, setFormData] = useState({
+    name: '',
     email: '',
     birthDate: '',
     birthTime: '',
     birthPlace: '',
-    latitude: 0,
-    longitude: 0,
     timezone: '',
-    zodiacSystem: 'western',
+    deviceType: 'mobile',
+    system: 'western',
     language: 'en',
-    interests: []
+    accountType: '',
+    preferences: {
+      astrology: true,
+      numerology: true,
+      notifications: true,
+      community: false,
+      pushNotifications: true,
+      dailyReminders: true,
+      cosmicAlerts: true,
+      darkMode: false,
+      hapticFeedback: true
+    }
   })
 
-  const steps = [
-    { id: 'welcome', title: 'Welcome to Your Cosmic Journey' },
-    { id: 'personal', title: 'Personal Information' },
-    { id: 'birth', title: 'Birth Details' },
-    { id: 'preferences', title: 'Cosmic Preferences' },
-    { id: 'interests', title: 'Your Interests' },
-    { id: 'complete', title: 'Welcome to the Cosmos!' }
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const steps: OnboardingStep[] = [
+    {
+      id: 'welcome',
+      title: 'Welcome to Daily Secrets',
+      description: 'Discover the cosmic wisdom that awaits you. Let\'s create your personalized cosmic profile.',
+      icon: Sparkles,
+      fields: [],
+      mobileOptimized: true
+    },
+    {
+      id: 'account-type',
+      title: 'Choose Your Account Type',
+      description: 'Select the account type that best fits your cosmic journey needs',
+      icon: Crown,
+      fields: []
+    },
+    {
+      id: 'device',
+      title: 'Device Setup',
+      description: 'Tell us about your device for the best mobile experience.',
+      icon: Smartphone,
+      fields: [
+        {
+          id: 'deviceType',
+          label: 'Primary Device',
+          type: 'select',
+          placeholder: 'Select your primary device',
+          required: true,
+          options: ['mobile', 'tablet', 'desktop']
+        }
+      ],
+      mobileOptimized: true
+    },
+    {
+      id: 'personal',
+      title: 'Personal Information',
+      description: 'Tell us about yourself to create your cosmic profile.',
+      icon: User,
+      fields: [
+        {
+          id: 'name',
+          label: 'Full Name',
+          type: 'text',
+          placeholder: 'Enter your full name',
+          required: true
+        },
+        {
+          id: 'email',
+          label: 'Email Address',
+          type: 'email',
+          placeholder: 'Enter your email',
+          required: true
+        }
+      ],
+      mobileOptimized: true
+    },
+    {
+      id: 'birth',
+      title: 'Birth Details',
+      description: 'Your birth information is essential for accurate astrological calculations.',
+      icon: Calendar,
+      fields: [
+        {
+          id: 'birthDate',
+          label: 'Birth Date',
+          type: 'date',
+          placeholder: 'Select your birth date',
+          required: true
+        },
+        {
+          id: 'birthTime',
+          label: 'Birth Time',
+          type: 'time',
+          placeholder: 'Select your birth time',
+          required: true
+        }
+      ],
+      mobileOptimized: true
+    },
+    {
+      id: 'location',
+      title: 'Birth Location',
+      description: 'Your birth place helps us calculate your exact astrological chart.',
+      icon: MapPin,
+      fields: [
+        {
+          id: 'birthPlace',
+          label: 'Birth Place',
+          type: 'text',
+          placeholder: 'Enter your birth city, country',
+          required: true
+        },
+        {
+          id: 'timezone',
+          label: 'Timezone',
+          type: 'select',
+          placeholder: 'Select your timezone',
+          required: true,
+          options: [
+            'UTC-12:00', 'UTC-11:00', 'UTC-10:00', 'UTC-09:00', 'UTC-08:00',
+            'UTC-07:00', 'UTC-06:00', 'UTC-05:00', 'UTC-04:00', 'UTC-03:00',
+            'UTC-02:00', 'UTC-01:00', 'UTC+00:00', 'UTC+01:00', 'UTC+02:00',
+            'UTC+03:00', 'UTC+04:00', 'UTC+05:00', 'UTC+06:00', 'UTC+07:00',
+            'UTC+08:00', 'UTC+09:00', 'UTC+10:00', 'UTC+11:00', 'UTC+12:00'
+          ]
+        }
+      ],
+      mobileOptimized: true
+    },
+    {
+      id: 'preferences',
+      title: 'Cosmic Preferences',
+      description: 'Choose which cosmic insights you\'d like to receive.',
+      icon: Star,
+      fields: [
+        {
+          id: 'astrology',
+          label: 'Astrology',
+          type: 'checkbox',
+          placeholder: 'Receive astrological insights',
+          required: false
+        },
+        {
+          id: 'numerology',
+          label: 'Numerology',
+          type: 'checkbox',
+          placeholder: 'Receive numerological insights',
+          required: false
+        },
+        {
+          id: 'notifications',
+          label: 'Notifications',
+          type: 'checkbox',
+          placeholder: 'Receive daily cosmic updates',
+          required: false
+        },
+        {
+          id: 'community',
+          label: 'Community',
+          type: 'checkbox',
+          placeholder: 'Join the cosmic community',
+          required: false
+        },
+        {
+          id: 'pushNotifications',
+          label: 'Push Notifications',
+          type: 'checkbox',
+          placeholder: 'Enable push notifications',
+          required: false
+        },
+        {
+          id: 'dailyReminders',
+          label: 'Daily Reminders',
+          type: 'checkbox',
+          placeholder: 'Daily cosmic reminders',
+          required: false
+        },
+        {
+          id: 'cosmicAlerts',
+          label: 'Cosmic Alerts',
+          type: 'checkbox',
+          placeholder: 'Important cosmic events',
+          required: false
+        },
+        {
+          id: 'darkMode',
+          label: 'Dark Mode',
+          type: 'checkbox',
+          placeholder: 'Enable dark mode',
+          required: false
+        },
+        {
+          id: 'hapticFeedback',
+          label: 'Haptic Feedback',
+          type: 'checkbox',
+          placeholder: 'Enable haptic feedback',
+          required: false
+        }
+      ],
+      mobileOptimized: true
+    }
   ]
+
+  const handleInputChange = (fieldId: string, value: string | boolean) => {
+    if (fieldId in formData.preferences) {
+      setFormData(prev => ({
+        ...prev,
+        preferences: {
+          ...prev.preferences,
+          [fieldId]: value
+        }
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [fieldId]: value
+      }))
+    }
+  }
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
       // Complete onboarding
-      localStorage.setItem('daily-secrets-profile', JSON.stringify(formData))
-      localStorage.setItem('daily-secrets-onboarding-complete', 'true')
-      window.location.href = '/'
+      localStorage.setItem('userData', JSON.stringify(formData))
+      localStorage.setItem('onboardingComplete', 'true')
+      router.push('/home')
     }
   }
 
-  const handlePrevious = () => {
+  const handlePrev = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
     }
   }
 
-  const handleInterestToggle = (interestId: string) => {
-    setFormData({
-      ...formData,
-      interests: formData.interests.includes(interestId)
-        ? formData.interests.filter(id => id !== interestId)
-        : [...formData.interests, interestId]
+  const isStepValid = () => {
+    const currentStepData = steps[currentStep]
+    
+    // Special validation for account type step
+    if (currentStepData.id === 'account-type') {
+      return selectedAccountType !== ''
+    }
+    
+    if (currentStepData.fields.length === 0) return true
+    
+    return currentStepData.fields.every(field => {
+      if (!field.required) return true
+      if (field.id in formData.preferences) {
+        return formData.preferences[field.id as keyof typeof formData.preferences] !== undefined
+      }
+      return formData[field.id as keyof typeof formData] !== ''
     })
   }
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 0:
         return (
-          <motion.div
-            key="welcome"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="text-center"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-electric-violet to-supernova-gold rounded-full flex items-center justify-center"
-            >
-              <Star className="w-12 h-12 text-white" />
-            </motion.div>
-            
-            <h1 className="text-4xl font-bold text-cosmic-gradient-text mb-6">
-              Welcome to Daily Secrets
-            </h1>
-            
-            <p className="text-stellar-gray-light text-lg mb-8 max-w-2xl mx-auto">
-              Discover the secrets of the universe through personalized astrology, 
-              numerology, and cosmic guidance. Your journey to self-discovery starts here.
-            </p>
-            
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="cosmic-card text-center">
-                <Sun className="w-8 h-8 text-supernova-gold mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-starlight-white mb-2">
-                  Daily Guidance
-                </h3>
-                <p className="text-stellar-gray-light text-sm">
-                  Get personalized cosmic insights every day
-                </p>
-              </div>
-              
-              <div className="cosmic-card text-center">
-                <Star className="w-8 h-8 text-electric-violet mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-starlight-white mb-2">
-                  Numerology
-                </h3>
-                <p className="text-stellar-gray-light text-sm">
-                  Discover your life path and destiny numbers
-                </p>
-              </div>
-              
-              <div className="cosmic-card text-center">
-                <Moon className="w-8 h-8 text-stellar-pink mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-starlight-white mb-2">
-                  Dream Analysis
-                </h3>
-                <p className="text-stellar-gray-light text-sm">
-                  Interpret your dreams with cosmic wisdom
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )
-
-      case 1:
-        return (
-          <motion.div
-            key="personal"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="max-w-2xl mx-auto"
-          >
-            <h2 className="text-3xl font-bold text-cosmic-gradient-text mb-8 text-center">
-              Tell Us About Yourself
-            </h2>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                  className="cosmic-input w-full"
-                  placeholder="Enter your full name"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="cosmic-input w-full"
-                  placeholder="Enter your email address"
-                />
-              </div>
-            </div>
-          </motion.div>
-        )
-
-      case 2:
-        return (
-          <motion.div
-            key="birth"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="max-w-2xl mx-auto"
-          >
-            <h2 className="text-3xl font-bold text-cosmic-gradient-text mb-8 text-center">
-              Your Birth Details
-            </h2>
-            
-            <div className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                    Birth Date
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.birthDate}
-                    onChange={(e) => setFormData({...formData, birthDate: e.target.value})}
-                    className="cosmic-input w-full"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                    Birth Time
-                  </label>
-                  <input
-                    type="time"
-                    value={formData.birthTime}
-                    onChange={(e) => setFormData({...formData, birthTime: e.target.value})}
-                    className="cosmic-input w-full"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                  Birth Place
-                </label>
-                <input
-                  type="text"
-                  value={formData.birthPlace}
-                  onChange={(e) => setFormData({...formData, birthPlace: e.target.value})}
-                  className="cosmic-input w-full"
-                  placeholder="Enter your birth place"
-                />
-              </div>
-            </div>
-          </motion.div>
-        )
-
-      case 3:
-        return (
-          <motion.div
-            key="preferences"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="max-w-4xl mx-auto"
-          >
-            <h2 className="text-3xl font-bold text-cosmic-gradient-text mb-8 text-center">
-              Your Cosmic Preferences
-            </h2>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold text-starlight-white mb-6">
-                  Zodiac System
-                </h3>
-                <div className="space-y-4">
-                  {zodiacSystems.map((system) => {
-                    const Icon = system.icon
-                    return (
-                      <button
-                        key={system.id}
-                        onClick={() => setFormData({...formData, zodiacSystem: system.id})}
-                        className={`w-full p-4 rounded-xl border transition-all text-left ${
-                          formData.zodiacSystem === system.id
-                            ? 'border-electric-violet bg-electric-violet/20 text-electric-violet'
-                            : 'border-electric-violet/30 text-stellar-gray-light hover:border-electric-violet hover:text-electric-violet'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-4">
-                          <Icon className="w-6 h-6" />
-                          <div>
-                            <div className="font-semibold">{system.name}</div>
-                            <div className="text-sm opacity-75">{system.description}</div>
-                          </div>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-semibold text-starlight-white mb-6">
-                  Language
-                </h3>
-                <div className="space-y-3">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.id}
-                      onClick={() => setFormData({...formData, language: lang.id})}
-                      className={`w-full p-3 rounded-xl border transition-all text-left ${
-                        formData.language === lang.id
-                          ? 'border-electric-violet bg-electric-violet/20 text-electric-violet'
-                          : 'border-electric-violet/30 text-stellar-gray-light hover:border-electric-violet hover:text-electric-violet'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{lang.flag}</span>
-                        <span className="font-semibold">{lang.name}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )
-
-      case 4:
-        return (
-          <motion.div
-            key="interests"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="max-w-4xl mx-auto"
-          >
-            <h2 className="text-3xl font-bold text-cosmic-gradient-text mb-8 text-center">
-              What Interests You?
-            </h2>
-            
-            <p className="text-stellar-gray-light text-center mb-8">
-              Select the areas you'd like to explore (you can change these later)
-            </p>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              {interests.map((interest) => {
-                const Icon = interest.icon
-                const isSelected = formData.interests.includes(interest.id)
-                
-                return (
-                  <button
-                    key={interest.id}
-                    onClick={() => handleInterestToggle(interest.id)}
-                    className={`p-6 rounded-xl border transition-all text-center ${
-                      isSelected
-                        ? 'border-electric-violet bg-electric-violet/20 text-electric-violet'
-                        : 'border-electric-violet/30 text-stellar-gray-light hover:border-electric-violet hover:text-electric-violet'
-                    }`}
-                  >
-                    <Icon className="w-8 h-8 mx-auto mb-4" />
-                    <div className="font-semibold">{interest.name}</div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 mx-auto mt-2 text-electric-violet" />
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-          </motion.div>
-        )
-
-      case 5:
-        return (
-          <motion.div
-            key="complete"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="text-center"
-          >
-            <motion.div
-              animate={{ 
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-electric-violet via-supernova-gold to-stellar-pink rounded-full flex items-center justify-center"
-            >
-              <Sparkles className="w-16 h-16 text-white" />
-            </motion.div>
-            
-            <h1 className="text-4xl font-bold text-cosmic-gradient-text mb-6">
-              Welcome to the Cosmos!
-            </h1>
-            
-            <p className="text-stellar-gray-light text-lg mb-8 max-w-2xl mx-auto">
-              Your cosmic profile has been created. Get ready to discover the secrets 
-              of the universe through personalized astrology and numerology insights.
-            </p>
-            
-            <div className="cosmic-card max-w-2xl mx-auto">
-              <h3 className="text-xl font-semibold text-starlight-white mb-4">
-                Your Cosmic Profile Summary
-              </h3>
-              <div className="space-y-3 text-left">
-                <div className="flex justify-between">
-                  <span className="text-stellar-gray-light">Name:</span>
-                  <span className="text-starlight-white">{formData.fullName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stellar-gray-light">Zodiac System:</span>
-                  <span className="text-starlight-white capitalize">{formData.zodiacSystem}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stellar-gray-light">Language:</span>
-                  <span className="text-starlight-white">
-                    {languages.find(l => l.id === formData.language)?.name}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stellar-gray-light">Interests:</span>
-                  <span className="text-starlight-white">{formData.interests.length} selected</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )
-
-      default:
-        return null
-    }
-  }
-
-  return (
-    <div className="min-h-screen bg-deep-space">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-deep-space via-cosmic-navy to-nebula-dark" />
-      <div className="absolute inset-0 bg-cosmic-pattern opacity-30" />
-      
-      <div className="relative z-10">
-        <div className="container mx-auto px-4 py-8">
-          {/* Progress Bar */}
-          <div className="max-w-2xl mx-auto mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-stellar-gray-light text-sm">
-                Step {currentStep + 1} of {steps.length}
-              </span>
-              <span className="text-stellar-gray-light text-sm">
-                {Math.round(((currentStep + 1) / steps.length) * 100)}%
-              </span>
-            </div>
-            <div className="cosmic-progress">
-              <motion.div
-                className="cosmic-progress-bar"
-                initial={{ width: 0 }}
-                animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+      <div className={`w-full ${isMobile ? 'max-w-sm' : 'max-w-md'} mx-auto`}>
+        {/* Mobile-Optimized Progress Bar */}
+        <div className="mb-6">
+          <div className="flex justify-between text-sm text-gray-500 mb-2">
+            <span className="font-medium">Step {currentStep + 1} of {steps.length}</span>
+            <span className="font-medium">{Math.round(((currentStep + 1) / steps.length) * 100)}%</span>
           </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <motion.div
+              className="bg-gradient-to-r from-violet-500 to-purple-600 h-2 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+              </div>
+              
+        {/* Mobile-Optimized Step Content */}
+        <motion.div
+          key={currentStep}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="text-center mb-6"
+        >
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+            {(() => {
+              const Icon = steps[currentStep].icon;
+              return <Icon className="w-8 h-8 text-white" />;
+            })()}
+              </div>
+          <h1 className={`font-bold text-gray-900 mb-2 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+            {steps[currentStep].title}
+          </h1>
+          <p className={`text-gray-600 ${isMobile ? 'text-sm' : 'text-base'}`}>
+            {steps[currentStep].description}
+          </p>
+          </motion.div>
 
-          {/* Step Content */}
-          <AnimatePresence mode="wait">
-            {renderStep()}
+        {/* Account Type Selection */}
+        {steps[currentStep].id === 'account-type' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4 mb-6"
+          >
+            {accountTypes.map((accountType, index) => (
+          <motion.div
+                key={accountType.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className={`relative p-6 rounded-xl border-2 cursor-pointer transition-all ${
+                  selectedAccountType === accountType.id
+                    ? 'border-violet-500 bg-violet-50'
+                    : 'border-gray-200 bg-white hover:border-violet-300'
+                }`}
+                onClick={() => {
+                  setSelectedAccountType(accountType.id)
+                  setFormData(prev => ({ ...prev, accountType: accountType.id }))
+                }}
+              >
+                {accountType.recommended && (
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                    Recommended
+                </div>
+                )}
+                
+                <div className="flex items-start space-x-4">
+                  <div className={`w-12 h-12 bg-gradient-to-br ${accountType.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <accountType.icon className="w-6 h-6 text-white" />
+              </div>
+              
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900">{accountType.name}</h3>
+                      <span className="text-violet-600 font-bold">{accountType.price}</span>
+              </div>
+                    <p className="text-gray-600 text-sm mb-3">{accountType.description}</p>
+                    
+                    <div className="space-y-2">
+                      <div className="text-sm">
+                        <span className="font-medium text-gray-700">Features:</span>
+                        <ul className="mt-1 space-y-1">
+                          {accountType.features.slice(0, 3).map((feature, featureIndex) => (
+                            <li key={featureIndex} className="flex items-center space-x-2 text-gray-600">
+                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                              <span className="text-xs">{feature}</span>
+                            </li>
+                          ))}
+                          {accountType.features.length > 3 && (
+                            <li className="text-xs text-gray-500">
+                              +{accountType.features.length - 3} more features
+                            </li>
+                          )}
+                        </ul>
+            </div>
+                      
+                      {accountType.limitations.length > 0 && (
+                        <div className="text-sm">
+                          <span className="font-medium text-gray-700">Limitations:</span>
+                          <ul className="mt-1 space-y-1">
+                            {accountType.limitations.slice(0, 2).map((limitation, limitationIndex) => (
+                              <li key={limitationIndex} className="flex items-center space-x-2 text-gray-500">
+                                <X className="w-4 h-4 text-red-500 flex-shrink-0" />
+                                <span className="text-xs">{limitation}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                </div>
+              </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Mobile-Optimized Form Fields */}
+        <AnimatePresence>
+          {steps[currentStep].fields.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-4 mb-6"
+            >
+              {steps[currentStep].fields.map((field) => (
+                <div key={field.id} className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {field.label}
+                    {field.required && <span className="text-red-500 ml-1">*</span>}
+                  </label>
+                  
+                  {field.type === 'select' ? (
+                    <select
+                      value={formData[field.id as keyof typeof formData] as string}
+                      onChange={(e) => handleInputChange(field.id, e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-base"
+                    >
+                      <option value="">{field.placeholder}</option>
+                      {field.options?.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  ) : field.type === 'checkbox' ? (
+                    <label className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={formData.preferences[field.id as keyof typeof formData.preferences] as boolean}
+                        onChange={(e) => handleInputChange(field.id, e.target.checked)}
+                        className="w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
+                      />
+                      <span className="text-sm text-gray-700">{field.placeholder}</span>
+                    </label>
+                  ) : (
+                    <input
+                      type={field.type}
+                      value={formData[field.id as keyof typeof formData] as string}
+                      onChange={(e) => handleInputChange(field.id, e.target.value)}
+                      placeholder={field.placeholder}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-base"
+                    />
+                  )}
+                </div>
+              ))}
+          </motion.div>
+          )}
           </AnimatePresence>
 
-          {/* Navigation */}
-          <div className="flex justify-between max-w-2xl mx-auto mt-12">
+        {/* Mobile-Optimized Navigation Buttons */}
+        <div className="flex justify-between items-center">
             <button
-              onClick={handlePrevious}
+            onClick={handlePrev}
               disabled={currentStep === 0}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center space-x-2 ${
-                currentStep === 0
-                  ? 'bg-cosmic-navy text-stellar-gray-light cursor-not-allowed'
-                  : 'bg-cosmic-navy border border-electric-violet text-electric-violet hover:bg-electric-violet hover:text-white'
-              }`}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Previous</span>
+            className="flex items-center space-x-2 px-4 py-3 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span className="font-medium">Back</span>
             </button>
             
             <button
               onClick={handleNext}
-              className="cosmic-button flex items-center space-x-2"
-            >
-              <span>
-                {currentStep === steps.length - 1 ? 'Start Your Journey' : 'Next'}
-              </span>
-              <ArrowRight className="w-4 h-4" />
+            disabled={!isStepValid()}
+            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-lg hover:from-violet-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
+          >
+            <span className="font-medium">{currentStep === steps.length - 1 ? 'Get Started' : 'Continue'}</span>
+            <ChevronRight className="w-4 h-4" />
             </button>
-          </div>
         </div>
+
+        {/* Mobile Tips */}
+        {isMobile && (
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+            <div className="flex items-center space-x-2 text-blue-600 mb-2">
+              <Smartphone className="w-4 h-4" />
+              <span className="text-sm font-medium">Mobile Tips</span>
+            </div>
+            <p className="text-xs text-blue-700">
+              For the best experience, enable notifications and keep your device connected to the internet.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

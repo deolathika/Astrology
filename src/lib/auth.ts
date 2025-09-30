@@ -50,7 +50,6 @@ export const authOptions: NextAuthOptions = {
             image: null
           }
         } catch (error) {
-          console.error('Authentication error:', error)
           return null
         }
       }
@@ -120,11 +119,9 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signIn({ user, account, profile, isNewUser }) {
-      console.log('User signed in:', user.email)
-    },
+      },
     async signOut({ session, token }) {
-      console.log('User signed out')
-    },
+      },
   },
   debug: process.env.NODE_ENV === 'development',
 }

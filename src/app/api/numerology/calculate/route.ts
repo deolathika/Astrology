@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { pythagoreanNumerology, chaldeanNumerology } from '@/lib/numerology/engines'
+import { PythagoreanNumerology, ChaldeanNumerology } from '@/lib/numerology/engines'
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,21 +17,21 @@ export async function POST(request: NextRequest) {
 
     if (system === 'chaldean') {
       numerologyData = {
-        lifePath: pythagoreanNumerology.calculateLifePath(birthDate),
-        destiny: chaldeanNumerology.calculateDestiny(fullName),
-        soulUrge: pythagoreanNumerology.calculateSoulUrge(fullName),
-        personality: pythagoreanNumerology.calculatePersonality(fullName),
-        birthday: pythagoreanNumerology.calculateBirthday(birthDate),
-        currentName: pythagoreanNumerology.calculateCurrentName(fullName)
+        lifePath: PythagoreanNumerology.calculateLifePath(birthDate),
+        destiny: ChaldeanNumerology.calculateDestiny(fullName),
+        soulUrge: PythagoreanNumerology.calculateSoulUrge(fullName),
+        personality: PythagoreanNumerology.calculatePersonality(fullName),
+        birthday: PythagoreanNumerology.calculateBirthday(birthDate),
+        currentName: PythagoreanNumerology.calculateCurrentName(fullName)
       }
     } else {
       numerologyData = {
-        lifePath: pythagoreanNumerology.calculateLifePath(birthDate),
-        destiny: pythagoreanNumerology.calculateDestiny(fullName),
-        soulUrge: pythagoreanNumerology.calculateSoulUrge(fullName),
-        personality: pythagoreanNumerology.calculatePersonality(fullName),
-        birthday: pythagoreanNumerology.calculateBirthday(birthDate),
-        currentName: pythagoreanNumerology.calculateCurrentName(fullName)
+        lifePath: PythagoreanNumerology.calculateLifePath(birthDate),
+        destiny: PythagoreanNumerology.calculateDestiny(fullName),
+        soulUrge: PythagoreanNumerology.calculateSoulUrge(fullName),
+        personality: PythagoreanNumerology.calculatePersonality(fullName),
+        birthday: PythagoreanNumerology.calculateBirthday(birthDate),
+        currentName: PythagoreanNumerology.calculateCurrentName(fullName)
       }
     }
 

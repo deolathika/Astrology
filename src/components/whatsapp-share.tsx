@@ -6,6 +6,7 @@
  */
 
 import { motion } from 'framer-motion'
+import { MessageCircle, Check, Copy } from 'lucide-react'
 interface WhatsAppShareProps {
   content: {
     title: string

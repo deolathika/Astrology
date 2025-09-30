@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SocialShare } from './social-share'
+import { Share2, ThumbsUp, Sparkles, Lightbulb, ChevronDown, ChevronUp, Star, Heart } from 'lucide-react'
 
 interface TodaysSecretCardProps {
   user?: any
@@ -160,7 +161,7 @@ function TodaysSecretCard({ user }: TodaysSecretCardProps) {
                     : 'bg-cosmic-navy/30 text-stellar-gray-light hover:bg-cosmic-navy/50'
                 }`}
               >
-                <HeartIcon className="w-4 h-4" />
+                <Heart className="w-4 h-4" />
                 <span className="text-sm">{reactions.love}</span>
               </button>
             </div>

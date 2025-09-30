@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
 interface ThemeContextType {
   theme: 'light' | 'dark'
@@ -19,16 +19,34 @@ export function useTheme() {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [mounted, setMounted] = useState(false)
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }
 
   useEffect(() => {
-    // Apply theme to document
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-  }, [theme])
+    setMounted(true)
+    // Load theme from localStorage if available
+    const savedTheme = localStorage.getItem('daily-secrets-theme')
+    if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
+      setTheme(savedTheme)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (mounted) {
+      // Apply theme to document
+      document.documentElement.classList.toggle('dark', theme === 'dark')
+      localStorage.setItem('daily-secrets-theme', theme)
+    }
+  }, [theme, mounted])
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return <>{children}</>
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>

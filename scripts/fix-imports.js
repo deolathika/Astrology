@@ -75,3 +75,4 @@ console.log('🔧 Fixing import statements...\n');
 Object.keys(iconUsage).forEach(fixImports);
 
 console.log('\n✅ Import fixes completed!');
+

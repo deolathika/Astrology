@@ -103,7 +103,6 @@ export class OfflineService {
         lastSync: new Date()
       })
     } catch (error) {
-      console.error('Failed to save user offline:', error)
       throw error
     }
   }
@@ -115,7 +114,6 @@ export class OfflineService {
     try {
       return await db.users.get(userId)
     } catch (error) {
-      console.error('Failed to get user offline:', error)
       return undefined
     }
   }
@@ -127,7 +125,6 @@ export class OfflineService {
     try {
       await db.readings.put(reading)
     } catch (error) {
-      console.error('Failed to save reading offline:', error)
       throw error
     }
   }
@@ -145,7 +142,6 @@ export class OfflineService {
       
       return await query.toArray()
     } catch (error) {
-      console.error('Failed to get readings offline:', error)
       return []
     }
   }
@@ -157,7 +153,6 @@ export class OfflineService {
     try {
       await db.dreams.put(dream)
     } catch (error) {
-      console.error('Failed to save dream offline:', error)
       throw error
     }
   }
@@ -169,7 +164,6 @@ export class OfflineService {
     try {
       return await db.dreams.where('userId').equals(userId).toArray()
     } catch (error) {
-      console.error('Failed to get dreams offline:', error)
       return []
     }
   }
@@ -184,7 +178,6 @@ export class OfflineService {
         lastSync: new Date()
       })
     } catch (error) {
-      console.error('Failed to save settings offline:', error)
       throw error
     }
   }
@@ -196,7 +189,6 @@ export class OfflineService {
     try {
       return await db.settings.get(userId)
     } catch (error) {
-      console.error('Failed to get settings offline:', error)
       return undefined
     }
   }
@@ -215,7 +207,6 @@ export class OfflineService {
         lastAccess: new Date()
       })
     } catch (error) {
-      console.error('Failed to cache data:', error)
       throw error
     }
   }
@@ -241,7 +232,6 @@ export class OfflineService {
       
       return cached.data
     } catch (error) {
-      console.error('Failed to get cached data:', error)
       return null
     }
   }
@@ -254,8 +244,7 @@ export class OfflineService {
       const now = new Date()
       await db.cache.where('expires').below(now).delete()
     } catch (error) {
-      console.error('Failed to clear expired cache:', error)
-    }
+      }
   }
 
   /**
@@ -271,7 +260,6 @@ export class OfflineService {
       
       return { readings, dreams }
     } catch (error) {
-      console.error('Failed to get unsynced data:', error)
       return { readings: [], dreams: [] }
     }
   }
@@ -287,7 +275,6 @@ export class OfflineService {
         await db.dreams.where('id').anyOf(ids).modify({ synced: true })
       }
     } catch (error) {
-      console.error('Failed to mark data as synced:', error)
       throw error
     }
   }
@@ -303,7 +290,6 @@ export class OfflineService {
       await db.settings.clear()
       await db.cache.clear()
     } catch (error) {
-      console.error('Failed to clear all data:', error)
       throw error
     }
   }
@@ -335,7 +321,6 @@ export class OfflineService {
         total: users + readings + dreams + settings + cache
       }
     } catch (error) {
-      console.error('Failed to get storage usage:', error)
       return { users: 0, readings: 0, dreams: 0, settings: 0, cache: 0, total: 0 }
     }
   }

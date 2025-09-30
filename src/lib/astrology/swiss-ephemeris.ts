@@ -50,10 +50,8 @@ export class SwissEphemerisEngine {
   private async initialize() {
     try {
       // Initialize Swiss Ephemeris via backend API
-      console.log('Initializing Swiss Ephemeris via backend...')
       this.isInitialized = true
     } catch (error) {
-      console.error('Failed to initialize Swiss Ephemeris:', error)
       throw new Error('Swiss Ephemeris initialization failed')
     }
   }
@@ -68,10 +66,8 @@ export class SwissEphemerisEngine {
 
     try {
       // For now, use mock data since backend server is not available
-      console.log('Using mock planetary positions for development')
       return this.getMockPlanetaryPositions()
     } catch (error) {
-      console.error('Failed to calculate planetary positions:', error)
       // Fallback to mock data for development
       return this.getMockPlanetaryPositions()
     }
@@ -105,10 +101,8 @@ export class SwissEphemerisEngine {
 
     try {
       // For now, use mock data since backend server is not available
-      console.log('Using mock house cusps for development')
       return this.getMockHouseCusps()
     } catch (error) {
-      console.error('Failed to calculate house cusps:', error)
       // Fallback to mock data for development
       return this.getMockHouseCusps()
     }

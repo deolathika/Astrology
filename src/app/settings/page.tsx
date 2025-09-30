@@ -1,402 +1,493 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { CosmicNavigation } from '@/components/cosmic-navigation'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Settings, User, Globe, Bell, Shield, Download, Trash2, Moon, Sun, Languages, Palette, Database, Eye, EyeOff } from 'lucide-react'
+import { toast } from 'react-hot-toast'
+
+interface UserSettings {
+  language: string
+  theme: 'light' | 'dark' | 'auto'
+  notifications: {
+    daily: boolean
+    transits: boolean
+    community: boolean
+    system: boolean
+  }
+  privacy: {
+    profileVisible: boolean
+    dataSharing: boolean
+    analytics: boolean
+  }
+  astrology: {
+    system: 'western' | 'vedic' | 'chinese' | 'hybrid'
+    houseSystem: 'whole' | 'placidus' | 'equal'
+    ayanamsa: 'lahiri' | 'raman' | 'krishnamurti'
+  }
+}
+
+const languages = [
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+  { code: 'ta', name: 'தமிழ்', flag: '🇮🇳' },
+  { code: 'te', name: 'తెలుగు', flag: '🇮🇳' },
+  { code: 'mr', name: 'मराठी', flag: '🇮🇳' },
+  { code: 'kn', name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+  { code: 'bn', name: 'বাংলা', flag: '🇮🇳' },
+  { code: 'gu', name: 'ગુજરાતી', flag: '🇮🇳' },
+  { code: 'ml', name: 'മലയാളം', flag: '🇮🇳' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷' }
+]
+
 export default function SettingsPage() {
-  const [notifications, setNotifications] = useState({
-    dailyGuidance: true,
-    dreamAlerts: true,
-    compatibilityUpdates: false,
-    cosmicEvents: true,
-    pushNotifications: true,
-    emailNotifications: false
-  })
-
-  const [preferences, setPreferences] = useState({
+  const [settings, setSettings] = useState<UserSettings>({
     language: 'en',
-    theme: 'cosmic',
-    zodiacSystem: 'western',
-    timeFormat: '12h',
-    dateFormat: 'MM/DD/YYYY'
+    theme: 'auto',
+    notifications: {
+      daily: true,
+      transits: true,
+      community: true,
+      system: true
+    },
+    privacy: {
+      profileVisible: true,
+      dataSharing: false,
+      analytics: true
+    },
+    astrology: {
+      system: 'western',
+      houseSystem: 'whole',
+      ayanamsa: 'lahiri'
+    }
   })
 
-  const [privacy, setPrivacy] = useState({
-    profileVisibility: 'private',
-    dataSharing: false,
-    analytics: true,
-    crashReports: true
-  })
+  const [activeTab, setActiveTab] = useState<'general' | 'privacy' | 'astrology' | 'data'>('general')
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
-  const languages = [
-    { id: 'en', name: 'English', flag: '🇺🇸' },
-    { id: 'si', name: 'සිංහල', flag: '🇱🇰' },
-    { id: 'ta', name: 'தமிழ்', flag: '🇮🇳' },
-    { id: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-    { id: 'zh', name: '中文', flag: '🇨🇳' }
-  ]
+  useEffect(() => {
+    loadSettings()
+  }, [])
 
-  const themes = [
-    { id: 'cosmic', name: 'Cosmic', icon: Star, description: 'Deep space theme' },
-    { id: 'dark', name: 'Dark', icon: Moon, description: 'Dark mode' },
-    { id: 'light', name: 'Light', icon: Sun, description: 'Light mode' }
-  ]
-
-  const handleLogout = () => {
-    localStorage.removeItem('daily-secrets-profile')
-    localStorage.removeItem('daily-secrets-onboarding-complete')
-    window.location.href = '/onboarding'
+  const loadSettings = () => {
+    const savedSettings = localStorage.getItem('userSettings')
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings))
+    }
   }
 
-  return (
-    <div className="min-h-screen bg-deep-space">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-deep-space via-cosmic-navy to-nebula-dark" />
-      <div className="absolute inset-0 bg-cosmic-pattern opacity-30" />
+  const saveSettings = (newSettings: Partial<UserSettings>) => {
+    const updatedSettings = { ...settings, ...newSettings }
+    setSettings(updatedSettings)
+    localStorage.setItem('userSettings', JSON.stringify(updatedSettings))
+    toast.success('Settings saved')
+  }
+
+  const handleDataExport = async () => {
+    try {
+      const userData = localStorage.getItem('userData')
+      const dreams = localStorage.getItem('dreams')
+      const settings = localStorage.getItem('userSettings')
       
-      <div className="relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="container mx-auto px-4 py-8"
-        >
-          {/* Header */}
-          <div className="text-center mb-8">
-            <motion.h1
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl font-bold text-cosmic-gradient-text mb-4"
-            >
-              Settings
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-stellar-gray-light"
-            >
-              Customize your cosmic experience
-            </motion.p>
-          </div>
+      const exportData = {
+        userData: userData ? JSON.parse(userData) : null,
+        dreams: dreams ? JSON.parse(dreams) : [],
+        settings: settings ? JSON.parse(settings) : null,
+        exportDate: new Date().toISOString()
+      }
 
-          <div className="max-w-4xl mx-auto space-y-8">
-            {/* Notifications */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="cosmic-card"
-            >
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="p-3 bg-electric-violet/20 rounded-2xl">
-                  <Bell className="w-6 h-6 text-electric-violet" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-starlight-white">
-                    Notifications
-                  </h2>
-                  <p className="text-stellar-gray-light">
-                    Manage your notification preferences
-                  </p>
-                </div>
-              </div>
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `daily-secrets-data-${new Date().toISOString().split('T')[0]}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+      
+      toast.success('Data exported successfully')
+    } catch (error) {
+      toast.error('Failed to export data')
+    }
+  }
 
-              <div className="space-y-4">
-                {Object.entries(notifications).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <div>
-                      <div className="text-starlight-white font-semibold capitalize">
-                        {key.replace(/([A-Z])/g, ' $1').trim()}
-                      </div>
-                      <div className="text-stellar-gray-light text-sm">
-                        {key === 'dailyGuidance' && 'Get daily cosmic insights'}
-                        {key === 'dreamAlerts' && 'Dream interpretation alerts'}
-                        {key === 'compatibilityUpdates' && 'Relationship compatibility updates'}
-                        {key === 'cosmicEvents' && 'Special cosmic events and transits'}
-                        {key === 'pushNotifications' && 'Push notifications on your device'}
-                        {key === 'emailNotifications' && 'Email notifications'}
-                      </div>
-                    </div>
+  const handleDataDelete = async () => {
+    try {
+      // Clear all user data
+      localStorage.removeItem('userData')
+      localStorage.removeItem('dreams')
+      localStorage.removeItem('userSettings')
+      localStorage.removeItem('onboardingComplete')
+      localStorage.removeItem('walletBalance')
+      
+      toast.success('All data deleted successfully')
+      window.location.href = '/onboarding'
+    } catch (error) {
+      toast.error('Failed to delete data')
+    }
+  }
+
+  const tabs = [
+    { id: 'general', label: 'General', icon: Settings },
+    { id: 'privacy', label: 'Privacy', icon: Shield },
+    { id: 'astrology', label: 'Astrology', icon: Globe },
+    { id: 'data', label: 'Data', icon: Database }
+  ]
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-gray-800 p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto py-8"
+      >
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gradient-primary flex items-center">
+            <Settings className="w-8 h-8 mr-3" />
+            Settings
+          </h1>
+          <p className="text-gray-600 mt-2">Customize your cosmic experience</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="card p-4">
+              <nav className="space-y-2">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon
+                  return (
                     <button
-                      onClick={() => setNotifications({
-                        ...notifications,
-                        [key]: !value
-                      })}
-                      className={`w-12 h-6 rounded-full transition-all ${
-                        value ? 'bg-electric-violet' : 'bg-cosmic-navy'
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as any)}
+                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+                        activeTab === tab.id
+                          ? 'bg-violet-100 text-violet-700'
+                          : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
-                      <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                        value ? 'translate-x-6' : 'translate-x-0.5'
-                      }`} />
+                      <Icon className="w-5 h-5" />
+                      <span>{tab.label}</span>
                     </button>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+                  )
+                })}
+              </nav>
+            </div>
+          </div>
 
-            {/* Preferences */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="cosmic-card"
-            >
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="p-3 bg-supernova-gold/20 rounded-2xl">
-                  <Globe className="w-6 h-6 text-supernova-gold" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-starlight-white">
-                    Preferences
-                  </h2>
-                  <p className="text-stellar-gray-light">
-                    Customize your app experience
-                  </p>
-                </div>
-              </div>
+          {/* Content */}
+          <div className="lg:col-span-3">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                {activeTab === 'general' && (
+                  <div className="space-y-6">
+                    <div className="card p-6">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <User className="w-5 h-5 mr-2" />
+                        General Settings
+                      </h2>
+                      
+                      <div className="space-y-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Language
+                          </label>
+                          <select
+                            value={settings.language}
+                            onChange={(e) => saveSettings({ language: e.target.value })}
+                            className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                          >
+                            {languages.map((lang) => (
+                              <option key={lang.code} value={lang.code}>
+                                {lang.flag} {lang.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Language */}
-                <div>
-                  <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                    Language
-                  </label>
-                  <select
-                    value={preferences.language}
-                    onChange={(e) => setPreferences({
-                      ...preferences,
-                      language: e.target.value
-                    })}
-                    className="cosmic-input w-full"
-                  >
-                    {languages.map((lang) => (
-                      <option key={lang.id} value={lang.id}>
-                        {lang.flag} {lang.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Theme */}
-                <div>
-                  <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                    Theme
-                  </label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {themes.map((theme) => {
-                      const Icon = theme.icon
-                      return (
-                        <button
-                          key={theme.id}
-                          onClick={() => setPreferences({
-                            ...preferences,
-                            theme: theme.id
-                          })}
-                          className={`p-3 rounded-xl border transition-all text-center ${
-                            preferences.theme === theme.id
-                              ? 'border-electric-violet bg-electric-violet/20 text-electric-violet'
-                              : 'border-electric-violet/30 text-stellar-gray-light hover:border-electric-violet hover:text-electric-violet'
-                          }`}
-                        >
-                          <Icon className="w-5 h-5 mx-auto mb-2" />
-                          <div className="text-xs font-semibold">{theme.name}</div>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                {/* Time Format */}
-                <div>
-                  <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                    Time Format
-                  </label>
-                  <select
-                    value={preferences.timeFormat}
-                    onChange={(e) => setPreferences({
-                      ...preferences,
-                      timeFormat: e.target.value
-                    })}
-                    className="cosmic-input w-full"
-                  >
-                    <option value="12h">12 Hour (AM/PM)</option>
-                    <option value="24h">24 Hour</option>
-                  </select>
-                </div>
-
-                {/* Date Format */}
-                <div>
-                  <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                    Date Format
-                  </label>
-                  <select
-                    value={preferences.dateFormat}
-                    onChange={(e) => setPreferences({
-                      ...preferences,
-                      dateFormat: e.target.value
-                    })}
-                    className="cosmic-input w-full"
-                  >
-                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                  </select>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Privacy & Security */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="cosmic-card"
-            >
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="p-3 bg-aurora-green/20 rounded-2xl">
-                  <Shield className="w-6 h-6 text-aurora-green" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-starlight-white">
-                    Privacy & Security
-                  </h2>
-                  <p className="text-stellar-gray-light">
-                    Control your data and privacy settings
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-stellar-gray-light text-sm font-semibold mb-3">
-                    Profile Visibility
-                  </label>
-                  <select
-                    value={privacy.profileVisibility}
-                    onChange={(e) => setPrivacy({
-                      ...privacy,
-                      profileVisibility: e.target.value
-                    })}
-                    className="cosmic-input w-full"
-                  >
-                    <option value="private">Private</option>
-                    <option value="friends">Friends Only</option>
-                    <option value="public">Public</option>
-                  </select>
-                </div>
-
-                {Object.entries(privacy).filter(([key]) => key !== 'profileVisibility').map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <div>
-                      <div className="text-starlight-white font-semibold capitalize">
-                        {key.replace(/([A-Z])/g, ' $1').trim()}
-                      </div>
-                      <div className="text-stellar-gray-light text-sm">
-                        {key === 'dataSharing' && 'Share anonymous data for app improvement'}
-                        {key === 'analytics' && 'Help us improve with usage analytics'}
-                        {key === 'crashReports' && 'Send crash reports to help fix issues'}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Theme
+                          </label>
+                          <div className="flex space-x-4">
+                            {[
+                              { value: 'light', label: 'Light', icon: Sun },
+                              { value: 'dark', label: 'Dark', icon: Moon },
+                              { value: 'auto', label: 'Auto', icon: Palette }
+                            ].map((theme) => {
+                              const Icon = theme.icon
+                              return (
+                                <button
+                                  key={theme.value}
+                                  onClick={() => saveSettings({ theme: theme.value as any })}
+                                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
+                                    settings.theme === theme.value
+                                      ? 'border-violet-500 bg-violet-50 text-violet-700'
+                                      : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  <Icon className="w-4 h-4" />
+                                  <span>{theme.label}</span>
+                                </button>
+                              )
+                            })}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => setPrivacy({
-                        ...privacy,
-                        [key]: !value
-                      })}
-                      className={`w-12 h-6 rounded-full transition-all ${
-                        value ? 'bg-aurora-green' : 'bg-cosmic-navy'
-                      }`}
-                    >
-                      <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                        value ? 'translate-x-6' : 'translate-x-0.5'
-                      }`} />
-                    </button>
+
+                    <div className="card p-6">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <Bell className="w-5 h-5 mr-2" />
+                        Notifications
+                      </h2>
+                      
+                      <div className="space-y-4">
+                        {Object.entries(settings.notifications).map(([key, value]) => (
+                          <div key={key} className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-gray-900 capitalize">
+                                {key.replace(/([A-Z])/g, ' $1')}
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                {key === 'daily' && 'Get your daily cosmic insights'}
+                                {key === 'transits' && 'Important planetary transits'}
+                                {key === 'community' && 'Messages and connections'}
+                                {key === 'system' && 'App updates and reminders'}
+                              </p>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={value}
+                                onChange={(e) => saveSettings({
+                                  notifications: {
+                                    ...settings.notifications,
+                                    [key]: e.target.checked
+                                  }
+                                })}
+                                className="sr-only peer"
+                              />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </motion.div>
+                )}
 
-            {/* Account Actions */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="cosmic-card"
-            >
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="p-3 bg-stellar-pink/20 rounded-2xl">
-                  <User className="w-6 h-6 text-stellar-pink" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-starlight-white">
-                    Account
-                  </h2>
-                  <p className="text-stellar-gray-light">
-                    Manage your account settings
-                  </p>
-                </div>
-              </div>
+                {activeTab === 'privacy' && (
+                  <div className="space-y-6">
+                    <div className="card p-6">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <Shield className="w-5 h-5 mr-2" />
+                        Privacy & Security
+                      </h2>
+                      
+                      <div className="space-y-4">
+                        {Object.entries(settings.privacy).map(([key, value]) => (
+                          <div key={key} className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-gray-900 capitalize">
+                                {key.replace(/([A-Z])/g, ' $1')}
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                {key === 'profileVisible' && 'Make your profile discoverable by others'}
+                                {key === 'dataSharing' && 'Share anonymous data to improve the app'}
+                                {key === 'analytics' && 'Help us understand how you use the app'}
+                              </p>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={value}
+                                onChange={(e) => saveSettings({
+                                  privacy: {
+                                    ...settings.privacy,
+                                    [key]: e.target.checked
+                                  }
+                                })}
+                                className="sr-only peer"
+                              />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-              <div className="space-y-4">
-                <button className="w-full p-4 bg-cosmic-navy border border-electric-violet text-electric-violet rounded-xl hover:bg-electric-violet hover:text-white transition-all flex items-center space-x-3">
-                  <User className="w-5 h-5" />
-                  <span>Edit Profile</span>
-                </button>
+                {activeTab === 'astrology' && (
+                  <div className="space-y-6">
+                    <div className="card p-6">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <Globe className="w-5 h-5 mr-2" />
+                        Astrology Preferences
+                      </h2>
+                      
+                      <div className="space-y-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Astrology System
+                          </label>
+                          <select
+                            value={settings.astrology.system}
+                            onChange={(e) => saveSettings({
+                              astrology: {
+                                ...settings.astrology,
+                                system: e.target.value as any
+                              }
+                            })}
+                            className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                          >
+                            <option value="western">Western Astrology</option>
+                            <option value="vedic">Vedic Astrology</option>
+                            <option value="chinese">Chinese Astrology</option>
+                            <option value="hybrid">Hybrid System</option>
+                          </select>
+                        </div>
 
-                <button className="w-full p-4 bg-cosmic-navy border border-supernova-gold text-supernova-gold rounded-xl hover:bg-supernova-gold hover:text-deep-space transition-all flex items-center space-x-3">
-                  <CreditCard className="w-5 h-5" />
-                  <span>Manage Subscription</span>
-                </button>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            House System
+                          </label>
+                          <select
+                            value={settings.astrology.houseSystem}
+                            onChange={(e) => saveSettings({
+                              astrology: {
+                                ...settings.astrology,
+                                houseSystem: e.target.value as any
+                              }
+                            })}
+                            className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                          >
+                            <option value="whole">Whole Sign</option>
+                            <option value="placidus">Placidus</option>
+                            <option value="equal">Equal House</option>
+                          </select>
+                        </div>
 
-                <button className="w-full p-4 bg-cosmic-navy border border-nebula-red text-nebula-red rounded-xl hover:bg-nebula-red hover:text-white transition-all flex items-center space-x-3">
-                  <LogOut className="w-5 h-5" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </motion.div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Ayanamsa (Sidereal)
+                          </label>
+                          <select
+                            value={settings.astrology.ayanamsa}
+                            onChange={(e) => saveSettings({
+                              astrology: {
+                                ...settings.astrology,
+                                ayanamsa: e.target.value as any
+                              }
+                            })}
+                            className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                          >
+                            <option value="lahiri">Lahiri</option>
+                            <option value="raman">Raman</option>
+                            <option value="krishnamurti">Krishnamurti</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-            {/* Help & Support */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="cosmic-card"
-            >
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="p-3 bg-celestial-blue/20 rounded-2xl">
-                  <HelpCircle className="w-6 h-6 text-celestial-blue" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-starlight-white">
-                    Help & Support
-                  </h2>
-                  <p className="text-stellar-gray-light">
-                    Get help and learn more about the app
-                  </p>
-                </div>
-              </div>
+                {activeTab === 'data' && (
+                  <div className="space-y-6">
+                    <div className="card p-6">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <Database className="w-5 h-5 mr-2" />
+                        Data Management
+                      </h2>
+                      
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                          <div>
+                            <h4 className="font-medium text-gray-900">Export Your Data</h4>
+                            <p className="text-sm text-gray-600">Download all your data in JSON format</p>
+                          </div>
+                          <button
+                            onClick={handleDataExport}
+                            className="btn btn-secondary flex items-center"
+                          >
+                            <Download className="w-4 h-4 mr-2" />
+                            Export
+                          </button>
+                        </div>
 
-              <div className="space-y-4">
-                <button className="w-full p-4 bg-cosmic-navy border border-celestial-blue text-celestial-blue rounded-xl hover:bg-celestial-blue hover:text-deep-space transition-all flex items-center space-x-3">
-                  <HelpCircle className="w-5 h-5" />
-                  <span>Help Center</span>
-                </button>
-
-                <button className="w-full p-4 bg-cosmic-navy border border-electric-violet text-electric-violet rounded-xl hover:bg-electric-violet hover:text-white transition-all flex items-center space-x-3">
-                  <Info className="w-5 h-5" />
-                  <span>About Daily Secrets</span>
-                </button>
-              </div>
-            </motion.div>
+                        <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
+                          <div>
+                            <h4 className="font-medium text-gray-900">Delete All Data</h4>
+                            <p className="text-sm text-gray-600">Permanently delete all your data and start over</p>
+                          </div>
+                          <button
+                            onClick={() => setShowDeleteModal(true)}
+                            className="btn btn-danger flex items-center"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Bottom spacing for navigation */}
-        <div className="h-24" />
-
-        {/* Cosmic Navigation */}
-        <CosmicNavigation />
-      </div>
+        {/* Delete Confirmation Modal */}
+        <AnimatePresence>
+          {showDeleteModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="card p-6 max-w-md w-full mx-4"
+              >
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Delete All Data
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  This action cannot be undone. All your data including dreams, settings, and profile will be permanently deleted.
+                </p>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="btn btn-secondary flex-1"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowDeleteModal(false)
+                      handleDataDelete()
+                    }}
+                    className="btn btn-danger flex-1"
+                  >
+                    Delete All Data
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   )
 }

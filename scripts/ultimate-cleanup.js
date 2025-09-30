@@ -230,3 +230,4 @@ filesToClean.forEach(cleanFile);
 
 console.log('\n✅ Ultimate cleanup completed!');
 console.log('\nRunning final lint check...');
+

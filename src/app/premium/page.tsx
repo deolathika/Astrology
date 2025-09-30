@@ -1,6 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { 
+  Crown, 
+  Star, 
+  Zap, 
+  Check, 
+  X, 
+  Users, 
+  CreditCard 
+} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
 const subscriptionPlans = [
   {

@@ -6,6 +6,7 @@
  */
 
 import { motion, AnimatePresence } from 'framer-motion'
+import { Share2, Sparkles, X } from 'lucide-react'
 interface SocialShareProps {
   content?: {
     title: string

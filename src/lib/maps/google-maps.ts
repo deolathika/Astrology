@@ -44,8 +44,7 @@ export class GoogleMapsService {
         this.isInitialized = true
       }
     } catch (error) {
-      console.error('Failed to initialize Google Maps:', error)
-    }
+      }
   }
 
   /**
@@ -86,7 +85,6 @@ export class GoogleMapsService {
         utcOffset: timezone.rawOffset / 3600
       }
     } catch (error) {
-      console.error('Failed to get location from coordinates:', error)
       return null
     }
   }
@@ -115,7 +113,6 @@ export class GoogleMapsService {
 
       return this.getLocationFromCoords(lat, lng)
     } catch (error) {
-      console.error('Failed to get coordinates from address:', error)
       return null
     }
   }
@@ -161,7 +158,6 @@ export class GoogleMapsService {
         })
       })
     } catch (error) {
-      console.error('Failed to search places:', error)
       return []
     }
   }
@@ -190,7 +186,6 @@ export class GoogleMapsService {
         })
       })
     } catch (error) {
-      console.error('Failed to get place details:', error)
       return null
     }
   }
@@ -225,7 +220,6 @@ export class GoogleMapsService {
         })
       })
     } catch (error) {
-      console.error('Failed to get timezone:', error)
       return {
         timeZoneId: 'UTC',
         timeZoneName: 'UTC',
@@ -256,7 +250,6 @@ export class GoogleMapsService {
 
       return this.getLocationFromCoords(lat, lng)
     } catch (error) {
-      console.error('Failed to get current location:', error)
       return null
     }
   }

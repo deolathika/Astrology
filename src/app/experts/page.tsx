@@ -1,6 +1,24 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { 
+  Star, 
+  Users, 
+  Calendar, 
+  MessageCircle, 
+  Clock, 
+  Award, 
+  Globe, 
+  Heart,
+  ChevronDown,
+  ChevronUp,
+  Filter,
+  Search,
+  BookOpen,
+  Shield,
+  Zap
+} from 'lucide-react'
 import { CosmicNavigation } from '@/components/cosmic-navigation'
 const experts = [
   {

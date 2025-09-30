@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import our elegant design system */
+@import '../styles/elegant-design-system.css';
+
 /* 🌌 COSMIC GLOBAL STYLES 🌌 */
 
 @layer base {

@@ -38,7 +38,6 @@ export class NotificationService {
    */
   async requestPermission(): Promise<boolean> {
     if (!this.isSupported) {
-      console.warn('Notifications are not supported in this browser')
       return false
     }
 
@@ -47,7 +46,6 @@ export class NotificationService {
       this.permission = permission
       return permission === 'granted'
     } catch (error) {
-      console.error('Failed to request notification permission:', error)
       return false
     }
   }
@@ -64,16 +62,13 @@ export class NotificationService {
    */
   async registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
     if (!('serviceWorker' in navigator)) {
-      console.warn('Service workers are not supported')
       return null
     }
 
     try {
       this.registration = await navigator.serviceWorker.register('/sw.js')
-      console.log('Service worker registered:', this.registration)
       return this.registration
     } catch (error) {
-      console.error('Failed to register service worker:', error)
       return null
     }
   }
@@ -87,7 +82,6 @@ export class NotificationService {
     }
 
     if (!this.registration) {
-      console.error('Service worker not registered')
       return null
     }
 
@@ -99,10 +93,8 @@ export class NotificationService {
         )
       })
 
-      console.log('Push subscription created:', subscription)
       return subscription
     } catch (error) {
-      console.error('Failed to subscribe to push notifications:', error)
       return null
     }
   }
@@ -119,12 +111,10 @@ export class NotificationService {
       const subscription = await this.registration.pushManager.getSubscription()
       if (subscription) {
         await subscription.unsubscribe()
-        console.log('Push subscription removed')
         return true
       }
       return false
     } catch (error) {
-      console.error('Failed to unsubscribe from push notifications:', error)
       return false
     }
   }
@@ -134,7 +124,6 @@ export class NotificationService {
    */
   async sendLocalNotification(data: NotificationData): Promise<void> {
     if (!this.isNotificationAvailable()) {
-      console.warn('Notifications not available')
       return
     }
 
@@ -169,10 +158,8 @@ export class NotificationService {
         }
       }
 
-      console.log('Local notification sent:', data.title)
-    } catch (error) {
-      console.error('Failed to send local notification:', error)
-    }
+      } catch (error) {
+      }
   }
 
   /**
@@ -195,14 +182,11 @@ export class NotificationService {
       })
 
       if (response.ok) {
-        console.log('Push notification sent successfully')
         return true
       } else {
-        console.error('Failed to send push notification:', response.statusText)
         return false
       }
     } catch (error) {
-      console.error('Failed to send push notification:', error)
       return false
     }
   }
@@ -297,7 +281,6 @@ export class NotificationService {
       // Request permission
       const hasPermission = await this.requestPermission()
       if (!hasPermission) {
-        console.warn('Notification permission denied')
         return false
       }
 
@@ -307,10 +290,8 @@ export class NotificationService {
       // Subscribe to push notifications
       await this.subscribeToPush()
 
-      console.log('Notification service initialized successfully')
       return true
     } catch (error) {
-      console.error('Failed to initialize notification service:', error)
       return false
     }
   }

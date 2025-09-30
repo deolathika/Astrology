@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     // Astrology calculations
     const sunSign = getSunSign(userData.birthDate)
     const moonPhase = getMoonPhase(today)
-    const planetaryHours = getPlanetaryHours(today, userData.latitude, userData.longitude)
+    const planetaryHours = getPlanetaryHours(today)
 
     // Generate complete daily guidance
     const todayCard = generateTodayCard({
@@ -193,18 +193,7 @@ function getPlanetaryHours(date: Date): string[] {
   return hours.slice(startIndex).concat(hours.slice(0, startIndex))
 }
 
-function generateDailyGuidance(data: any): string {
-  const { lifePath, destiny, dailyNumber, sunSign, moonPhase, dayOfWeek } = data
-  
-  const guidanceTemplates = [
-    `Today's cosmic energy aligns perfectly with your ${lifePath} Life Path number. The ${moonPhase} brings ${getMoonPhaseDescription(moonPhase)} energy to your ${sunSign} nature.`,
-    `Your Destiny number ${destiny} is activated by today's ${dailyNumber} vibration. This creates a powerful opportunity for ${getOpportunityDescription(dailyNumber)}.`,
-    `The ${getDayOfWeekName(dayOfWeek)} energy combined with your ${sunSign} sign creates a perfect storm for ${getActionDescription(sunSign, dayOfWeek)}.`,
-    `Today's planetary alignment favors ${getFavorableAction(lifePath, destiny)}. Trust your intuition and follow the cosmic guidance.`
-  ]
-  
-  return guidanceTemplates.join(' ')
-}
+// Removed unused function generateDailyGuidance
 
 function getMoonPhaseDescription(phase: string): string {
   const descriptions: { [key: string]: string } = {
@@ -330,13 +319,13 @@ function generateTodayCard(data: any) {
     lucky: {
       color: generateLuckyColor(dailyNumber),
       number: dailyNumber,
-      object: generateLuckyObject(sunSign)
+      object: generateLuckyObject()
     },
     rules: {
-      do: generateDoRules(dayOfWeek, sunSign),
-      dont: generateDontRules(dayOfWeek, sunSign)
+      do: generateDoRules(),
+      dont: generateDontRules()
     },
-    moodFix: generateMoodFixArray(moonPhase, sunSign)
+    moodFix: generateMoodFixArray()
   }
 }
 
@@ -346,7 +335,7 @@ function generateLongText(data: any): string {
   return `Today, the cosmic energies align in your favor as the stars weave a tapestry of opportunity and growth. Your Life Path number ${lifePath} resonates with the universal vibrations, guiding you toward your highest potential. The ${sunSign} energy in your chart brings forth new possibilities, while the ${moonPhase} illuminates your path forward. Trust in the ancient wisdom that flows through your veins, for you are a child of the cosmos, destined for greatness. The planetary influences today favor introspection and spiritual growth, while the numerological vibrations suggest a time of new beginnings and fresh perspectives. Embrace the cosmic flow and let your inner light shine brightly.`
 }
 
-function generateLuckyColor(): string {
+function generateLuckyColor(dailyNumber: number): string {
   const colors = [
     'Cosmic Purple', 'Electric Blue', 'Stellar Gold', 'Nebula Pink', 'Celestial Silver'
   ]
