@@ -1,0 +1,41 @@
+# Daily Secrets - Code Owners
+# This file defines who can review and approve changes to specific parts of the codebase
+
+# Global owners (require review for all changes)
+* @lathikadissanayaka
+
+# Critical security files (require security team review)
+/src/middleware.ts @lathikadissanayaka
+/src/lib/security/ @lathikadissanayaka
+/src/lib/encryption.ts @lathikadissanayaka
+/src/lib/rate-limit.ts @lathikadissanayaka
+/src/lib/csrf.ts @lathikadissanayaka
+
+# API routes (require backend team review)
+/src/app/api/ @lathikadissanayaka
+
+# Database and migrations (require database team review)
+/prisma/ @lathikadissanayaka
+/src/lib/database/ @lathikadissanayaka
+
+# Authentication and user data (require security review)
+/src/lib/auth.ts @lathikadissanayaka
+/src/app/auth/ @lathikadissanayaka
+/src/components/auth-provider.tsx @lathikadissanayaka
+
+# Configuration files (require DevOps review)
+/next.config.js @lathikadissanayaka
+/vercel.json @lathikadissanayaka
+/package.json @lathikadissanayaka
+/.env* @lathikadissanayaka
+
+# Deployment and CI/CD (require DevOps review)
+/.github/workflows/ @lathikadissanayaka
+/scripts/ @lathikadissanayaka
+
+# Documentation (require technical writing review)
+/README.md @lathikadissanayaka
+/docs/ @lathikadissanayaka
+*.md @lathikadissanayaka
+
+

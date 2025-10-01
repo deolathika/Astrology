@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Cormorant_Garamond } from 'next/font/google'
 import './globals.css'
+import '@/styles/responsive-design.css'
 import { Providers } from '@/components/providers'
 import { Toaster } from 'react-hot-toast'
 
@@ -8,6 +9,7 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-cosmic',
   display: 'swap',
+  preload: true,
 })
 
 const cormorant = Cormorant_Garamond({ 
@@ -15,6 +17,7 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-accent',
   display: 'swap',
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -29,7 +32,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:8120'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   alternates: {
     canonical: '/',
     languages: {
@@ -43,7 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:8120',
+    url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     title: 'Daily Secrets - Real Astrology & Numerology',
     description: 'Discover the secrets of the universe through personalized astrology, numerology, and cosmic guidance.',
     siteName: 'Daily Secrets',
@@ -97,9 +100,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <Providers>
-          <div className="min-h-screen bg-deep-space bg-cosmic-pattern">
-            {children}
-          </div>
+          {children}
           <Toaster
             position="top-right"
             toastOptions={{

@@ -9,13 +9,13 @@
 
 @layer base {
   * {
-    @apply border-electric-violet/20;
+    @apply border-slate-200;
   }
   
   body {
-    @apply bg-deep-space text-starlight-white font-cosmic;
-    background: linear-gradient(180deg, #0A0A0F 0%, #1A1A2E 50%, #16213E 100%);
+    @apply bg-slate-50 text-slate-900 font-sans;
     min-height: 100vh;
+    font-family: var(--font-cosmic), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   html {

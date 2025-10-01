@@ -391,3 +391,5 @@ export class StripePaymentSystem {
 // Export singleton instance
 export const stripePaymentSystem = new StripePaymentSystem()
 
+
+

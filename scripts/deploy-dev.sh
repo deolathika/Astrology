@@ -42,3 +42,5 @@ echo "🌐 Application running at: http://localhost:8120"
 
 # Start the server
 npm run dev
+
+

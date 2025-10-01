@@ -298,3 +298,5 @@ export class EnhancedNumerology {
 // Export singleton instance
 export const enhancedNumerology = new EnhancedNumerology()
 
+
+

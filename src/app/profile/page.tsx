@@ -1,372 +1,438 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  User, Calendar, Clock, MapPin, Settings, Edit3, Star, Moon, Sun, 
-  Heart, Sparkles, ChevronRight, ArrowLeft, Smartphone, Wifi, Battery, 
-  Volume2, Globe, Calculator, Target, Compass, Crown, Diamond, Eye,
-  TrendingUp, Zap, Shield, BookOpen, Gift, Bell, Wallet
-} from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { 
+  User, Calendar, Clock, MapPin, Star, Edit3, Settings, 
+  Globe, Mail, Phone, Shield, Bell, Moon, Smartphone,
+  ArrowLeft, CheckCircle, AlertTriangle
+} from 'lucide-react'
+
+interface ProfileData {
+  id: string
+  fullName: string
+  email: string
+  phone?: string
+  birthDate: string
+  birthTime: string
+  birthPlace: {
+    country: string
+    city: string
+    coordinates: {
+      latitude: number
+      longitude: number
+    }
+    timezone: string
+  }
+  zodiacSign: string
+  system: string
+  preferences: {
+    language: string
+    notifications: boolean
+    darkMode: boolean
+    hapticFeedback: boolean
+  }
+  createdAt: string
+  updatedAt: string
+}
 
 export default function ProfilePage() {
   const router = useRouter()
-  const [userProfile, setUserProfile] = useState<any>(null)
+  const [profileData, setProfileData] = useState<ProfileData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
-  const [expandedSection, setExpandedSection] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
-    const profile = localStorage.getItem('userData')
-    if (profile) {
-      setUserProfile(JSON.parse(profile))
-    }
-    setIsLoading(false)
-    
-    return () => window.removeEventListener('resize', checkMobile)
+    loadProfileData()
   }, [])
+
+  const loadProfileData = async () => {
+    try {
+      // Simulate loading profile data
+      const mockProfile: ProfileData = {
+        id: 'user123',
+        fullName: 'John Doe',
+        email: 'john@example.com',
+        phone: '+1234567890',
+        birthDate: '1990-01-15',
+        birthTime: '14:30',
+        birthPlace: {
+          country: 'US',
+          city: 'New York',
+          coordinates: { latitude: 40.7128, longitude: -74.0060 },
+          timezone: 'America/New_York'
+        },
+        zodiacSign: 'Capricorn',
+        system: 'western',
+        preferences: {
+          language: 'en',
+          notifications: true,
+          darkMode: false,
+          hapticFeedback: true
+        },
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-15T10:30:00Z'
+      }
+      
+      setProfileData(mockProfile)
+    } catch (error) {
+      console.error('Error loading profile:', error)
+      setError('Failed to load profile data')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const getLanguageName = (code: string) => {
+    const languages: { [key: string]: string } = {
+      'en': 'English',
+      'si': 'Sinhala',
+      'ta': 'Tamil',
+      'hi': 'Hindi',
+      'zh': 'Chinese'
+    }
+    return languages[code] || code
+  }
+
+  const getSystemName = (system: string) => {
+    const systems: { [key: string]: string } = {
+      'western': 'Western Astrology',
+      'vedic': 'Vedic Astrology',
+      'chinese': 'Chinese Astrology',
+      'sri-lankan': 'Sri Lankan Astrology'
+    }
+    return systems[system] || system
+  }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 mx-auto mb-4 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="text-slate-600">Loading your profile...</p>
+          <div className="w-16 h-16 mx-auto mb-4 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
+          <p className="text-slate-600">Loading profile...</p>
         </div>
       </div>
     )
   }
 
-  if (!userProfile) {
-  return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-slate-600">No profile data found. Please complete onboarding.</p>
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <AlertTriangle className="w-16 h-16 mx-auto mb-4 text-red-500" />
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">Error Loading Profile</h2>
+          <p className="text-slate-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     )
   }
 
-  const profileSections = [
-    {
-      id: 'personal-details',
-      title: 'Personal Details',
-      icon: User,
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50',
-      borderColor: 'border-indigo-200',
-      content: (
-        <div className="space-y-3 text-sm text-slate-700">
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <span className="font-medium">Name:</span>
-            <span>{userProfile.name}</span>
-          </div>
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <span className="font-medium">Birth Date:</span>
-            <span className="flex items-center">
-              <Calendar className="w-3 h-3 mr-1" />
-              {userProfile.birthDate}
-            </span>
-          </div>
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <span className="font-medium">Birth Time:</span>
-            <span className="flex items-center">
-              <Clock className="w-3 h-3 mr-1" />
-              {userProfile.birthTime}
-            </span>
-          </div>
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <span className="font-medium">Birth Place:</span>
-            <span className="flex items-center">
-              <MapPin className="w-3 h-3 mr-1" />
-              {userProfile.birthPlace}
-            </span>
-          </div>
+  if (!profileData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <User className="w-16 h-16 mx-auto mb-4 text-slate-400" />
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">No Profile Found</h2>
+          <p className="text-slate-600 mb-4">Please complete your profile setup</p>
+          <button
+            onClick={() => router.push('/onboarding')}
+            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+          >
+            Complete Profile
+          </button>
         </div>
-      ),
-      mobileOptimized: true
-    },
-    {
-      id: 'astrology',
-      title: 'Astrology Insights',
-      icon: Star,
-      color: 'text-violet-600',
-      bgColor: 'bg-violet-50',
-      borderColor: 'border-violet-200',
-      content: (
-        <div className="space-y-3 text-sm text-slate-700">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="p-3 bg-violet-50 rounded-lg">
-              <p className="font-medium text-violet-800">Zodiac Sign</p>
-              <p className="text-violet-600">{userProfile.zodiacSign}</p>
-            </div>
-            <div className="p-3 bg-violet-50 rounded-lg">
-              <p className="font-medium text-violet-800">Sun Sign</p>
-              <p className="text-violet-600">Leo</p>
-            </div>
-            <div className="p-3 bg-violet-50 rounded-lg">
-              <p className="font-medium text-violet-800">Moon Sign</p>
-              <p className="text-violet-600">Cancer</p>
-            </div>
-            <div className="p-3 bg-violet-50 rounded-lg">
-              <p className="font-medium text-violet-800">Ascendant</p>
-              <p className="text-violet-600">Virgo</p>
-            </div>
-          </div>
-          <div className="p-3 bg-violet-50 rounded-lg">
-            <p className="font-medium text-violet-800">System</p>
-            <p className="text-violet-600 capitalize">{userProfile.system}</p>
-          </div>
-        </div>
-      ),
-      mobileOptimized: true
-    },
-    {
-      id: 'numerology',
-      title: 'Numerology Blueprint',
-      icon: Calculator,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-      borderColor: 'border-orange-200',
-      content: (
-        <div className="space-y-3 text-sm text-slate-700">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="p-3 bg-orange-50 rounded-lg">
-              <p className="font-medium text-orange-800">Life Path Number</p>
-              <p className="text-2xl font-bold text-orange-600">{userProfile.lifePathNumber}</p>
-            </div>
-            <div className="p-3 bg-orange-50 rounded-lg">
-              <p className="font-medium text-orange-800">Expression Number</p>
-              <p className="text-2xl font-bold text-orange-600">8</p>
-            </div>
-            <div className="p-3 bg-orange-50 rounded-lg">
-              <p className="font-medium text-orange-800">Soul Urge Number</p>
-              <p className="text-2xl font-bold text-orange-600">5</p>
-            </div>
-            <div className="p-3 bg-orange-50 rounded-lg">
-              <p className="font-medium text-orange-800">Personality Number</p>
-              <p className="text-2xl font-bold text-orange-600">3</p>
-            </div>
-          </div>
-        </div>
-      ),
-      mobileOptimized: true
-    },
-    {
-      id: 'compatibility',
-      title: 'Compatibility Overview',
-      icon: Heart,
-      color: 'text-pink-600',
-      bgColor: 'bg-pink-50',
-      borderColor: 'border-pink-200',
-      content: (
-        <div className="space-y-3 text-sm text-slate-700">
-          <div className="p-4 bg-pink-50 rounded-lg text-center">
-            <Heart className="w-8 h-8 text-pink-500 mx-auto mb-2" />
-            <p className="text-pink-700">Discover your cosmic connections with others.</p>
-            <p className="text-xs text-pink-600 mt-1">(Requires another profile for full analysis)</p>
-          </div>
-                </div>
-      ),
-      mobileOptimized: true
-    },
-    {
-      id: 'dreams',
-      title: 'Dream Insights',
-      icon: Moon,
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-50',
-      borderColor: 'border-teal-200',
-      content: (
-        <div className="space-y-3 text-sm text-slate-700">
-          <div className="p-4 bg-teal-50 rounded-lg text-center">
-            <Moon className="w-8 h-8 text-teal-500 mx-auto mb-2" />
-            <p className="text-teal-700">Explore your subconscious with AI-powered dream interpretations.</p>
-            <p className="text-xs text-teal-600 mt-1">(Visit Dream Journal to log dreams)</p>
-                </div>
-              </div>
-      ),
-      mobileOptimized: true
-    }
-  ]
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Mobile-Optimized Header */}
-      <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 md:py-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <button
                 onClick={() => router.back()}
-                className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+                <ArrowLeft className="w-5 h-5" />
               </button>
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
-              </div>
-              <h1 className="text-lg md:text-xl font-semibold text-slate-900">Cosmic Profile</h1>
-            </div>
-
-            <button className="p-2 text-slate-600 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors">
-              <Settings className="w-4 h-4 md:w-5 md:h-5" />
-            </button>
-                </div>
-                </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-4 md:py-8">
-        {/* Mobile Status Bar */}
-        {isMobile && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4"
-          >
-            <div className="flex items-center justify-between text-xs text-slate-600">
-                    <div className="flex items-center space-x-2">
-                <Smartphone className="w-3 h-3" />
-                <span>Mobile Optimized</span>
-              </div>
               <div className="flex items-center space-x-3">
-                <div className="flex items-center space-x-1">
-                  <Wifi className="w-3 h-3" />
-                  <span>Connected</span>
+                <div className="w-10 h-10 bg-gradient-to-r from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
+                  <User className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex items-center space-x-1">
-                  <Battery className="w-3 h-3" />
-                  <span>85%</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Volume2 className="w-3 h-3" />
-                  <span>70%</span>
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-900">Profile</h1>
+                  <p className="text-sm text-slate-600">Your personal information</p>
                 </div>
               </div>
             </div>
-          </motion.div>
-        )}
+            
+            <button
+              onClick={() => router.push('/profile/edit')}
+              className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors flex items-center space-x-2"
+            >
+              <Edit3 className="w-4 h-4" />
+              <span>Edit Profile</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
-        {/* Profile Overview Card */}
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Profile Overview */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-6 mb-6"
-        >
-          <div className="flex items-center space-x-4 mb-4">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-              <User className="w-8 h-8 md:w-10 md:h-10 text-white" />
+            className="bg-white rounded-xl shadow-sm p-6 border border-slate-200 mb-8"
+          >
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
+                <User className="w-8 h-8 text-white" />
               </div>
               <div>
-              <h2 className="text-xl md:text-2xl font-bold text-slate-900">{userProfile.name}</h2>
-              <p className="text-sm md:text-base text-slate-600">Cosmic Explorer</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="flex items-center space-x-2">
-              <Star className="w-4 h-4 text-yellow-500" />
-              <span className="text-slate-600">Zodiac: <span className="font-semibold">{userProfile.zodiacSign}</span></span>
+                <h2 className="text-2xl font-bold text-slate-900">{profileData.fullName}</h2>
+                <p className="text-slate-600">{profileData.email}</p>
+                {profileData.phone && (
+                  <p className="text-sm text-slate-500">{profileData.phone}</p>
+                )}
               </div>
-            <div className="flex items-center space-x-2">
-              <Calculator className="w-4 h-4 text-orange-500" />
-              <span className="text-slate-600">Life Path: <span className="font-semibold">{userProfile.lifePathNumber}</span></span>
             </div>
-            <div className="flex items-center space-x-2">
-              <Globe className="w-4 h-4 text-green-500" />
-              <span className="text-slate-600">System: <span className="font-semibold capitalize">{userProfile.system}</span></span>
-                </div>
-              </div>
-        </motion.div>
-
-        {/* Profile Sections */}
-        <div className="space-y-4">
-          {profileSections.map((section, index) => {
-            const Icon = section.icon
-            const isExpanded = expandedSection === section.id
             
-            return (
-              <motion.div
-                key={section.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
-              >
-                <button
-                  onClick={() => setExpandedSection(isExpanded ? null : section.id)}
-                  className="w-full p-4 md:p-6 text-left hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 md:w-12 md:h-12 ${section.bgColor} rounded-lg flex items-center justify-center`}>
-                        <Icon className={`w-5 h-5 md:w-6 md:h-6 ${section.color}`} />
-                      </div>
-                      <div>
-                        <h3 className="text-base md:text-lg font-semibold text-slate-900">{section.title}</h3>
-                        <p className="text-xs md:text-sm text-slate-500">Tap to explore details</p>
-                      </div>
-                    </div>
-                    <ChevronRight className={`w-4 h-4 md:w-5 md:h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                  </div>
-                </button>
-
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="overflow-hidden border-t border-slate-100"
-                    >
-                      <div className="p-4 md:p-6">
-                        {section.content}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span className="text-slate-600">Profile Complete</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4 text-blue-500" />
+                <span className="text-slate-600">Joined {new Date(profileData.createdAt).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Clock className="w-4 h-4 text-purple-500" />
+                <span className="text-slate-600">Last updated {new Date(profileData.updatedAt).toLocaleDateString()}</span>
+              </div>
             </div>
           </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            )
-          })}
-        </div>
 
-        {/* Mobile Quick Actions */}
-        {isMobile && (
+          {/* Profile Details */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Personal Information */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+            >
+              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
+                <User className="w-5 h-5 text-violet-600" />
+                <span>Personal Information</span>
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <Mail className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Email</p>
+                    <p className="font-medium text-slate-900">{profileData.email}</p>
+                  </div>
+                </div>
+                
+                {profileData.phone && (
+                  <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                    <Phone className="w-5 h-5 text-slate-600" />
+                    <div>
+                      <p className="text-sm text-slate-600">Phone</p>
+                      <p className="font-medium text-slate-900">{profileData.phone}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Birth Information */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+            >
+              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
+                <Calendar className="w-5 h-5 text-blue-600" />
+                <span>Birth Information</span>
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <Calendar className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Birth Date</p>
+                    <p className="font-medium text-slate-900">{new Date(profileData.birthDate).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <Clock className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Birth Time</p>
+                    <p className="font-medium text-slate-900">{profileData.birthTime}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <MapPin className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Birth Place</p>
+                    <p className="font-medium text-slate-900">{profileData.birthPlace.city}, {profileData.birthPlace.country}</p>
+                    <p className="text-xs text-slate-500">
+                      {profileData.birthPlace.coordinates.latitude.toFixed(4)}°, {profileData.birthPlace.coordinates.longitude.toFixed(4)}°
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <Globe className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Timezone</p>
+                    <p className="font-medium text-slate-900">{profileData.birthPlace.timezone}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Astrology Information */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+            >
+              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
+                <Star className="w-5 h-5 text-purple-600" />
+                <span>Astrology Information</span>
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <Star className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Zodiac Sign</p>
+                    <p className="font-medium text-slate-900">{profileData.zodiacSign}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <Settings className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Astrology System</p>
+                    <p className="font-medium text-slate-900">{getSystemName(profileData.system)}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Preferences */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+            >
+              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
+                <Settings className="w-5 h-5 text-green-600" />
+                <span>Preferences</span>
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                  <Globe className="w-5 h-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm text-slate-600">Language</p>
+                    <p className="font-medium text-slate-900">{getLanguageName(profileData.preferences.language)}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Bell className="w-5 h-5 text-slate-600" />
+                      <span className="text-slate-700">Notifications</span>
+                    </div>
+                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      profileData.preferences.notifications 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {profileData.preferences.notifications ? 'Enabled' : 'Disabled'}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Moon className="w-5 h-5 text-slate-600" />
+                      <span className="text-slate-700">Dark Mode</span>
+                    </div>
+                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      profileData.preferences.darkMode 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {profileData.preferences.darkMode ? 'Enabled' : 'Disabled'}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Smartphone className="w-5 h-5 text-slate-600" />
+                      <span className="text-slate-700">Haptic Feedback</span>
+                    </div>
+                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      profileData.preferences.hapticFeedback 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {profileData.preferences.hapticFeedback ? 'Enabled' : 'Disabled'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Action Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mt-6 bg-white border border-slate-200 rounded-xl p-4 shadow-sm"
+            transition={{ delay: 0.4 }}
+            className="mt-8 flex flex-col sm:flex-row gap-4 justify-end"
           >
-            <h3 className="text-sm font-semibold text-slate-800 mb-3">Quick Actions</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <button className="flex items-center space-x-2 p-3 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors">
-                <Edit3 className="w-4 h-4" />
-                <span className="text-xs font-medium">Edit Profile</span>
-              </button>
-              <button className="flex items-center space-x-2 p-3 bg-violet-50 text-violet-700 rounded-lg hover:bg-violet-100 transition-colors">
-                <Star className="w-4 h-4" />
-                <span className="text-xs font-medium">Astrology</span>
-              </button>
-              <button className="flex items-center space-x-2 p-3 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors">
-                <Calculator className="w-4 h-4" />
-                <span className="text-xs font-medium">Numerology</span>
-              </button>
-              <button className="flex items-center space-x-2 p-3 bg-pink-50 text-pink-700 rounded-lg hover:bg-pink-100 transition-colors">
-                <Heart className="w-4 h-4" />
-                <span className="text-xs font-medium">Compatibility</span>
-              </button>
-            </div>
+            <button
+              onClick={() => router.push('/profile/edit')}
+              className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors flex items-center justify-center space-x-2"
+            >
+              <Edit3 className="w-5 h-5" />
+              <span>Edit Profile</span>
+            </button>
+            
+            <button
+              onClick={() => router.push('/settings')}
+              className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors flex items-center justify-center space-x-2"
+            >
+              <Settings className="w-5 h-5" />
+              <span>Settings</span>
+            </button>
           </motion.div>
-        )}
-      </main>
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,322 +1,469 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
-  Star, 
-  Crown, 
-  Zap, 
-  Check, 
-  X, 
-  CreditCard, 
-  Shield, 
-  Users, 
-  Calendar,
-  Heart,
-  Globe,
-  Sparkles
+  Crown, Star, Heart, Zap, Shield, Check, X, 
+  CreditCard, Calendar, Gift, Sparkles, Lock, Unlock,
+  ArrowRight, ArrowLeft, Users, Settings, Bell
 } from 'lucide-react'
-import { CosmicNavigation } from '@/components/cosmic-navigation'
 
-const subscriptionPlans = [
-  {
-    id: 'free',
-    name: 'Cosmic Explorer',
-    price: 0,
-    period: 'forever',
-    icon: Star,
-    color: 'electric-violet',
-    features: [
-      'Daily cosmic guidance',
-      'Basic numerology analysis',
-      'Western zodiac insights',
-      'Community access',
-      'Basic dream interpretation'
-    ],
-    limitations: [
-      'Limited to 3 readings per day',
-      'Basic chart analysis only',
-      'Standard support'
-    ]
-  },
-  {
-    id: 'premium',
-    name: 'Stellar Navigator',
-    price: 9.99,
-    period: 'month',
-    icon: Crown,
-    color: 'supernova-gold',
-    features: [
-      'Unlimited daily guidance',
-      'Complete numerology analysis',
-      'All zodiac systems (Western, Vedic, Chinese, Sri Lankan)',
-      'Advanced astrology charts',
-      'Personalized cosmic insights',
-      'Priority support',
-      'Premium community features',
-      'Advanced dream interpretation',
-      'Compatibility analysis',
-      'Transit predictions'
-    ],
-    popular: true
-  },
-  {
-    id: 'cosmic',
-    name: 'Cosmic Master',
-    price: 19.99,
-    period: 'month',
-    icon: Sparkles,
-    color: 'stellar-pink',
-    features: [
-      'Everything in Stellar Navigator',
-      'AI-powered cosmic guidance',
-      'Personal astrologer consultation',
-      'Custom birth chart reports',
-      'Advanced transit analysis',
-      'Relationship compatibility deep dive',
-      'Career and life path guidance',
-      'Exclusive cosmic content',
-      'Priority customer support',
-      'Early access to new features'
-    ]
-  }
-]
+interface SubscriptionPlan {
+  id: string
+  name: string
+  description: string
+  price: number
+  period: string
+  features: string[]
+  limitations: string[]
+  color: string
+  bgColor: string
+  borderColor: string
+  icon: React.ComponentType<any>
+  popular?: boolean
+  current?: boolean
+}
+
+interface UserSubscription {
+  planId: string
+  status: 'active' | 'cancelled' | 'expired' | 'trial'
+  startDate: string
+  endDate: string
+  autoRenew: boolean
+  features: string[]
+}
 
 export default function SubscriptionPage() {
-  const [selectedPlan, setSelectedPlan] = useState('premium')
-  const [billingCycle, setBillingCycle] = useState('monthly')
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [currentSubscription, setCurrentSubscription] = useState<UserSubscription | null>(null)
+  const [selectedPlan, setSelectedPlan] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [showPayment, setShowPayment] = useState(false)
 
-  const handleSubscribe = (planId: string) => {
-    // Add subscription logic here
+  const subscriptionPlans: SubscriptionPlan[] = [
+    {
+      id: 'free',
+      name: 'Free User',
+      description: 'Perfect for getting started with cosmic guidance',
+      price: 0,
+      period: 'forever',
+      features: [
+        'Daily cosmic insights (3 per day)',
+        'Basic numerology readings',
+        'Simple astrology charts',
+        'Community access',
+        'Basic compatibility check',
+        'Basic dream interpretation'
+      ],
+      limitations: [
+        'Limited to 3 readings per day',
+        'Basic chart only',
+        'No expert consultations',
+        'No advanced features'
+      ],
+      color: 'text-slate-600',
+      bgColor: 'bg-slate-50',
+      borderColor: 'border-slate-200',
+      icon: Heart
+    },
+    {
+      id: 'premium',
+      name: 'Premium User',
+      description: 'Complete cosmic guidance for your daily life',
+      price: 19.99,
+      period: 'month',
+      features: [
+        'Unlimited daily insights',
+        'Advanced numerology analysis',
+        'Detailed astrology charts',
+        'Expert consultations (2/month)',
+        'Advanced compatibility analysis',
+        'AI-powered dream interpretations',
+        'Personalized cosmic calendar',
+        'Priority customer support',
+        'Advanced Vedic astrology',
+        'Custom cosmic rituals'
+      ],
+      limitations: [],
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      borderColor: 'border-purple-200',
+      icon: Crown,
+      popular: true
+    },
+    {
+      id: 'admin',
+      name: 'Admin Account',
+      description: 'Full control and customization for the entire application',
+      price: 99.99,
+      period: 'month',
+      features: [
+        'All premium features',
+        'Unlimited expert consultations',
+        'Personal astrologer assigned',
+        'Advanced Vedic astrology',
+        'Custom cosmic rituals',
+        'Admin dashboard access',
+        'User management tools',
+        'Content moderation',
+        'Analytics and insights',
+        'Custom integrations',
+        'API access',
+        'White-label options'
+      ],
+      limitations: [],
+      color: 'text-amber-600',
+      bgColor: 'bg-amber-50',
+      borderColor: 'border-amber-200',
+      icon: Shield
+    }
+  ]
+
+  useEffect(() => {
+    loadUserData()
+  }, [])
+
+  const loadUserData = async () => {
+    // Load user profile and subscription
+    const profile = localStorage.getItem('userData')
+    if (profile) {
+      const userData = JSON.parse(profile)
+      setUserProfile(userData)
+      
+      // Load subscription data
+      const subscription = localStorage.getItem('userSubscription')
+      if (subscription) {
+        setCurrentSubscription(JSON.parse(subscription))
+      } else {
+        // Default to free plan
+        setCurrentSubscription({
+          planId: 'free',
+          status: 'active',
+          startDate: new Date().toISOString(),
+          endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+          autoRenew: false,
+          features: subscriptionPlans[0].features
+        })
+      }
+    }
+    setIsLoading(false)
   }
 
+  const handlePlanSelection = (planId: string) => {
+    setSelectedPlan(planId)
+    setShowPayment(true)
+  }
+
+  const processSubscription = async (planId: string) => {
+    const selectedPlan = subscriptionPlans.find(p => p.id === planId)
+    if (!selectedPlan) return
+
+    // Simulate payment processing
+    const newSubscription: UserSubscription = {
+      planId: planId,
+      status: 'active',
+      startDate: new Date().toISOString(),
+      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+      autoRenew: true,
+      features: selectedPlan.features
+    }
+
+    setCurrentSubscription(newSubscription)
+    localStorage.setItem('userSubscription', JSON.stringify(newSubscription))
+    setShowPayment(false)
+    setSelectedPlan('')
+  }
+
+  const cancelSubscription = async () => {
+    if (currentSubscription) {
+      const updatedSubscription = {
+        ...currentSubscription,
+        status: 'cancelled' as const,
+        autoRenew: false
+      }
+      setCurrentSubscription(updatedSubscription)
+      localStorage.setItem('userSubscription', JSON.stringify(updatedSubscription))
+    }
+  }
+
+  const getCurrentPlan = () => {
+    if (!currentSubscription) return subscriptionPlans[0]
+    return subscriptionPlans.find(p => p.id === currentSubscription.planId) || subscriptionPlans[0]
+  }
+
+  const getFeatureAccess = (feature: string) => {
+    if (!currentSubscription) return false
+    return currentSubscription.features.includes(feature)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
+          <p className="text-slate-600">Loading subscription plans...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const currentPlan = getCurrentPlan()
+
   return (
-    <div className="min-h-screen bg-deep-space">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-deep-space via-cosmic-navy to-nebula-dark" />
-      <div className="absolute inset-0 bg-cosmic-pattern opacity-30" />
-      
-      <div className="relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="container mx-auto px-4 py-8"
-        >
-          <div className="text-center mb-12">
-            <motion.h1
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl font-bold text-cosmic-gradient-text mb-4"
-            >
-              Choose Your Cosmic Journey
-            </motion.h1>
-            <motion.p
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900">Subscription Plans</h1>
+                <p className="text-slate-600">Choose your cosmic journey level</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm text-slate-500">Current Plan</p>
+                <p className="font-semibold text-slate-900 text-2xl">{currentPlan.name}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Current Subscription Status */}
+      {currentSubscription && (
+        <div className="container mx-auto px-4 py-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-sm p-8 mb-8"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className={`w-16 h-16 rounded-xl ${currentPlan.bgColor} flex items-center justify-center`}>
+                  <currentPlan.icon className={`w-8 h-8 ${currentPlan.color}`} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900">{currentPlan.name}</h2>
+                  <p className="text-slate-600">{currentPlan.description}</p>
+                  <div className="flex items-center space-x-4 mt-2">
+                    <span className={`px-3 py-1 text-sm rounded-full ${
+                      currentSubscription.status === 'active' ? 'bg-green-100 text-green-700' :
+                      currentSubscription.status === 'cancelled' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                      {currentSubscription.status.charAt(0).toUpperCase() + currentSubscription.status.slice(1)}
+                    </span>
+                    <span className="text-sm text-slate-500">
+                      {currentSubscription.autoRenew ? 'Auto-renewal enabled' : 'Auto-renewal disabled'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-slate-900">
+                  ${currentPlan.price}
+                  {currentPlan.price > 0 && <span className="text-lg text-slate-600">/{currentPlan.period}</span>}
+                </p>
+                {currentSubscription.status === 'active' && currentPlan.price > 0 && (
+                  <button
+                    onClick={cancelSubscription}
+                    className="mt-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    Cancel Subscription
+                  </button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Subscription Plans */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {subscriptionPlans.map((plan, index) => (
+            <motion.div
+              key={plan.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-stellar-gray-light text-lg max-w-2xl mx-auto"
+              transition={{ delay: index * 0.1 }}
+              className={`relative bg-white rounded-2xl shadow-sm border-2 p-8 ${
+                plan.popular ? 'border-violet-200 ring-2 ring-violet-100' : plan.borderColor
+              } ${currentPlan.id === plan.id ? 'ring-2 ring-blue-200' : ''}`}
             >
-              Unlock the full potential of your cosmic journey with our premium plans. 
-              Discover deeper insights, personalized guidance, and exclusive features.
-            </motion.p>
-          </div>
-
-          {/* Billing Toggle */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center mb-12"
-          >
-            <div className="cosmic-card p-2">
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => setBillingCycle('monthly')}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                    billingCycle === 'monthly'
-                      ? 'bg-electric-violet text-white'
-                      : 'text-stellar-gray-light hover:text-electric-violet'
-                  }`}
-                >
-                  Monthly
-                </button>
-                <button
-                  onClick={() => setBillingCycle('yearly')}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                    billingCycle === 'yearly'
-                      ? 'bg-electric-violet text-white'
-                      : 'text-stellar-gray-light hover:text-electric-violet'
-                  }`}
-                >
-                  Yearly
-                  <span className="ml-2 text-xs bg-supernova-gold text-deep-space px-2 py-1 rounded-full">
-                    Save 20%
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gradient-to-r from-violet-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                    Most Popular
                   </span>
-                </button>
+                </div>
+              )}
+
+              {currentPlan.id === plan.id && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                    Current Plan
+                  </span>
+                </div>
+              )}
+
+              <div className="text-center mb-6">
+                <div className={`w-16 h-16 mx-auto mb-4 rounded-xl ${plan.bgColor} flex items-center justify-center`}>
+                  <plan.icon className={`w-8 h-8 ${plan.color}`} />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">{plan.name}</h3>
+                <p className="text-slate-600 mb-4">{plan.description}</p>
+                <div className="text-4xl font-bold text-slate-900 mb-2">
+                  ${plan.price}
+                  {plan.price > 0 && <span className="text-lg text-slate-600">/{plan.period}</span>}
+                </div>
+                {plan.price === 0 && (
+                  <p className="text-sm text-slate-500">Free forever</p>
+                )}
               </div>
-            </div>
-          </motion.div>
 
-          {/* Pricing Cards */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {subscriptionPlans.map((plan, index) => {
-              const Icon = plan.icon
-              const isPopular = plan.popular
-              const isSelected = selectedPlan === plan.id
-              
-              return (
-                <motion.div
-                  key={plan.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
-                  className={`relative cosmic-card ${
-                    isPopular ? 'ring-2 ring-supernova-gold' : ''
-                  } ${isSelected ? 'ring-2 ring-electric-violet' : ''}`}
-                  style={{
-                    background: isPopular 
-                      ? 'linear-gradient(135deg, rgba(255, 215, 90, 0.1) 0%, rgba(255, 224, 102, 0.1) 100%)'
-                      : 'linear-gradient(135deg, rgba(26, 26, 46, 0.5) 0%, rgba(22, 33, 62, 0.3) 100%)',
-                    borderColor: isPopular ? 'rgba(255, 215, 90, 0.3)' : 'rgba(123, 79, 255, 0.3)'
-                  }}
-                >
-                  {isPopular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-supernova-gold text-deep-space px-4 py-2 rounded-full text-sm font-bold">
-                        Most Popular
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="text-center mb-8">
-                    <div className={`inline-flex p-4 rounded-2xl mb-4 ${
-                      plan.color === 'electric-violet' ? 'bg-electric-violet/20' :
-                      plan.color === 'supernova-gold' ? 'bg-supernova-gold/20' :
-                      'bg-stellar-pink/20'
-                    }`}>
-                      <Icon className={`w-8 h-8 ${
-                        plan.color === 'electric-violet' ? 'text-electric-violet' :
-                        plan.color === 'supernova-gold' ? 'text-supernova-gold' :
-                        'text-stellar-pink'
-                      }`} />
-                    </div>
-                    
-                    <h3 className="text-2xl font-bold text-starlight-white mb-2">
-                      {plan.name}
-                    </h3>
-                    
-                    <div className="mb-4">
-                      <span className="text-4xl font-bold text-cosmic-gradient-text">
-                        ${billingCycle === 'yearly' ? (plan.price * 12 * 0.8).toFixed(0) : plan.price}
-                      </span>
-                      <span className="text-stellar-gray-light ml-2">
-                        /{billingCycle === 'yearly' ? 'year' : plan.period}
-                      </span>
-                    </div>
-                  </div>
+              <div className="space-y-4 mb-8">
+                <h4 className="font-semibold text-slate-900">Features included:</h4>
+                <ul className="space-y-2">
+                  {plan.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start space-x-2">
+                      <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-slate-700">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-                  {/* Features */}
-                  <div className="space-y-4 mb-8">
-                    {plan.features.map((feature, featureIndex) => (
-                      <motion.div
-                        key={featureIndex}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * featureIndex }}
-                        className="flex items-center space-x-3"
-                      >
-                        <Check className="w-5 h-5 text-aurora-green flex-shrink-0" />
-                        <span className="text-starlight-white">{feature}</span>
-                      </motion.div>
+              {plan.limitations.length > 0 && (
+                <div className="space-y-4 mb-8">
+                  <h4 className="font-semibold text-slate-900">Limitations:</h4>
+                  <ul className="space-y-2">
+                    {plan.limitations.map((limitation, limitationIndex) => (
+                      <li key={limitationIndex} className="flex items-start space-x-2">
+                        <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-700">{limitation}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
+                </div>
+              )}
 
-                  {/* Limitations for free plan */}
-                  {plan.id === 'free' && (
-                    <div className="space-y-2 mb-8">
-                      <h4 className="text-stellar-gray-light text-sm font-semibold mb-2">
-                        Limitations:
-                      </h4>
-                      {plan.limitations?.map((limitation, index) => (
-                        <div key={index} className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-nebula-red rounded-full flex-shrink-0" />
-                          <span className="text-stellar-gray-light text-sm">{limitation}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Subscribe Button */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleSubscribe(plan.id)}
-                    className={`w-full py-4 rounded-xl font-semibold transition-all ${
-                      plan.id === 'free'
-                        ? 'bg-cosmic-navy border border-electric-violet text-electric-violet hover:bg-electric-violet hover:text-white'
-                        : isPopular
-                        ? 'bg-supernova-gold text-deep-space hover:bg-stellar-yellow'
-                        : 'bg-electric-violet text-white hover:bg-cosmic-purple'
+              <div className="text-center">
+                {currentPlan.id === plan.id ? (
+                  <button
+                    disabled
+                    className="w-full px-6 py-3 bg-slate-100 text-slate-500 rounded-lg font-semibold cursor-not-allowed"
+                  >
+                    Current Plan
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handlePlanSelection(plan.id)}
+                    className={`w-full px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                      plan.popular
+                        ? 'bg-gradient-to-r from-violet-600 to-blue-600 text-white hover:from-violet-700 hover:to-blue-700'
+                        : 'bg-slate-900 text-white hover:bg-slate-800'
                     }`}
                   >
-                    {plan.id === 'free' ? 'Get Started Free' : `Subscribe to ${plan.name}`}
-                  </motion.button>
-                </motion.div>
-              )
-            })}
-          </div>
+                    {plan.price === 0 ? 'Get Started' : 'Subscribe Now'}
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
 
-          {/* Additional Info */}
+      {/* Feature Access Matrix */}
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl shadow-sm p-8"
+        >
+          <h3 className="text-2xl font-bold text-slate-900 mb-6">Feature Access Matrix</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left py-4 px-2 font-semibold text-slate-900">Feature</th>
+                  <th className="text-center py-4 px-2 font-semibold text-slate-900">Free</th>
+                  <th className="text-center py-4 px-2 font-semibold text-slate-900">Premium</th>
+                  <th className="text-center py-4 px-2 font-semibold text-slate-900">Admin</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { feature: 'Daily Insights', free: '3/day', premium: 'Unlimited', admin: 'Unlimited' },
+                  { feature: 'Numerology Analysis', free: 'Basic', premium: 'Advanced', admin: 'Advanced + Custom' },
+                  { feature: 'Astrology Charts', free: 'Simple', premium: 'Detailed', admin: 'Detailed + Vedic' },
+                  { feature: 'Expert Consultations', free: 'None', premium: '2/month', admin: 'Unlimited' },
+                  { feature: 'Compatibility Check', free: 'Basic', premium: 'Advanced', admin: 'Advanced + AI' },
+                  { feature: 'Dream Interpretation', free: 'Basic', premium: 'AI-Powered', admin: 'AI + Personal' },
+                  { feature: 'Admin Dashboard', free: 'No', premium: 'No', admin: 'Yes' },
+                  { feature: 'API Access', free: 'No', premium: 'No', admin: 'Yes' }
+                ].map((row, index) => (
+                  <tr key={index} className="border-b border-slate-100">
+                    <td className="py-4 px-2 font-medium text-slate-900">{row.feature}</td>
+                    <td className="py-4 px-2 text-center text-slate-600">{row.free}</td>
+                    <td className="py-4 px-2 text-center text-purple-600 font-semibold">{row.premium}</td>
+                    <td className="py-4 px-2 text-center text-amber-600 font-semibold">{row.admin}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Payment Modal */}
+      {showPayment && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="text-center mt-16"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-8 max-w-md w-full mx-4"
           >
-            <div className="cosmic-card max-w-4xl mx-auto">
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <Shield className="w-8 h-8 text-aurora-green mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-starlight-white mb-2">
-                    Secure Payment
-                  </h3>
-                  <p className="text-stellar-gray-light text-sm">
-                    Your payment information is encrypted and secure
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <Zap className="w-8 h-8 text-electric-violet mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-starlight-white mb-2">
-                    Instant Access
-                  </h3>
-                  <p className="text-stellar-gray-light text-sm">
-                    Unlock premium features immediately after subscription
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <Sparkles className="w-8 h-8 text-stellar-pink mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-starlight-white mb-2">
-                    Cancel Anytime
-                  </h3>
-                  <p className="text-stellar-gray-light text-sm">
-                    No long-term commitments, cancel whenever you want
-                  </p>
-                </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-4">Complete Subscription</h3>
+            <p className="text-slate-600 mb-6">
+              You're about to subscribe to the {subscriptionPlans.find(p => p.id === selectedPlan)?.name} plan.
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                <span className="font-medium text-slate-900">Plan</span>
+                <span className="text-slate-600">{subscriptionPlans.find(p => p.id === selectedPlan)?.name}</span>
+              </div>
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                <span className="font-medium text-slate-900">Price</span>
+                <span className="text-slate-600">
+                  ${subscriptionPlans.find(p => p.id === selectedPlan)?.price}/{subscriptionPlans.find(p => p.id === selectedPlan)?.period}
+                </span>
               </div>
             </div>
+
+            <div className="flex space-x-4 mt-6">
+              <button
+                onClick={() => setShowPayment(false)}
+                className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => processSubscription(selectedPlan)}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-lg hover:from-violet-700 hover:to-blue-700 transition-all duration-200"
+              >
+                Subscribe Now
+              </button>
+            </div>
           </motion.div>
-        </motion.div>
-
-        {/* Bottom spacing for navigation */}
-        <div className="h-24" />
-
-        {/* Cosmic Navigation */}
-        <CosmicNavigation />
-      </div>
+        </div>
+      )}
     </div>
   )
 }

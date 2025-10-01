@@ -60,6 +60,44 @@ export class SwissEphemerisEngine {
    * Calculate planetary positions for a given date and time
    */
   async calculatePlanetaryPositions(birthData: BirthData): Promise<PlanetPosition[]> {
+    try {
+      // Try NASA JPL Horizons API first for maximum accuracy
+      const { NASAHorizonsAPI } = await import('./nasa-horizons')
+      
+      const coordinates = {
+        latitude: birthData.latitude || 0,
+        longitude: birthData.longitude || 0,
+        elevation: 0,
+        timezone: birthData.timezone || 'UTC',
+        country: 'Unknown',
+        city: 'Unknown'
+      }
+      
+      const birthDateTime = new Date(
+        birthData.year, 
+        birthData.month - 1, 
+        birthData.day, 
+        birthData.hour || 0, 
+        birthData.minute || 0, 
+        birthData.second || 0
+      )
+      
+      const nasaData = await NASAHorizonsAPI.getAstronomicalData(birthDateTime, coordinates)
+      
+      if (nasaData.success) {
+        return nasaData.data.planets.map(planet => ({
+          name: planet.name,
+          longitude: planet.longitude,
+          latitude: planet.latitude,
+          distance: planet.distance,
+          speed: 0 // NASA doesn't provide speed, would need to calculate
+        }))
+      }
+    } catch (error) {
+      console.warn('NASA API unavailable, using Swiss Ephemeris fallback:', error)
+    }
+    
+    // Fallback to Swiss Ephemeris calculations
     if (!this.isInitialized) {
       await this.initialize()
     }

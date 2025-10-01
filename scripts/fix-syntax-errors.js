@@ -34,3 +34,5 @@ if (fs.existsSync(todayFile)) {
 }
 
 console.log('🎉 Syntax errors fixed!')
+
+

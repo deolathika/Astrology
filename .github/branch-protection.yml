@@ -1,0 +1,72 @@
+# GitHub Branch Protection Configuration
+# This file defines the protection rules for different branches
+
+# Main branch protection (production)
+main:
+  required_status_checks:
+    strict: true
+    contexts:
+      - "build"
+      - "test"
+      - "lint"
+      - "security-scan"
+  enforce_admins: true
+  required_pull_request_reviews:
+    required_approving_review_count: 2
+    dismiss_stale_reviews: true
+    require_code_owner_reviews: true
+    require_last_push_approval: true
+  restrictions:
+    users: []
+    teams: []
+    apps: []
+  allow_force_pushes: false
+  allow_deletions: false
+  required_linear_history: true
+  require_conversation_resolution: true
+  required_signatures: true
+
+# Staging branch protection
+staging:
+  required_status_checks:
+    strict: true
+    contexts:
+      - "build"
+      - "test"
+      - "lint"
+  enforce_admins: false
+  required_pull_request_reviews:
+    required_approving_review_count: 1
+    dismiss_stale_reviews: true
+    require_code_owner_reviews: false
+  restrictions:
+    users: []
+    teams: []
+    apps: []
+  allow_force_pushes: false
+  allow_deletions: false
+  required_linear_history: false
+  require_conversation_resolution: true
+
+# Develop branch protection
+develop:
+  required_status_checks:
+    strict: false
+    contexts:
+      - "build"
+      - "test"
+  enforce_admins: false
+  required_pull_request_reviews:
+    required_approving_review_count: 1
+    dismiss_stale_reviews: false
+    require_code_owner_reviews: false
+  restrictions:
+    users: []
+    teams: []
+    apps: []
+  allow_force_pushes: true
+  allow_deletions: false
+  required_linear_history: false
+  require_conversation_resolution: false
+
+

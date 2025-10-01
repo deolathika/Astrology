@@ -1,685 +1,354 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Sparkles, Heart, Moon, Star, Users, Scale, Bell, Wallet, 
-  User, Settings, ChevronRight, Info, Zap, Shield, Globe,
-  TrendingUp, Calendar, Clock, Target, Gift, BookOpen,
-  Calculator, Brain, Compass, Crown, Diamond, Eye, Sun,
-  Menu, X, Home as HomeIcon, ArrowLeft, ArrowRight,
-  ChevronDown, ChevronUp, ExternalLink, Plus, Minus, Share2,
-  Smartphone, Tablet, Monitor, Wifi, Battery, Volume2,
-  Search, Filter, Grid, List, RefreshCw, Download,
-  MessageCircle, Phone, Mail, MapPin, CreditCard,
-  BarChart3, PieChart, TrendingDown, Activity,
-  Lock, Unlock, Key, Database, Server, Cloud,
-  CheckCircle, Play, Pause, SkipBack, SkipForward,
-  Volume1, VolumeX, Mic, MicOff, Video, VideoOff,
-  Camera, Image, File, FileText, FileImage, FileVideo,
-  FileAudio, FileArchive, FileCode, FileJson, FileX
+  Star, User, Heart, MessageCircle, Settings, 
+  Sun, Moon, Sparkles, ChevronRight, Globe,
+  Menu, X, Home, Calendar, MapPin, Clock,
+  Monitor, Smartphone, Tablet, Search,
+  Bell, Crown, Shield, Zap
 } from 'lucide-react'
-import { SeamlessNavigation } from '@/components/seamless-navigation'
-
-interface MainFeature {
-  id: string
-  title: string
-  description: string
-  icon: React.ComponentType<any>
-  color: string
-  bgColor: string
-  route: string
-  status: 'active' | 'beta' | 'coming-soon'
-  category: string
-  mobileOptimized: boolean
-  capabilities: {
-    free: string[]
-    premium: string[]
-    admin: string[]
-  }
-  quickAccess: boolean
-  priority: number
-}
-
-interface MainCategory {
-  id: string
-  title: string
-  description: string
-  icon: React.ComponentType<any>
-  color: string
-  bgColor: string
-  features: MainFeature[]
-}
 
 export default function MainPage() {
   const router = useRouter()
-  const [isMobile, setIsMobile] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [userProfile, setUserProfile] = useState<any>(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [showQuickAccess, setShowQuickAccess] = useState(true)
+  const [deviceType, setDeviceType] = useState<'mobile' | 'desktop' | 'tablet'>('desktop')
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+    // Enhanced device detection
+    const detectDevice = () => {
+      const width = window.innerWidth
+      const userAgent = navigator.userAgent.toLowerCase()
+      
+      const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent)
+      const isTablet = /ipad|android(?!.*mobile)/i.test(userAgent) || (width >= 768 && width <= 1024)
+      
+      if (isMobileDevice && width < 768) {
+        setDeviceType('mobile')
+      } else if (isTablet || (width >= 768 && width <= 1024)) {
+        setDeviceType('tablet')
+      } else {
+        setDeviceType('desktop')
+      }
     }
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
-    // Load user profile
-    const storedData = localStorage.getItem('userData')
-    if (storedData) {
-      setUserProfile(JSON.parse(storedData))
-    }
-    
-    return () => window.removeEventListener('resize', checkMobile)
+    detectDevice()
+    window.addEventListener('resize', detectDevice)
+    return () => window.removeEventListener('resize', detectDevice)
   }, [])
 
-  const mainCategories: MainCategory[] = [
+  useEffect(() => {
+    // Load user profile
+    const profile = localStorage.getItem('userData')
+    if (profile) {
+      setUserProfile(JSON.parse(profile))
+    }
+  }, [])
+
+  const handleNavigation = (path: string) => {
+    router.push(path)
+  }
+
+  const sidebarItems = [
+    { id: 'home', label: 'Dashboard', icon: Home, path: '/main', active: true },
+    { id: 'today', label: 'Today\'s Guidance', icon: Sun, path: '/today' },
+    { id: 'profile', label: 'Cosmic Profile', icon: User, path: '/cosmic-profile' },
+    { id: 'zodiac', label: 'Zodiac Systems', icon: Star, path: '/zodiac-systems' },
+    { id: 'numerology', label: 'Numerology', icon: Sparkles, path: '/numerology' },
+    { id: 'compatibility', label: 'Compatibility', icon: Heart, path: '/compatibility' },
+    { id: 'dreams', label: 'Dream Analysis', icon: Moon, path: '/dreams' },
+    { id: 'chat', label: 'Community Chat', icon: MessageCircle, path: '/chat' },
+    { id: 'notifications', label: 'Notifications', icon: Bell, path: '/notifications' },
+    { id: 'premium', label: 'Premium', icon: Crown, path: '/premium' },
+    { id: 'admin', label: 'Admin Panel', icon: Shield, path: '/admin' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' }
+  ]
+
+  const featureCards = [
     {
-      id: 'daily-guidance',
-      title: 'Daily Guidance',
-      description: 'Your personalized daily cosmic insights',
-      icon: Sparkles,
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50',
-      features: [
-        {
-          id: 'todays-secret',
-          title: "Today's Secret",
-          description: 'Personalized daily cosmic guidance with lucky trio, day rules, and mood fix',
-          icon: Sparkles,
-          color: 'text-indigo-600',
-          bgColor: 'bg-indigo-50',
-          route: '/today',
-          status: 'active',
-          category: 'daily-guidance',
-          mobileOptimized: true,
-          quickAccess: true,
-          priority: 1,
-          capabilities: {
-            free: ['Basic daily guidance (3/day)', 'Simple lucky numbers', 'Basic color suggestions'],
-            premium: ['Unlimited guidance', 'Advanced lucky elements', 'Detailed day rules', 'Mood optimization', 'Share functionality'],
-            admin: ['All premium features', 'Custom guidance algorithms', 'Bulk user management', 'Analytics dashboard', 'Content moderation tools']
-          }
-        },
-        {
-          id: 'lucky-trio',
-          title: 'Lucky Trio',
-          description: 'Your cosmic lucky elements for today - color, number, and object',
-          icon: Star,
-          color: 'text-violet-600',
-          bgColor: 'bg-violet-50',
-          route: '/today',
-          status: 'active',
-          category: 'daily-guidance',
-          mobileOptimized: true,
-          quickAccess: true,
-          priority: 2,
-          capabilities: {
-            free: ['Basic lucky number (1/day)', 'Simple color suggestion', 'Basic lucky object'],
-            premium: ['Advanced lucky calculations', 'Multiple color options', 'Detailed lucky objects', 'Historical lucky data', 'Custom lucky elements'],
-            admin: ['All premium features', 'Lucky algorithm customization', 'Bulk lucky element generation', 'User lucky analytics', 'Custom lucky object database']
-          }
-        },
-        {
-          id: 'moon-phases',
-          title: 'Moon Phases',
-          description: 'Lunar cycle guidance and rituals for optimal timing',
-          icon: Moon,
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-50',
-          route: '/moon-phases',
-          status: 'beta',
-          category: 'daily-guidance',
-          mobileOptimized: true,
-          quickAccess: false,
-          priority: 3,
-          capabilities: {
-            free: ['Current moon phase', 'Basic lunar info'],
-            premium: ['Detailed lunar calendar', 'Moon rituals', 'Lunar meditations', 'Lunar timing', 'Moon phase notifications'],
-            admin: ['Custom moon data', 'Ritual templates', 'Lunar analytics', 'Moon phase customization', 'Lunar event management']
-          }
-        }
-      ]
+      id: 'today',
+      title: 'Today\'s Guidance',
+      description: 'Get your personalized daily cosmic insights, lucky numbers, and advice.',
+      icon: Sun,
+      color: 'violet',
+      path: '/today',
+      stats: 'Daily Updated'
     },
     {
-      id: 'astrology',
-      title: 'Astrology',
-      description: 'Complete astrological analysis and charts',
-      icon: Globe,
-      color: 'text-violet-600',
-      bgColor: 'bg-violet-50',
-      features: [
-        {
-          id: 'cosmic-profile',
-          title: 'Cosmic Profile',
-          description: 'Complete astrological and numerological analysis of your birth chart',
-          icon: User,
-          color: 'text-slate-600',
-          bgColor: 'bg-slate-50',
-          route: '/profile',
-          status: 'active',
-          category: 'astrology',
-          mobileOptimized: true,
-          quickAccess: true,
-          priority: 1,
-          capabilities: {
-            free: ['Basic birth chart', 'Simple zodiac sign info', 'Basic numerology (Life Path)', 'Limited chart details'],
-            premium: ['Complete birth chart analysis', 'Advanced numerology readings', 'Vedic astrology features', 'Detailed personality analysis', 'Chart interpretations', 'Historical data access'],
-            admin: ['All premium features', 'Advanced chart customization', 'Bulk chart generation', 'Expert consultation tools', 'Chart analytics dashboard', 'Custom chart templates']
-          }
-        },
-        {
-          id: 'zodiac-systems',
-          title: 'Zodiac Systems',
-          description: 'Western, Vedic, Chinese, and Hybrid astrological systems',
-          icon: Globe,
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          route: '/zodiac-systems',
-          status: 'active',
-          category: 'astrology',
-          mobileOptimized: true,
-          quickAccess: false,
-          priority: 2,
-          capabilities: {
-            free: ['Basic zodiac info', 'Simple comparisons'],
-            premium: ['Multiple systems', 'Detailed comparisons', 'Cultural insights', 'System explanations', 'Cross-system analysis'],
-            admin: ['System customization', 'Cultural data', 'Advanced analytics', 'Custom systems', 'System management']
-          }
-        },
-        {
-          id: 'compatibility',
-          title: 'Compatibility',
-          description: 'Relationship analysis and synastry charts',
-          icon: Heart,
-          color: 'text-pink-600',
-          bgColor: 'bg-pink-50',
-          route: '/compatibility',
-          status: 'active',
-          category: 'astrology',
-          mobileOptimized: true,
-          quickAccess: true,
-          priority: 3,
-          capabilities: {
-            free: ['Basic compatibility', 'Simple synastry'],
-            premium: ['Advanced synastry', 'Composite charts', 'Timing analysis', 'Relationship guidance', 'Compatibility reports'],
-            admin: ['Custom compatibility', 'Bulk analysis', 'Relationship analytics', 'Compatibility algorithms', 'Relationship management']
-          }
-        }
-      ]
+      id: 'profile',
+      title: 'Cosmic Profile',
+      description: 'Explore your natal chart, numerology, and unique cosmic blueprint.',
+      icon: User,
+      color: 'blue',
+      path: '/cosmic-profile',
+      stats: 'Complete Analysis'
+    },
+    {
+      id: 'zodiac',
+      title: 'Zodiac Systems',
+      description: 'Discover Western, Vedic, Chinese, and Sri Lankan zodiac systems.',
+      icon: Star,
+      color: 'green',
+      path: '/zodiac-systems',
+      stats: '4 Systems'
     },
     {
       id: 'numerology',
       title: 'Numerology',
-      description: 'Numerical analysis and life path guidance',
-      icon: Calculator,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      features: [
-        {
-          id: 'life-path',
-          title: 'Life Path Analysis',
-          description: 'Your numerological life path and purpose',
-          icon: Target,
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          route: '/numerology',
-          status: 'active',
-          category: 'numerology',
-          mobileOptimized: true,
-          quickAccess: true,
-          priority: 1,
-          capabilities: {
-            free: ['Basic life path', 'Simple numerology'],
-            premium: ['Detailed analysis', 'Multiple systems', 'Life guidance', 'Path predictions', 'Life purpose insights'],
-            admin: ['Custom calculations', 'Bulk analysis', 'Numerology analytics', 'Life path algorithms', 'Purpose management']
-          }
-        },
-        {
-          id: 'expression-number',
-          title: 'Expression Number',
-          description: 'Your talents and abilities revealed through numbers',
-          icon: Brain,
-          color: 'text-purple-600',
-          bgColor: 'bg-purple-50',
-          route: '/numerology',
-          status: 'active',
-          category: 'numerology',
-          mobileOptimized: true,
-          quickAccess: false,
-          priority: 2,
-          capabilities: {
-            free: ['Basic expression', 'Simple analysis'],
-            premium: ['Detailed expression', 'Talent analysis', 'Career guidance', 'Skill development', 'Expression reports'],
-            admin: ['Custom expressions', 'Bulk calculations', 'Talent analytics', 'Expression algorithms', 'Talent management']
-          }
-        }
-      ]
+      description: 'Calculate your life path, destiny, and soul urge numbers.',
+      icon: Sparkles,
+      color: 'purple',
+      path: '/numerology',
+      stats: 'Master Numbers'
     },
     {
-      id: 'community',
-      title: 'Community',
-      description: 'Connect with like-minded cosmic souls',
-      icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      features: [
-        {
-          id: 'cosmic-chat',
-          title: 'Cosmic Chat',
-          description: 'Emoji-based cosmic conversations with consent management',
-          icon: MessageCircle,
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-50',
-          route: '/community',
-          status: 'active',
-          category: 'community',
-          mobileOptimized: true,
-          quickAccess: true,
-          priority: 1,
-          capabilities: {
-            free: ['Basic chat', 'Limited messages'],
-            premium: ['Unlimited chat', 'Advanced features', 'Priority support', 'Chat history', 'Group chats'],
-            admin: ['Moderation tools', 'Analytics', 'Community management', 'Chat moderation', 'User management']
-          }
-        },
-        {
-          id: 'cosmic-groups',
-          title: 'Cosmic Groups',
-          description: 'Join groups based on your cosmic profile',
-          icon: Users,
-          color: 'text-indigo-600',
-          bgColor: 'bg-indigo-50',
-          route: '/groups',
-          status: 'beta',
-          category: 'community',
-          mobileOptimized: true,
-          quickAccess: false,
-          priority: 2,
-          capabilities: {
-            free: ['Join groups', 'Basic participation'],
-            premium: ['Create groups', 'Advanced features', 'Group management', 'Group events', 'Group analytics'],
-            admin: ['Group moderation', 'Analytics', 'Group administration', 'Group management', 'Group analytics']
-          }
-        }
-      ]
+      id: 'compatibility',
+      title: 'Compatibility',
+      description: 'Discover your cosmic connections and relationship insights.',
+      icon: Heart,
+      color: 'pink',
+      path: '/compatibility',
+      stats: 'AI Powered'
     },
     {
-      id: 'premium',
-      title: 'Premium Services',
-      description: 'Advanced features and expert consultations',
-      icon: Crown,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50',
-      features: [
-        {
-          id: 'expert-consultations',
-          title: 'Expert Consultations',
-          description: 'One-on-one sessions with certified astrologers and numerologists',
-          icon: Users,
-          color: 'text-amber-600',
-          bgColor: 'bg-amber-50',
-          route: '/consultations',
-          status: 'active',
-          category: 'premium',
-          mobileOptimized: true,
-          quickAccess: false,
-          priority: 1,
-          capabilities: {
-            free: ['No consultations'],
-            premium: ['2 consultations/month', 'Expert sessions', 'Follow-up support', 'Session recordings', 'Expert profiles'],
-            admin: ['Unlimited consultations', 'Expert management', 'Consultation analytics', 'Expert scheduling', 'Consultation management']
-          }
-        },
-        {
-          id: 'premium-features',
-          title: 'Premium Features',
-          description: 'Unlock all advanced cosmic features',
-          icon: Diamond,
-          color: 'text-purple-600',
-          bgColor: 'bg-purple-50',
-          route: '/premium-services',
-          status: 'active',
-          category: 'premium',
-          mobileOptimized: true,
-          quickAccess: true,
-          priority: 2,
-          capabilities: {
-            free: ['Basic features only'],
-            premium: ['All premium features', 'Unlimited access', 'Priority support', 'Advanced analytics', 'Custom features'],
-            admin: ['All features', 'Admin tools', 'System management', 'User management', 'System analytics']
-          }
-        }
-      ]
+      id: 'dreams',
+      title: 'Dream Analysis',
+      description: 'Log your dreams and get AI-powered interpretations.',
+      icon: Moon,
+      color: 'indigo',
+      path: '/dreams',
+      stats: 'AI Powered'
     }
   ]
 
-  const filteredCategories = mainCategories.filter(category =>
-    category.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    category.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    category.features.some(feature =>
-      feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      feature.description.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  )
-
-  const quickAccessFeatures = mainCategories
-    .flatMap(category => category.features)
-    .filter(feature => feature.quickAccess)
-    .sort((a, b) => a.priority - b.priority)
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'text-green-600 bg-green-100'
-      case 'beta': return 'text-yellow-600 bg-yellow-100'
-      case 'coming-soon': return 'text-blue-600 bg-blue-100'
-      default: return 'text-gray-600 bg-gray-100'
+  const getColorClasses = (color: string) => {
+    const colorMap = {
+      violet: 'bg-violet-100 text-violet-600',
+      blue: 'bg-blue-100 text-blue-600',
+      green: 'bg-green-100 text-green-600',
+      purple: 'bg-purple-100 text-purple-600',
+      pink: 'bg-pink-100 text-pink-600',
+      indigo: 'bg-indigo-100 text-indigo-600'
     }
+    return colorMap[color as keyof typeof colorMap] || 'bg-gray-100 text-gray-600'
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active': return CheckCircle
-      case 'beta': return Zap
-      case 'coming-soon': return Clock
-      default: return Info
+  const getGradientClasses = (color: string) => {
+    const gradientMap = {
+      violet: 'from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700',
+      blue: 'from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700',
+      green: 'from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700',
+      purple: 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700',
+      pink: 'from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700',
+      indigo: 'from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
     }
-  }
-
-  const handleFeatureClick = (route: string) => {
-    router.push(route)
+    return gradientMap[color as keyof typeof gradientMap] || 'from-gray-600 to-gray-700'
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Seamless Navigation */}
-      <SeamlessNavigation />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex">
+      {/* Desktop Sidebar */}
+      <motion.div
+        initial={{ width: isSidebarOpen ? 280 : 0 }}
+        animate={{ width: isSidebarOpen ? 280 : 0 }}
+        className="bg-white border-r border-slate-200 shadow-lg overflow-hidden"
+      >
+        <div className="p-6">
+          {/* Logo */}
+          <div className="flex items-center space-x-3 mb-8">
+            <div className="w-10 h-10 bg-gradient-to-r from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
+              <Star className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-slate-900">Daily Secrets</h1>
+              <p className="text-sm text-slate-500">Desktop Experience</p>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="space-y-2">
+            {sidebarItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavigation(item.path)}
+                className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                  item.active
+                    ? 'bg-violet-100 text-violet-700'
+                    : 'hover:bg-slate-100 text-slate-600'
+                }`}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+      </motion.div>
 
       {/* Main Content */}
-      <div className={`${isMobile ? 'ml-0' : 'ml-80'} transition-all duration-300`}>
-        {/* Header */}
-        <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
+      <div className="flex-1 flex flex-col">
+        {/* Desktop Header */}
+        <div className="bg-white border-b border-slate-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+              
               <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-slate-900">Daily Secrets</h1>
-                  <p className="text-sm text-slate-600">
-                    {userProfile ? `Welcome back, ${userProfile.name}!` : 'Your cosmic journey awaits'}
-                  </p>
+                <div className="relative">
+                  <Search className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search cosmic insights..."
+                    className="pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                  />
                 </div>
               </div>
-              
-              {/* Mobile Status Indicators */}
-              {isMobile && (
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-1 text-xs text-slate-600">
-                    <Wifi className="w-3 h-3" />
-                    <span>Connected</span>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <button className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+                <Bell className="w-5 h-5" />
+              </button>
+              <button className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+                <Settings className="w-5 h-5" />
+              </button>
+              {userProfile && (
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4" />
                   </div>
-                  <div className="flex items-center space-x-1 text-xs text-slate-600">
-                    <Battery className="w-3 h-3" />
-                    <span>85%</span>
-                  </div>
+                  <span className="text-sm font-medium text-slate-900">
+                    {userProfile.fullName || 'Cosmic Explorer'}
+                  </span>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-6">
-          {/* Search and Controls */}
-          <div className="mb-6">
-            <div className="flex items-center space-x-4 mb-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search features..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-violet-100 text-violet-600' : 'text-slate-400'}`}
-                >
-                  <Grid className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-violet-100 text-violet-600' : 'text-slate-400'}`}
-                >
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
+        {/* Desktop Content */}
+        <div className="flex-1 p-6">
+          {/* Welcome Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">
+              Welcome to Your Cosmic Dashboard
+            </h2>
+            <p className="text-slate-600">
+              Discover the secrets of the universe through personalized astrology, numerology, and cosmic guidance.
+            </p>
+            {userProfile && (
+              <p className="text-violet-600 mt-2">
+                Welcome back, {userProfile.fullName || 'Cosmic Explorer'}!
+              </p>
+            )}
+          </motion.div>
 
-          {/* Quick Access Features */}
-          {showQuickAccess && quickAccessFeatures.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="mb-8"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-slate-900">Quick Access</h2>
-                <button
-                  onClick={() => setShowQuickAccess(false)}
-                  className="text-sm text-slate-500 hover:text-slate-700 transition-colors"
-                >
-                  Hide
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {quickAccessFeatures.map((feature, index) => {
-                  const StatusIcon = getStatusIcon(feature.status)
-                  return (
-                    <motion.div
-                      key={feature.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                      onClick={() => handleFeatureClick(feature.route)}
-                      className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all cursor-pointer group"
-                    >
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div className={`w-8 h-8 ${feature.bgColor} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                          <feature.icon className={`w-4 h-4 ${feature.color}`} />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-slate-900">{feature.title}</h3>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(feature.status)}`}>
-                              <StatusIcon className="w-3 h-3 inline mr-1" />
-                              {feature.status}
-                            </span>
-                          </div>
-                          <p className="text-sm text-slate-600">{feature.description}</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Feature Categories */}
-          <div className="space-y-6">
-            {filteredCategories.map((category, categoryIndex) => (
+          {/* Feature Cards - Desktop Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {featureCards.map((card, index) => (
               <motion.div
-                key={category.id}
+                key={card.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
-                className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-xl shadow-sm p-6 border border-slate-200 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => handleNavigation(card.path)}
               >
-                {/* Category Header */}
-                <div className="p-4 border-b border-slate-100">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 ${category.bgColor} rounded-lg flex items-center justify-center`}>
-                        <category.icon className={`w-5 h-5 ${category.color}`} />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{category.title}</h2>
-                        <p className="text-sm text-slate-600">{category.description}</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
-                      className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
-                    >
-                      {selectedCategory === category.id ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
-                    </button>
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className={`w-12 h-12 ${getColorClasses(card.color)} rounded-xl flex items-center justify-center`}>
+                    <card.icon className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-slate-900">{card.title}</h3>
+                    <p className="text-slate-600 text-sm">{card.stats}</p>
                   </div>
                 </div>
-
-                {/* Category Features */}
-                <AnimatePresence>
-                  {selectedCategory === category.id && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className={`p-4 ${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}`}>
-                        {category.features.map((feature, featureIndex) => {
-                          const StatusIcon = getStatusIcon(feature.status)
-                          return (
-                            <motion.div
-                              key={feature.id}
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.3, delay: featureIndex * 0.1 }}
-                              onClick={() => handleFeatureClick(feature.route)}
-                              className={`bg-slate-50 rounded-lg p-4 hover:bg-slate-100 transition-colors cursor-pointer group ${
-                                viewMode === 'list' ? 'flex items-center space-x-4' : ''
-                              }`}
-                            >
-                              <div className={`w-8 h-8 ${feature.bgColor} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                                <feature.icon className={`w-4 h-4 ${feature.color}`} />
-                              </div>
-                              
-                              <div className="flex-1">
-                                <div className="flex items-center justify-between mb-1">
-                                  <h3 className="font-semibold text-slate-900">{feature.title}</h3>
-                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(feature.status)}`}>
-                                    <StatusIcon className="w-3 h-3 inline mr-1" />
-                                    {feature.status}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-slate-600 mb-2">{feature.description}</p>
-                                
-                                {/* Capabilities Summary */}
-                                <div className="flex items-center space-x-4 text-xs text-slate-500">
-                                  <div className="flex items-center space-x-1">
-                                    <Heart className="w-3 h-3 text-slate-400" />
-                                    <span>Free: {feature.capabilities.free.length}</span>
-                                  </div>
-                                  <div className="flex items-center space-x-1">
-                                    <Crown className="w-3 h-3 text-violet-500" />
-                                    <span>Premium: {feature.capabilities.premium.length}</span>
-                                  </div>
-                                  <div className="flex items-center space-x-1">
-                                    <Shield className="w-3 h-3 text-amber-500" />
-                                    <span>Admin: {feature.capabilities.admin.length}</span>
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
-                            </motion.div>
-                          )
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <p className="text-slate-600 text-sm mb-4">{card.description}</p>
+                <button className={`w-full bg-gradient-to-r ${getGradientClasses(card.color)} text-white px-4 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center space-x-2`}>
+                  <span>Explore {card.title}</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </motion.div>
             ))}
           </div>
 
-          {/* Quick Stats */}
+          {/* Quick Actions - Desktop */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4"
+            transition={{ delay: 0.6 }}
+            className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
           >
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
+            <h3 className="text-2xl font-bold text-slate-900 mb-6">Quick Actions</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <button
+                onClick={() => handleNavigation('/zodiac/western')}
+                className="p-4 text-center hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <div className="w-8 h-8 bg-violet-100 text-violet-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <Star className="w-4 h-4" />
                 </div>
-                <div>
-                  <div className="text-lg font-bold text-slate-900">
-                    {mainCategories.reduce((acc, cat) => acc + cat.features.filter(f => f.status === 'active').length, 0)}
-                  </div>
-                  <div className="text-xs text-slate-600">Active</div>
+                <p className="text-sm font-medium text-slate-900">Western</p>
+              </button>
+              
+              <button
+                onClick={() => handleNavigation('/zodiac/vedic')}
+                className="p-4 text-center hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <Globe className="w-4 h-4" />
                 </div>
-              </div>
+                <p className="text-sm font-medium text-slate-900">Vedic</p>
+              </button>
+              
+              <button
+                onClick={() => handleNavigation('/zodiac/chinese')}
+                className="p-4 text-center hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <div className="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <Star className="w-4 h-4" />
+                </div>
+                <p className="text-sm font-medium text-slate-900">Chinese</p>
+              </button>
+              
+              <button
+                onClick={() => handleNavigation('/zodiac/sri-lankan')}
+                className="p-4 text-center hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <div className="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <Star className="w-4 h-4" />
+                </div>
+                <p className="text-sm font-medium text-slate-900">Sri Lankan</p>
+              </button>
             </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-yellow-600" />
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-slate-900">
-                    {mainCategories.reduce((acc, cat) => acc + cat.features.filter(f => f.status === 'beta').length, 0)}
-                  </div>
-                  <div className="text-xs text-slate-600">Beta</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-slate-900">
-                    {mainCategories.reduce((acc, cat) => acc + cat.features.filter(f => f.status === 'coming-soon').length, 0)}
-                  </div>
-                  <div className="text-xs text-slate-600">Coming</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center">
-                  <Grid className="w-4 h-4 text-violet-600" />
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-slate-900">
-                    {mainCategories.length}
-                  </div>
-                  <div className="text-xs text-slate-600">Categories</div>
-                </div>
-              </div>
+          </motion.div>
+
+          {/* Device Info */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="mt-6 text-center"
+          >
+            <div className="flex items-center justify-center space-x-2 text-sm text-slate-500">
+              {deviceType === 'mobile' && <Smartphone className="w-4 h-4" />}
+              {deviceType === 'tablet' && <Tablet className="w-4 h-4" />}
+              {deviceType === 'desktop' && <Monitor className="w-4 h-4" />}
+              <span>
+                Optimized for {deviceType} devices
+              </span>
             </div>
           </motion.div>
         </div>

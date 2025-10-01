@@ -1,16 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { apiRateLimit } from '@/lib/rate-limit'
+import { logError, logApiUsage, ErrorType, ErrorSeverity } from '@/lib/monitoring'
+import { validateAndSanitize, profileIdSchema } from '@/lib/input-validation'
 
 // Cache for daily guidance to avoid recalculating
 const dailyCache = new Map<string, any>()
 
 export async function GET(request: NextRequest) {
+  const startTime = Date.now()
+  
   try {
+    // Apply rate limiting
+    const rateLimitResult = apiRateLimit(request)
+    if (!rateLimitResult.success) {
+      logApiUsage('/api/today', 'GET', 429, Date.now() - startTime)
+      return NextResponse.json(
+        { error: rateLimitResult.message },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': '900', // 15 minutes
+            'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0',
+            'X-RateLimit-Reset': rateLimitResult.resetTime?.toString() || '0'
+          }
+        }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const profileId = searchParams.get('profileId')
 
+    // Validate input
     if (!profileId) {
+      logError('Profile ID is required', ErrorType.VALIDATION, ErrorSeverity.MEDIUM, { endpoint: '/api/today' }, request)
       return NextResponse.json(
         { error: 'Profile ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const validation = validateAndSanitize(profileIdSchema, profileId)
+    if (!validation.success) {
+      logError(`Invalid profile ID: ${validation.error}`, ErrorType.VALIDATION, ErrorSeverity.MEDIUM, { profileId }, request)
+      return NextResponse.json(
+        { error: 'Invalid profile ID format' },
         { status: 400 }
       )
     }
@@ -85,17 +118,35 @@ export async function GET(request: NextRequest) {
     // Cache the response
     dailyCache.set(cacheKey, response)
 
-    return NextResponse.json(response, {
-      headers: {
-        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+        const duration = Date.now() - startTime
+        logApiUsage('/api/today', 'GET', 200, duration)
+        
+        return NextResponse.json(response, {
+          headers: {
+            'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+            'X-API-Version': '1.0.0',
+            'X-Response-Time': `${duration}ms`
+          }
+        })
+      } catch (error) {
+        const duration = Date.now() - startTime
+        logError(
+          error instanceof Error ? error : new Error('Unknown error'),
+          ErrorType.SYSTEM,
+          ErrorSeverity.HIGH,
+          { endpoint: '/api/today', duration },
+          request
+        )
+        logApiUsage('/api/today', 'GET', 500, duration)
+        
+        return NextResponse.json(
+          { 
+            error: 'Failed to generate daily guidance',
+            errorId: logError('Today API error', ErrorType.SYSTEM, ErrorSeverity.HIGH, { error: error instanceof Error ? error.message : 'Unknown' }, request)
+          },
+          { status: 500 }
+        )
       }
-    })
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to generate daily guidance' },
-      { status: 500 }
-    )
-  }
 }
 
 function calculateLifePath(birthDate: string): number {

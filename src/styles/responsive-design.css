@@ -1,0 +1,480 @@
+/* Daily Secrets - Responsive Design System */
+
+/* === MOBILE-FIRST BREAKPOINTS === */
+:root {
+  --mobile: 320px;
+  --tablet: 768px;
+  --desktop: 1024px;
+  --wide: 1280px;
+  --ultra-wide: 1536px;
+}
+
+/* === RESPONSIVE CONTAINERS === */
+.container-responsive {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-responsive {
+    max-width: 640px;
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-responsive {
+    max-width: 768px;
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    max-width: 1024px;
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-responsive {
+    max-width: 1280px;
+    padding: 0 2rem;
+  }
+}
+
+/* === RESPONSIVE GRID SYSTEM === */
+.grid-responsive {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* === RESPONSIVE TYPOGRAPHY === */
+.text-responsive-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-responsive-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-responsive-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-responsive-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-responsive-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-responsive-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-responsive-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.text-responsive-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .text-responsive-xs {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .text-responsive-sm {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  
+  .text-responsive-base {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-responsive-lg {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-responsive-xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .text-responsive-2xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  
+  .text-responsive-3xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+  
+  .text-responsive-4xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+/* === RESPONSIVE SPACING === */
+.space-responsive-xs {
+  gap: 0.5rem;
+}
+
+.space-responsive-sm {
+  gap: 0.75rem;
+}
+
+.space-responsive-base {
+  gap: 1rem;
+}
+
+.space-responsive-lg {
+  gap: 1.5rem;
+}
+
+.space-responsive-xl {
+  gap: 2rem;
+}
+
+.space-responsive-2xl {
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .space-responsive-xs {
+    gap: 0.75rem;
+  }
+  
+  .space-responsive-sm {
+    gap: 1rem;
+  }
+  
+  .space-responsive-base {
+    gap: 1.5rem;
+  }
+  
+  .space-responsive-lg {
+    gap: 2rem;
+  }
+  
+  .space-responsive-xl {
+    gap: 3rem;
+  }
+  
+  .space-responsive-2xl {
+    gap: 4rem;
+  }
+}
+
+/* === RESPONSIVE CARDS === */
+.card-responsive {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.card-responsive:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 768px) {
+  .card-responsive {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-responsive {
+    padding: 2rem;
+  }
+}
+
+/* === RESPONSIVE BUTTONS === */
+.btn-responsive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-responsive-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-responsive-base {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.btn-responsive-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+@media (min-width: 768px) {
+  .btn-responsive-sm {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .btn-responsive-base {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+  }
+  
+  .btn-responsive-lg {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.25rem;
+  }
+}
+
+/* === RESPONSIVE NAVIGATION === */
+.nav-responsive {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.5rem;
+  z-index: 50;
+}
+
+@media (min-width: 768px) {
+  .nav-responsive {
+    position: static;
+    border-top: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem;
+  }
+}
+
+/* === RESPONSIVE MODAL === */
+.modal-responsive {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content-responsive {
+  background: white;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 24rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .modal-content-responsive {
+    max-width: 32rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .modal-content-responsive {
+    max-width: 48rem;
+  }
+}
+
+/* === RESPONSIVE IMAGES === */
+.img-responsive {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.img-responsive-square {
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.img-responsive-16-9 {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+/* === RESPONSIVE UTILITIES === */
+.hide-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+}
+
+.hide-tablet {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hide-tablet {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hide-tablet {
+    display: block;
+  }
+}
+
+.hide-desktop {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .hide-desktop {
+    display: none;
+  }
+}
+
+/* === RESPONSIVE ANIMATIONS === */
+.animate-responsive-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-responsive-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.animate-responsive-scale {
+  animation: scale 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* === RESPONSIVE FOCUS STATES === */
+.focus-responsive {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-responsive:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* === RESPONSIVE TOUCH TARGETS === */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@media (min-width: 768px) {
+  .touch-target {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}
+
+/* === RESPONSIVE SCROLLING === */
+.scroll-responsive {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.scroll-responsive::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-responsive::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.scroll-responsive::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.scroll-responsive::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+

@@ -8,6 +8,10 @@ import {
   ChevronRight, ChevronLeft, Check, X, Globe, Shield,
   Smartphone, Settings, Crown, CheckCircle, Battery, Wifi, Signal
 } from 'lucide-react'
+import { ZodiacCalculator } from '@/lib/astrology/zodiac-calculator'
+import { GeographyService } from '@/lib/geography/country-city-data'
+import { LLMAstrologyService } from '@/lib/ai/llm-astrology-service'
+import { AstrologyValidator } from '@/lib/astrology/astrology-validator'
 
 interface OnboardingStep {
   id: string
@@ -107,6 +111,13 @@ export default function CompleteOnboardingPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const [selectedAccountType, setSelectedAccountType] = useState<string>('')
+  const [detectedZodiacSigns, setDetectedZodiacSigns] = useState<any>(null)
+  const [countries, setCountries] = useState<any[]>([])
+  const [cities, setCities] = useState<any[]>([])
+  const [selectedCountry, setSelectedCountry] = useState<string>('')
+  const [selectedCity, setSelectedCity] = useState<string>('')
+  const [isLoadingLLM, setIsLoadingLLM] = useState(false)
+  const [llmAnalysis, setLlmAnalysis] = useState<any>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -118,6 +129,7 @@ export default function CompleteOnboardingPage() {
     system: 'western',
     language: 'en',
     accountType: '',
+    zodiacSign: '',
     preferences: {
       astrology: true,
       numerology: true,
@@ -140,6 +152,25 @@ export default function CompleteOnboardingPage() {
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  useEffect(() => {
+    // Load countries on component mount
+    const loadCountries = () => {
+      const countryList = GeographyService.getCountries()
+      setCountries(countryList)
+    }
+    
+    loadCountries()
+  }, [])
+
+  useEffect(() => {
+    // Load cities when country is selected
+    if (selectedCountry) {
+      const cityList = GeographyService.getCitiesByCountry(selectedCountry)
+      setCities(cityList)
+      setSelectedCity('') // Reset city selection
+    }
+  }, [selectedCountry])
 
   const steps: OnboardingStep[] = [
     {
@@ -369,6 +400,80 @@ export default function CompleteOnboardingPage() {
       }))
     } else {
       setFormData(prev => ({ ...prev, [id]: value }))
+      
+      // Auto-detect zodiac sign when birth date is entered
+      if (id === 'birthDate' && typeof value === 'string' && value) {
+        const zodiacResult = ZodiacCalculator.autoDetectZodiacSign(value)
+        if (zodiacResult) {
+          setDetectedZodiacSigns(zodiacResult)
+          setFormData(prev => ({ 
+            ...prev, 
+            zodiacSign: zodiacResult.western,
+            system: 'western' // Default to western
+          }))
+        }
+      }
+    }
+  }
+
+  const handleCountryChange = (countryCode: string) => {
+    setSelectedCountry(countryCode)
+    setFormData(prev => ({ ...prev, birthPlace: countryCode }))
+  }
+
+  const handleCityChange = (cityName: string) => {
+    setSelectedCity(cityName)
+    setFormData(prev => ({ ...prev, birthPlace: `${cityName}, ${selectedCountry}` }))
+  }
+
+  const generateCompleteAnalysis = async () => {
+    if (!formData.birthDate || !formData.birthTime || !selectedCountry || !selectedCity || !formData.name || !formData.email) {
+      return
+    }
+
+    setIsLoadingLLM(true)
+    try {
+      // Step 1: Validate all data
+      const validatedData = await AstrologyValidator.validateBirthData({
+        fullName: formData.name,
+        email: formData.email,
+        birthDate: formData.birthDate,
+        birthTime: formData.birthTime,
+        birthPlace: {
+          country: selectedCountry,
+          city: selectedCity
+        }
+      })
+
+      if (!validatedData.isValid) {
+        console.error('Validation errors:', validatedData.errors)
+        return
+      }
+
+      // Step 2: Get complete analysis
+      const response = await fetch('/api/astro/complete-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          fullName: formData.name,
+          email: formData.email,
+          birthDate: formData.birthDate,
+          birthTime: formData.birthTime,
+          birthPlace: {
+            country: selectedCountry,
+            city: selectedCity
+          }
+        })
+      })
+
+      const analysis = await response.json()
+      setLlmAnalysis(analysis)
+    } catch (error) {
+      console.error('Complete Analysis Error:', error)
+    } finally {
+      setIsLoadingLLM(false)
     }
   }
 
@@ -380,7 +485,14 @@ export default function CompleteOnboardingPage() {
         // Onboarding complete, save data and redirect
         localStorage.setItem('userData', JSON.stringify(formData))
         localStorage.setItem('onboardingComplete', 'true')
-        router.push('/app')
+        
+        // Redirect based on device type
+        const deviceType = formData.deviceType || 'mobile'
+        if (deviceType === 'mobile' || deviceType === 'tablet') {
+          router.push('/mobile-home')
+        } else {
+          router.push('/main')
+        }
       }
     }
   }
@@ -563,6 +675,150 @@ export default function CompleteOnboardingPage() {
           </motion.div>
         )}
 
+        {/* Zodiac Sign Auto-Detection Display */}
+        {detectedZodiacSigns && steps[currentStep].id === 'birth-details' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200 rounded-xl p-4 mb-6"
+          >
+            <div className="flex items-center space-x-2 mb-3">
+              <Star className="w-5 h-5 text-violet-600" />
+              <h3 className="text-lg font-semibold text-violet-900">Auto-Detected Zodiac Signs</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-violet-100">
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="text-2xl">{detectedZodiacSigns.info?.symbol}</span>
+                  <span className="font-semibold text-slate-900">Western</span>
+                </div>
+                <p className="text-sm text-slate-600">{detectedZodiacSigns.western}</p>
+                <p className="text-xs text-slate-500">{detectedZodiacSigns.info?.element} • {detectedZodiacSigns.info?.quality}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-violet-100">
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="text-2xl">🐉</span>
+                  <span className="font-semibold text-slate-900">Chinese</span>
+                </div>
+                <p className="text-sm text-slate-600">{detectedZodiacSigns.chinese}</p>
+                <p className="text-xs text-slate-500">Year of {detectedZodiacSigns.chinese}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-violet-100">
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="text-2xl">🕉️</span>
+                  <span className="font-semibold text-slate-900">Vedic</span>
+                </div>
+                <p className="text-sm text-slate-600">{detectedZodiacSigns.vedic}</p>
+                <p className="text-xs text-slate-500">Rashi</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-violet-100">
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="text-2xl">🇱🇰</span>
+                  <span className="font-semibold text-slate-900">Sri Lankan</span>
+                </div>
+                <p className="text-sm text-slate-600">{detectedZodiacSigns.sriLankan}</p>
+                <p className="text-xs text-slate-500">Traditional</p>
+              </div>
+            </div>
+            <p className="text-xs text-violet-700 mt-3 text-center">
+              ✨ Your zodiac signs have been automatically detected from your birth date!
+            </p>
+          </motion.div>
+        )}
+
+        {/* LLM Analysis Section */}
+        {detectedZodiacSigns && formData.birthDate && formData.birthTime && selectedCountry && selectedCity && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 mb-6"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-semibold text-blue-900">AI-Powered Analysis</h3>
+              </div>
+              <button
+                onClick={generateCompleteAnalysis}
+                disabled={isLoadingLLM || !formData.birthDate || !formData.birthTime || !selectedCountry || !selectedCity || !formData.name || !formData.email}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isLoadingLLM ? 'Analyzing...' : 'Generate Complete Analysis'}
+              </button>
+            </div>
+            
+            {isLoadingLLM && (
+              <div className="flex items-center justify-center py-4">
+                <div className="w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <span className="ml-3 text-blue-700">Generating AI analysis...</span>
+              </div>
+            )}
+            
+            {llmAnalysis && llmAnalysis.success && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <h4 className="font-semibold text-slate-900 mb-2">Personality</h4>
+                    <p className="text-sm text-slate-600">{llmAnalysis.data.interpretations.personality}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <h4 className="font-semibold text-slate-900 mb-2">Career</h4>
+                    <p className="text-sm text-slate-600">{llmAnalysis.data.interpretations.career}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <h4 className="font-semibold text-slate-900 mb-2">Strengths</h4>
+                    <ul className="text-sm text-slate-600 space-y-1">
+                      {llmAnalysis.data.interpretations.strengths.map((strength: string, index: number) => (
+                        <li key={index} className="flex items-center space-x-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          <span>{strength}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <h4 className="font-semibold text-slate-900 mb-2">Challenges</h4>
+                    <ul className="text-sm text-slate-600 space-y-1">
+                      {llmAnalysis.data.interpretations.challenges.map((challenge: string, index: number) => (
+                        <li key={index} className="flex items-center space-x-2">
+                          <X className="w-4 h-4 text-red-500" />
+                          <span>{challenge}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                
+                {llmAnalysis.data.predictions && (
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <h4 className="font-semibold text-slate-900 mb-2">Predictions</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="font-medium text-slate-700">Daily:</span>
+                        <span className="ml-2 text-slate-600">{llmAnalysis.data.predictions.daily}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-slate-700">Weekly:</span>
+                        <span className="ml-2 text-slate-600">{llmAnalysis.data.predictions.weekly}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex items-center space-x-2 text-green-600 bg-green-50 rounded-lg p-3">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="text-sm font-medium">AI analysis completed with NASA data accuracy!</span>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* Form Fields */}
         <AnimatePresence>
           {steps[currentStep].fields.length > 0 && (
@@ -605,6 +861,64 @@ export default function CompleteOnboardingPage() {
                       />
                       <span className="text-base text-gray-700">{field.label}</span>
                     </label>
+                  ) : field.id === 'birthPlace' ? (
+                    <div className="space-y-4">
+                      {/* Country Selection */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Country
+                        </label>
+                        <select
+                          value={selectedCountry}
+                          onChange={(e) => handleCountryChange(e.target.value)}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-base"
+                        >
+                          <option value="">Select Country</option>
+                          {countries.map((country) => (
+                            <option key={country.code} value={country.code}>
+                              {country.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      {/* City Selection */}
+                      {selectedCountry && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            City
+                          </label>
+                          <select
+                            value={selectedCity}
+                            onChange={(e) => handleCityChange(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-base"
+                          >
+                            <option value="">Select City</option>
+                            {cities.map((city) => (
+                              <option key={city.name} value={city.name}>
+                                {city.name} {city.isCapital && '(Capital)'}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                      
+                      {/* Coordinates Display */}
+                      {selectedCity && (
+                        <div className="bg-slate-50 rounded-lg p-3">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <MapPin className="w-4 h-4 text-slate-600" />
+                            <span className="text-sm font-medium text-slate-700">Coordinates</span>
+                          </div>
+                          <div className="text-sm text-slate-600">
+                            {(() => {
+                              const city = cities.find(c => c.name === selectedCity)
+                              return city ? `${city.coordinates.latitude.toFixed(4)}°, ${city.coordinates.longitude.toFixed(4)}°` : ''
+                            })()}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   ) : (
                     <input
                       type={field.type}
