@@ -1,7 +1,8 @@
 {
   "/today/page": "app/today/page.js",
-  "/zodiac/sri-lankan/page": "app/zodiac/sri-lankan/page.js",
-  "/premium/page": "app/premium/page.js",
+  "/main/page": "app/main/page.js",
+  "/page": "app/page.js",
   "/cosmic-profile/page": "app/cosmic-profile/page.js",
-  "/main/page": "app/main/page.js"
+  "/zodiac/sri-lankan/page": "app/zodiac/sri-lankan/page.js",
+  "/premium/page": "app/premium/page.js"
 }

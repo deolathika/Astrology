@@ -1,6 +1,24 @@
 import { NextRequest } from 'next/server'
-import { GET as getProfile, PUT as updateProfile } from '@/app/api/users/profile/route'
 import { mockUser, mockProfile, mockValidationResult } from './fixtures/mock-data'
+
+// Mock Next.js server components
+jest.mock('next/server', () => ({
+  NextRequest: class MockNextRequest {
+    constructor(public url: string) {}
+    async json() {
+      return {}
+    }
+  },
+  NextResponse: {
+    json: (data: any, init?: any) => ({
+      json: async () => data,
+      status: init?.status || 200,
+    }),
+  },
+}))
+
+// Import after mocking
+const { GET: getProfile, PUT: updateProfile } = require('@/app/api/users/profile/route')
 
 // Mock Prisma
 jest.mock('@/lib/database', () => ({
