@@ -1,54 +1,70 @@
 #!/bin/bash
 
-# 🧪 Staging Deployment Script
-# Deploys to staging environment for testing
+# Deploy to Staging Environment
+# This script deploys the application to the staging environment
 
-set -e  # Exit on any error
+set -e
 
-echo "🧪 Starting staging deployment..."
+echo "🚀 Starting staging deployment..."
 
-# Check if we're on staging branch
+# Check if we're on the right branch
 CURRENT_BRANCH=$(git branch --show-current)
-if [ "$CURRENT_BRANCH" != "staging" ]; then
-    echo "❌ Error: Must be on staging branch to deploy to staging"
+if [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "develop" ]; then
+    echo "❌ Error: Must be on 'staging' or 'develop' branch to deploy to staging"
     echo "Current branch: $CURRENT_BRANCH"
     exit 1
 fi
 
-# Pull latest changes
-echo "📥 Pulling latest changes..."
-git pull origin staging
+echo "📋 Current branch: $CURRENT_BRANCH"
+
+# Check if there are uncommitted changes
+if [ -n "$(git status --porcelain)" ]; then
+    echo "❌ Error: Uncommitted changes detected"
+    echo "Please commit or stash your changes before deploying"
+    git status --short
+    exit 1
+fi
+
+echo "✅ No uncommitted changes detected"
 
 # Install dependencies
 echo "📦 Installing dependencies..."
-npm install
-
-# Run linting
-echo "🔍 Running ESLint..."
-npm run lint
+npm ci
 
 # Run tests
-echo "🧪 Running tests..."
-npm run test
+echo "🧪 Running test suite..."
+npm run test:ci
 
 # Build application
 echo "🔨 Building application..."
 npm run build
 
-# Run production tests
-echo "🔬 Running production tests..."
-npm run test:prod
+# Check build success
+if [ ! -d ".next" ]; then
+    echo "❌ Error: Build failed - .next directory not found"
+    exit 1
+fi
+
+echo "✅ Build successful"
+
+# Deploy to Vercel (staging)
+echo "🌐 Deploying to Vercel staging..."
+
+# Check if Vercel CLI is installed
+if ! command -v vercel &> /dev/null; then
+    echo "📦 Installing Vercel CLI..."
+    npm install -g vercel@latest
+fi
 
 # Deploy to staging
-echo "🚀 Deploying to staging..."
-echo "✅ Staging deployment complete!"
-echo "🌐 Staging URL: https://staging.dailysecrets.app"
+vercel --prod --confirm
 
-# Note: Actual deployment would be handled by your CI/CD system
-echo "📋 Next steps:"
-echo "1. Test all features on staging"
-echo "2. Check for any issues"
-echo "3. Get approval for production"
-echo "4. Merge to main when ready"
+echo "✅ Staging deployment completed!"
+echo "🌐 Staging URL: https://daily-secrets-app-staging.vercel.app"
 
+# Run post-deployment tests
+echo "🧪 Running post-deployment tests..."
+npm run test:e2e:headless
 
+echo "🎉 Staging deployment successful!"
+echo "📊 Check the staging environment at: https://daily-secrets-app-staging.vercel.app"

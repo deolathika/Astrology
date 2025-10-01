@@ -1,10 +1,7 @@
 {
-  "/main/page": "app/main/page.js",
-  "/cosmic-profile/page": "app/cosmic-profile/page.js",
   "/today/page": "app/today/page.js",
-  "/premium/page": "app/premium/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/api/numerology/enhanced/route": "app/api/numerology/enhanced/route.js",
   "/zodiac/sri-lankan/page": "app/zodiac/sri-lankan/page.js",
-  "/api/astro/natal/route": "app/api/astro/natal/route.js"
+  "/premium/page": "app/premium/page.js",
+  "/cosmic-profile/page": "app/cosmic-profile/page.js",
+  "/main/page": "app/main/page.js"
 }

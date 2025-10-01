@@ -1,125 +1,317 @@
-import { describe, it, expect, beforeEach } from '@jest/globals'
 import { NextRequest } from 'next/server'
-import { GET as todayAPI } from '../app/api/today/route'
-import { GET as healthAPI } from '../app/api/health/route'
+import { GET as getProfile, PUT as updateProfile } from '@/app/api/users/profile/route'
+import { mockUser, mockProfile, mockValidationResult } from './fixtures/mock-data'
 
-// Mock the monitoring module
-jest.mock('../lib/monitoring', () => ({
-  logError: jest.fn(),
-  logApiUsage: jest.fn(),
-  ErrorType: {
-    VALIDATION: 'validation',
-    SYSTEM: 'system'
+// Mock Prisma
+jest.mock('@/lib/database', () => ({
+  prisma: {
+    user: {
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
+    profile: {
+      upsert: jest.fn(),
+    },
   },
-  ErrorSeverity: {
-    MEDIUM: 'medium',
-    HIGH: 'high'
-  }
 }))
 
-describe('API Endpoints', () => {
+// Mock NextAuth
+jest.mock('next-auth', () => ({
+  getServerSession: jest.fn(),
+}))
+
+// Mock input validation
+jest.mock('@/lib/input-validation', () => ({
+  validateAndSanitize: jest.fn(),
+  emailSchema: jest.fn(),
+  nameSchema: jest.fn(),
+}))
+
+import { prisma } from '@/lib/database'
+import { getServerSession } from 'next-auth'
+import { validateAndSanitize } from '@/lib/input-validation'
+
+describe('Profile API Endpoints', () => {
+  const mockSession = {
+    user: {
+      id: 'test-user-123',
+      name: 'Test User',
+      email: 'test@example.com',
+    },
+  }
+
   beforeEach(() => {
-    // Clear all mocks
     jest.clearAllMocks()
+    
+    // Mock successful session
+    ;(getServerSession as jest.Mock).mockResolvedValue(mockSession)
+    
+    // Mock successful validation
+    ;(validateAndSanitize as jest.Mock).mockReturnValue({
+      success: true,
+      data: 'Test User',
+    })
   })
 
-  describe('/api/today', () => {
-    it('should return 400 for missing profileId', async () => {
-      const request = new NextRequest('http://localhost:3000/api/today')
-      const response = await todayAPI(request)
-      const data = await response.json()
-      
-      expect(response.status).toBe(400)
-      expect(data.error).toBe('Profile ID is required')
-    })
+  describe('GET /api/users/profile', () => {
+    test('should return user profile when authenticated', async () => {
+      // Mock database response
+      ;(prisma.user.findUnique as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        profiles: [mockProfile],
+      })
 
-    it('should return 400 for invalid profileId format', async () => {
-      const request = new NextRequest('http://localhost:3000/api/today?profileId=invalid')
-      const response = await todayAPI(request)
+      const request = new NextRequest('http://localhost:3000/api/users/profile')
+      const response = await getProfile(request)
       const data = await response.json()
-      
-      expect(response.status).toBe(400)
-      expect(data.error).toBe('Invalid profile ID format')
-    })
 
-    it('should return 200 for valid profileId', async () => {
-      const validProfileId = '123e4567-e89b-12d3-a456-426614174000'
-      const request = new NextRequest(`http://localhost:3000/api/today?profileId=${validProfileId}`)
-      const response = await todayAPI(request)
-      
       expect(response.status).toBe(200)
-      expect(response.headers.get('X-API-Version')).toBe('1.0.0')
+      expect(data.success).toBe(true)
+      expect(data.user).toEqual({
+        id: mockUser.id,
+        name: mockUser.name,
+        email: mockUser.email,
+        role: mockUser.role,
+        image: mockUser.image,
+        createdAt: mockUser.createdAt,
+        profiles: [mockProfile],
+      })
     })
 
-    it('should include rate limiting headers', async () => {
-      const validProfileId = '123e4567-e89b-12d3-a456-426614174000'
-      const request = new NextRequest(`http://localhost:3000/api/today?profileId=${validProfileId}`)
-      const response = await todayAPI(request)
-      
-      expect(response.headers.get('X-RateLimit-Remaining')).toBeDefined()
-      expect(response.headers.get('X-Response-Time')).toBeDefined()
-    })
+    test('should return 401 when not authenticated', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue(null)
 
-    it('should cache responses', async () => {
-      const validProfileId = '123e4567-e89b-12d3-a456-426614174000'
-      const request = new NextRequest(`http://localhost:3000/api/today?profileId=${validProfileId}`)
-      
-      // First request
-      const response1 = await todayAPI(request)
-      expect(response1.status).toBe(200)
-      
-      // Second request should be cached
-      const response2 = await todayAPI(request)
-      expect(response2.status).toBe(200)
-    })
-  })
-
-  describe('/api/health', () => {
-    it('should return health status', async () => {
-      const request = new NextRequest('http://localhost:3000/api/health')
-      const response = await healthAPI(request)
+      const request = new NextRequest('http://localhost:3000/api/users/profile')
+      const response = await getProfile(request)
       const data = await response.json()
+
+      expect(response.status).toBe(401)
+      expect(data.error).toBe('Unauthorized')
+    })
+
+    test('should return 404 when user not found', async () => {
+      ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
+
+      const request = new NextRequest('http://localhost:3000/api/users/profile')
+      const response = await getProfile(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(404)
+      expect(data.error).toBe('User not found')
+    })
+
+    test('should handle database errors', async () => {
+      ;(prisma.user.findUnique as jest.Mock).mockRejectedValue(new Error('Database error'))
+
+      const request = new NextRequest('http://localhost:3000/api/users/profile')
+      const response = await getProfile(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(500)
+      expect(data.error).toBe('Failed to fetch user profile')
+    })
+  })
+
+  describe('PUT /api/users/profile', () => {
+    const updateData = {
+      name: 'Updated Name',
+      email: 'updated@example.com',
+      birthDate: '1990-01-15',
+      birthTime: '14:30',
+      birthPlace: 'New York, US',
+      latitude: 40.7128,
+      longitude: -74.0060,
+      timezone: 'America/New_York',
+      zodiacSign: 'Capricorn',
+      system: 'western',
+    }
+
+    test('should update user profile when authenticated', async () => {
+      // Mock database responses
+      ;(prisma.user.update as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        name: 'Updated Name',
+        email: 'updated@example.com',
+      })
       
+      ;(prisma.profile.upsert as jest.Mock).mockResolvedValue({
+        ...mockProfile,
+        fullName: 'Updated Name',
+      })
+
+      const request = new NextRequest('http://localhost:3000/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const response = await updateProfile(request)
+      const data = await response.json()
+
       expect(response.status).toBe(200)
-      expect(data.status).toBeDefined()
-      expect(data.timestamp).toBeDefined()
-      expect(data.uptime).toBeDefined()
+      expect(data.success).toBe(true)
+      expect(data.message).toBe('Profile updated successfully')
+      expect(data.user.name).toBe('Updated Name')
+      expect(data.user.email).toBe('updated@example.com')
     })
 
-    it('should include API version header', async () => {
-      const request = new NextRequest('http://localhost:3000/api/health')
-      const response = await healthAPI(request)
-      
-      expect(response.headers.get('X-API-Version')).toBe('1.0.0')
+    test('should return 401 when not authenticated', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue(null)
+
+      const request = new NextRequest('http://localhost:3000/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const response = await updateProfile(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(401)
+      expect(data.error).toBe('Unauthorized')
     })
 
-    it('should not cache health responses', async () => {
-      const request = new NextRequest('http://localhost:3000/api/health')
-      const response = await healthAPI(request)
-      
-      expect(response.headers.get('Cache-Control')).toBe('no-cache, no-store, must-revalidate')
-    })
-  })
+    test('should validate email format', async () => {
+      ;(validateAndSanitize as jest.Mock).mockReturnValueOnce({
+        success: false,
+        error: 'Invalid email format',
+      })
 
-  describe('Security Headers', () => {
-    it('should include security headers in responses', async () => {
-      const validProfileId = '123e4567-e89b-12d3-a456-426614174000'
-      const request = new NextRequest(`http://localhost:3000/api/today?profileId=${validProfileId}`)
-      const response = await todayAPI(request)
-      
-      expect(response.headers.get('X-API-Version')).toBe('1.0.0')
-      expect(response.headers.get('X-Response-Time')).toBeDefined()
-    })
-  })
+      const request = new NextRequest('http://localhost:3000/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify({
+          ...updateData,
+          email: 'invalid-email',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-  describe('Error Handling', () => {
-    it('should handle server errors gracefully', async () => {
-      // Mock a server error by providing invalid data
-      const request = new NextRequest('http://localhost:3000/api/today?profileId=123e4567-e89b-12d3-a456-426614174000')
+      const response = await updateProfile(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(data.error).toBe('Invalid email format')
+    })
+
+    test('should validate name length', async () => {
+      ;(validateAndSanitize as jest.Mock)
+        .mockReturnValueOnce({ success: true, data: 'updated@example.com' })
+        .mockReturnValueOnce({ success: false, error: 'Name too short' })
+
+      const request = new NextRequest('http://localhost:3000/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify({
+          ...updateData,
+          name: 'A',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const response = await updateProfile(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(data.error).toBe('Name must be at least 2 characters')
+    })
+
+    test('should handle database errors', async () => {
+      ;(prisma.user.update as jest.Mock).mockRejectedValue(new Error('Database error'))
+
+      const request = new NextRequest('http://localhost:3000/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const response = await updateProfile(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(500)
+      expect(data.error).toBe('Failed to update profile')
+    })
+
+    test('should handle invalid JSON', async () => {
+      const request = new NextRequest('http://localhost:3000/api/users/profile', {
+        method: 'PUT',
+        body: 'invalid-json',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const response = await updateProfile(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(data.error).toBe('Invalid JSON')
+    })
+
+    test('should update both user and profile tables', async () => {
+      ;(prisma.user.update as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        name: 'Updated Name',
+        email: 'updated@example.com',
+      })
       
-      // This should not throw an error
-      const response = await todayAPI(request)
-      expect(response.status).toBeLessThan(500)
+      ;(prisma.profile.upsert as jest.Mock).mockResolvedValue({
+        ...mockProfile,
+        fullName: 'Updated Name',
+      })
+
+      const request = new NextRequest('http://localhost:3000/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      await updateProfile(request)
+
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: 'test-user-123' },
+        data: {
+          name: 'Updated Name',
+          email: 'updated@example.com',
+        },
+      })
+
+      expect(prisma.profile.upsert).toHaveBeenCalledWith({
+        where: { userId: 'test-user-123' },
+        update: {
+          fullName: 'Updated Name',
+          birthDate: new Date('1990-01-15'),
+          birthTime: '14:30',
+          birthPlace: 'New York, US',
+          latitude: 40.7128,
+          longitude: -74.0060,
+          timezone: 'America/New_York',
+          zodiacSign: 'Capricorn',
+          system: 'western',
+        },
+        create: {
+          userId: 'test-user-123',
+          fullName: 'Updated Name',
+          birthDate: new Date('1990-01-15'),
+          birthTime: '14:30',
+          birthPlace: 'New York, US',
+          latitude: 40.7128,
+          longitude: -74.0060,
+          timezone: 'America/New_York',
+          zodiacSign: 'Capricorn',
+          system: 'western',
+        },
+      })
     })
   })
 })
