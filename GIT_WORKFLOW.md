@@ -1,303 +1,259 @@
-# 🌟 Daily Secrets - Git Workflow Guide
+# Git Workflow - Daily Secrets App
 
-## 📋 **Branch Strategy Overview**
+## Branch Strategy
 
-### 🌿 **Branch Structure**
-```
-main (production)     ← Production-ready code
-├── staging (testing) ← QA and testing environment  
-├── develop (dev)     ← Active development
-└── feature/*        ← Feature branches
-```
+### Main Branches
+- **`main`** - Production-ready code
+- **`develop`** - Integration branch for features
+- **`staging`** - Pre-production testing environment
 
-## 🚀 **Development Workflow**
+### Feature Branches
+- **`feature/feature-name`** - New features
+- **`bugfix/bug-description`** - Bug fixes
+- **`hotfix/critical-issue`** - Critical production fixes
 
-### 1. **Development Phase** 🔧
-**Branch**: `develop`
-- **Purpose**: All active development work
-- **Who**: Developers
-- **When**: Daily development
-- **Deployment**: Development server
+## Workflow Process
 
+### 1. Development Workflow
 ```bash
-# Start development
+# Start new feature
 git checkout develop
 git pull origin develop
+git checkout -b feature/profile-editing
 
-# Create feature branch
-git checkout -b feature/new-feature
-# ... make changes ...
+# Work on feature
 git add .
-git commit -m "feat: Add new feature"
-git push origin feature/new-feature
+git commit -m "feat: add profile editing functionality"
 
-# Merge back to develop
-git checkout develop
-git merge feature/new-feature
-git push origin develop
+# Push feature branch
+git push origin feature/profile-editing
+
+# Create Pull Request to develop
 ```
 
-### 2. **Testing Phase** 🧪
-**Branch**: `staging`
-- **Purpose**: QA testing and bug fixes
-- **Who**: QA team, developers
-- **When**: Before production
-- **Deployment**: Staging server
-
+### 2. Testing Workflow
 ```bash
-# Promote to staging
-git checkout staging
-git merge develop
-git push origin staging
-
-# Test and fix issues
-git checkout -b hotfix/staging-issue
-# ... fix issues ...
-git add .
-git commit -m "fix: Resolve staging issue"
-git push origin hotfix/staging-issue
-
-# Merge back to staging
-git checkout staging
-git merge hotfix/staging-issue
-git push origin staging
-```
-
-### 3. **Production Phase** 🚀
-**Branch**: `main`
-- **Purpose**: Production-ready code
-- **Who**: DevOps, Project Manager
-- **When**: After testing approval
-- **Deployment**: Production server
-
-```bash
-# Deploy to production (requires approval)
-git checkout main
-git merge staging
-git tag v1.0.0
-git push origin main --tags
-```
-
-## 📝 **Commit Message Convention**
-
-### **Format**: `type(scope): description`
-
-**Types**:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `style`: Code formatting
-- `refactor`: Code refactoring
-- `test`: Adding tests
-- `chore`: Maintenance tasks
-
-**Examples**:
-```bash
-git commit -m "feat(auth): Add OAuth2 integration"
-git commit -m "fix(api): Resolve 500 error in today endpoint"
-git commit -m "docs(readme): Update installation guide"
-```
-
-## 🔒 **Branch Protection Rules**
-
-### **Main Branch Protection**
-- ✅ Require pull request reviews
-- ✅ Require status checks to pass
-- ✅ Require branches to be up to date
-- ✅ Restrict pushes to main
-- ✅ Require linear history
-
-### **Staging Branch Protection**
-- ✅ Require pull request reviews
-- ✅ Require status checks to pass
-- ✅ Allow force pushes (for hotfixes)
-
-## 🚦 **Deployment Pipeline**
-
-### **Development → Staging**
-```bash
-# 1. Complete feature in develop
-git checkout develop
-git pull origin develop
-
-# 2. Create pull request: develop → staging
-# 3. Review and approve
-# 4. Merge to staging
-git checkout staging
-git merge develop
-git push origin staging
-
-# 5. Deploy to staging server
-```
-
-### **Staging → Production**
-```bash
-# 1. Complete testing in staging
+# Merge to staging for testing
 git checkout staging
 git pull origin staging
+git merge feature/profile-editing
+git push origin staging
 
-# 2. Create pull request: staging → main
-# 3. Get approval from project manager
-# 4. Merge to main
+# Deploy to staging environment
+npm run deploy:staging
+```
+
+### 3. Production Workflow
+```bash
+# Merge to main for production
 git checkout main
-git merge staging
+git pull origin main
+git merge develop
 git tag v1.0.0
 git push origin main --tags
 
-# 5. Deploy to production server
+# Deploy to production
+npm run deploy:production
 ```
 
-## 🛠️ **Environment Configuration**
+## Branch Protection Rules
 
-### **Development Environment**
-- **Branch**: `develop`
-- **URL**: `http://localhost:8120`
-- **Database**: Local development
-- **Features**: All experimental features
+### Main Branch Protection
+- Require pull request reviews
+- Require status checks to pass
+- Require branches to be up to date
+- Restrict pushes to main branch
 
-### **Staging Environment**
-- **Branch**: `staging`
-- **URL**: `https://staging.dailysecrets.app`
-- **Database**: Staging database
-- **Features**: Production-like testing
+### Develop Branch Protection
+- Require pull request reviews
+- Require status checks to pass
+- Allow force pushes (for rebasing)
 
-### **Production Environment**
-- **Branch**: `main`
-- **URL**: `https://dailysecrets.app`
-- **Database**: Production database
-- **Features**: Stable, tested features only
+## Commit Message Convention
 
-## 📊 **Version Management**
+### Format
+```
+type(scope): description
 
-### **Semantic Versioning**
-- **Format**: `MAJOR.MINOR.PATCH`
-- **Example**: `1.2.3`
+[optional body]
 
-**Version Types**:
-- **MAJOR**: Breaking changes
-- **MINOR**: New features (backward compatible)
-- **PATCH**: Bug fixes
-
-### **Release Process**
-```bash
-# 1. Update version in package.json
-npm version patch  # or minor, major
-
-# 2. Create release notes
-# 3. Tag the release
-git tag v1.2.3
-git push origin v1.2.3
-
-# 4. Create GitHub release
-# 5. Deploy to production
+[optional footer]
 ```
 
-## 🔄 **Hotfix Process**
+### Types
+- **feat**: New feature
+- **fix**: Bug fix
+- **docs**: Documentation changes
+- **style**: Code style changes (formatting, etc.)
+- **refactor**: Code refactoring
+- **test**: Adding or updating tests
+- **chore**: Maintenance tasks
 
-### **Critical Production Issues**
+### Examples
+```
+feat(profile): add editable profile functionality
+fix(api): resolve NASA API JSON parsing errors
+docs(readme): update deployment instructions
+test(validation): add astrology validation tests
+```
+
+## Environment Setup
+
+### Development
 ```bash
-# 1. Create hotfix branch from main
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Run linting
+npm run lint
+```
+
+### Staging
+```bash
+# Build for staging
+npm run build:staging
+
+# Deploy to staging
+npm run deploy:staging
+```
+
+### Production
+```bash
+# Build for production
+npm run build:production
+
+# Deploy to production
+npm run deploy:production
+```
+
+## CI/CD Pipeline
+
+### GitHub Actions Workflow
+1. **Code Quality Checks**
+   - ESLint
+   - TypeScript compilation
+   - Unit tests
+
+2. **Security Scanning**
+   - Dependency vulnerability scan
+   - Code security analysis
+
+3. **Deployment**
+   - Staging deployment (on develop merge)
+   - Production deployment (on main merge)
+
+## Testing Strategy
+
+### Unit Tests
+- Component tests
+- API endpoint tests
+- Utility function tests
+
+### Integration Tests
+- Database integration
+- External API integration
+- Authentication flow
+
+### E2E Tests
+- User journey tests
+- Cross-browser testing
+- Mobile responsiveness
+
+## Code Review Process
+
+### Pull Request Requirements
+- [ ] Code follows project conventions
+- [ ] Tests pass
+- [ ] No console.log statements
+- [ ] Proper error handling
+- [ ] Documentation updated
+- [ ] Security considerations addressed
+
+### Review Checklist
+- [ ] Code quality
+- [ ] Performance implications
+- [ ] Security considerations
+- [ ] Accessibility compliance
+- [ ] Mobile responsiveness
+- [ ] Browser compatibility
+
+## Release Process
+
+### Version Numbering
+- **Major**: Breaking changes
+- **Minor**: New features
+- **Patch**: Bug fixes
+
+### Release Steps
+1. Update version in package.json
+2. Update CHANGELOG.md
+3. Create release branch
+4. Run full test suite
+5. Deploy to staging
+6. User acceptance testing
+7. Deploy to production
+8. Create GitHub release
+9. Monitor production metrics
+
+## Emergency Procedures
+
+### Hotfix Process
+```bash
+# Create hotfix branch from main
 git checkout main
-git checkout -b hotfix/critical-issue
+git checkout -b hotfix/critical-security-fix
 
-# 2. Fix the issue
-# ... make changes ...
+# Make critical fix
 git add .
-git commit -m "fix: Resolve critical production issue"
+git commit -m "fix(security): patch critical vulnerability"
 
-# 3. Merge to main
-git checkout main
-git merge hotfix/critical-issue
-git tag v1.2.4
-git push origin main --tags
-
-# 4. Merge back to develop
-git checkout develop
-git merge hotfix/critical-issue
-git push origin develop
+# Push and create PR to main
+git push origin hotfix/critical-security-fix
 ```
 
-## 📋 **Daily Workflow Checklist**
-
-### **Morning Routine**
-- [ ] Pull latest changes from develop
-- [ ] Check for any new issues or features
-- [ ] Update local dependencies if needed
-
-### **Development Work**
-- [ ] Create feature branch for new work
-- [ ] Make incremental commits
-- [ ] Test locally before pushing
-- [ ] Create pull request when ready
-
-### **End of Day**
-- [ ] Push all changes to feature branch
-- [ ] Update issue tracking
-- [ ] Plan next day's work
-
-## 🚨 **Emergency Procedures**
-
-### **Production Outage**
-1. **Immediate**: Create hotfix branch from main
-2. **Fix**: Resolve the critical issue
-3. **Deploy**: Merge and deploy immediately
-4. **Document**: Update issue tracking
-5. **Follow-up**: Merge back to develop
-
-### **Rollback Procedure**
+### Rollback Process
 ```bash
-# 1. Identify last working commit
-git log --oneline -10
-
-# 2. Reset to working commit
-git reset --hard <commit-hash>
+# Rollback to previous version
+git checkout main
+git reset --hard <previous-commit-hash>
 git push origin main --force
 
-# 3. Deploy rollback
-# 4. Investigate and fix issue
-# 5. Re-deploy when ready
+# Deploy rollback
+npm run deploy:production
 ```
 
-## 📚 **Best Practices**
+## Best Practices
 
-### **Commit Guidelines**
-- ✅ Make small, focused commits
-- ✅ Write clear commit messages
-- ✅ Test before committing
-- ✅ Use conventional commit format
+### Code Quality
+- Write clean, readable code
+- Follow TypeScript best practices
+- Use meaningful variable names
+- Add proper error handling
+- Write comprehensive tests
 
-### **Branch Guidelines**
-- ✅ Keep branches short-lived
-- ✅ Delete merged branches
-- ✅ Use descriptive branch names
-- ✅ Keep develop branch stable
+### Security
+- Never commit secrets
+- Use environment variables
+- Validate all inputs
+- Implement proper authentication
+- Regular security audits
 
-### **Code Review Guidelines**
-- ✅ Review all changes before merging
-- ✅ Test the changes locally
-- ✅ Check for security issues
-- ✅ Ensure code quality standards
+### Performance
+- Optimize images and assets
+- Implement caching strategies
+- Monitor bundle size
+- Use lazy loading
+- Optimize database queries
 
-## 🎯 **Your Workflow Summary**
-
-### **For Daily Development**:
-1. Work on `develop` branch
-2. Create feature branches for new work
-3. Test thoroughly before merging
-4. Push to `staging` when ready for QA
-
-### **For Testing**:
-1. Test on `staging` branch
-2. Fix any issues found
-3. Get approval for production
-4. Merge to `main` when approved
-
-### **For Production**:
-1. Only merge tested code to `main`
-2. Tag releases properly
-3. Deploy with confidence
-4. Monitor for issues
-
----
-
-**🌟 This workflow ensures code quality, reduces bugs, and provides a safe path to production!**
+### Documentation
+- Keep README updated
+- Document API endpoints
+- Add inline comments
+- Maintain changelog
+- Update deployment guides
