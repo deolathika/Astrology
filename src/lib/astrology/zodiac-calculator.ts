@@ -388,7 +388,9 @@ export class ZodiacCalculator {
       
       return this.calculateAllZodiacSigns(birthDate)
     } catch (error) {
-      console.error('Error parsing birth date:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error parsing birth date:', error)
+      }
       return null
     }
   }

@@ -91,7 +91,7 @@ describe('Component Tests', () => {
     const Breadcrumbs = () => (
       <nav data-testid="breadcrumbs">
         <span>Home</span>
-        <span>></span>
+        <span>&gt;</span>
         <span>Profile</span>
       </nav>
     )

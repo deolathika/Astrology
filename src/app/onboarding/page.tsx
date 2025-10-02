@@ -4,11 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { 
-  User, Calendar, Clock, MapPin, Star, Heart, Sparkles, 
-  ChevronRight, ChevronLeft, Check, X, Globe, Shield, CheckCircle,
-  Smartphone, Tablet, Monitor, Wifi, Bell, Users, Zap,
-  Sun, Moon, Compass, Target, Gift, BookOpen, Settings,
-  Crown
+  User, Calendar, MapPin, Star, Heart, 
+  ChevronRight, ChevronLeft, CheckCircle
 } from 'lucide-react'
 
 interface OnboardingStep {

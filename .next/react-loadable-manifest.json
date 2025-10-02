@@ -1,1 +1,8 @@
-{}
+{
+  "lib/astrology/astrology-validator.ts -> ./zodiac-calculator": {
+    "id": 8304,
+    "files": [
+      "static/chunks/8304.7f96192cc30a58d3.js"
+    ]
+  }
+}

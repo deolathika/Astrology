@@ -98,15 +98,17 @@ class DebugSystem {
       session.events.push(event)
     }
 
-    // Console output for development
-    const emoji = this.getTypeEmoji(type)
-    const timestamp = event.timestamp.toISOString().split('T')[1].split('.')[0]
-    
-    console.log(
-      `${emoji} [${timestamp}] ${category.toUpperCase()}: ${message}`,
-      data ? data : '',
-      stack ? `\nStack: ${stack}` : ''
-    )
+    // Console output for development (only in development mode)
+    if (process.env.NODE_ENV === 'development') {
+      const emoji = this.getTypeEmoji(type)
+      const timestamp = event.timestamp.toISOString().split('T')[1].split('.')[0]
+      
+      console.log(
+        `${emoji} [${timestamp}] ${category.toUpperCase()}: ${message}`,
+        data ? data : '',
+        stack ? `\nStack: ${stack}` : ''
+      )
+    }
   }
 
   private getTypeEmoji(type: string): string {

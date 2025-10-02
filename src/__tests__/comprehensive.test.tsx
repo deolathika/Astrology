@@ -224,9 +224,9 @@ describe('Comprehensive App Tests', () => {
       const Breadcrumbs = () => (
         <nav data-testid="breadcrumbs">
           <span>Home</span>
-          <span>></span>
+          <span>&gt;</span>
           <span>Profile</span>
-          <span>></span>
+          <span>&gt;</span>
           <span>Edit</span>
         </nav>
       )

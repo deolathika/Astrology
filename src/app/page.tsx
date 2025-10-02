@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
-  Star, User, Heart, MessageCircle, Settings, 
+  Star, User, Heart, Settings, 
   Sun, Moon, Sparkles, ChevronRight, Globe,
   Smartphone, Monitor
 } from 'lucide-react'

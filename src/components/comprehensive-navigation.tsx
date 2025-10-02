@@ -7,32 +7,13 @@ import {
   Home, 
   Star, 
   Calculator, 
-  Calendar, 
   Heart, 
   Users, 
   Bell, 
   Settings, 
   Search,
-  ChevronDown,
-  ChevronUp,
-  Sparkles,
   Moon,
-  Sun,
-  Compass,
-  Target,
-  Gift,
-  BookOpen,
-  Zap,
-  Shield,
-  Globe,
-  Smartphone,
-  Tablet,
-  Monitor,
-  Wifi,
-  Lock,
-  User,
-  Clock,
-  MapPin
+  User
 } from 'lucide-react'
 
 interface NavigationItem {
@@ -74,7 +55,7 @@ export function ComprehensiveNavigation() {
   const pathname = usePathname()
   const [activeItem, setActiveItem] = useState('')
   const [showMore, setShowMore] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
+  // Removed unused isVisible state
 
   useEffect(() => {
     // Set active item based on current path

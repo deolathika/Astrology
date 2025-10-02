@@ -114,7 +114,9 @@ function sendAlert(type: ErrorType, severity: ErrorSeverity, count: number): voi
   // - PagerDuty
   // - Sentry
   
-  console.error(`ALERT: ${message}`)
+  if (process.env.NODE_ENV === 'development') {
+    console.error(`ALERT: ${message}`)
+  }
   
   // TODO: Implement actual alerting
   // await sendEmailAlert(message)
