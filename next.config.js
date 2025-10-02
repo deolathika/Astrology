@@ -1,8 +1,5 @@
 /** @type {import('next').Config} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   webpack: (config, { isServer }) => {
     // Handle binary files for Transformers.js
     config.module.rules.push({

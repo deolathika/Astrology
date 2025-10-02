@@ -3,7 +3,7 @@
  * Validates the authenticity and accuracy of astrology calculations
  */
 
-import { debugSystem, logCalculation, logError, logWarning } from '@/lib/debug/debug-system'
+import { debugSystem, logCalculation, logError, logWarning, logInfo } from '@/lib/debug/debug-system'
 
 interface ValidationResult {
   isValid: boolean
