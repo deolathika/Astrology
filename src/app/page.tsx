@@ -46,26 +46,27 @@ export default function HomePage() {
     // Check if user has completed onboarding
     const onboardingComplete = localStorage.getItem('onboardingComplete')
     
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-      
-      // Auto-redirect based on device type and onboarding status
-      if (onboardingComplete) {
-        if (deviceType === 'mobile') {
-          router.push('/mobile-home')
-        } else if (deviceType === 'tablet') {
-          router.push('/mobile-home') // Tablets use mobile layout
-        } else {
-          router.push('/main') // Desktop uses main layout
-        }
+    // Immediate redirect for better UX
+    if (onboardingComplete) {
+      if (deviceType === 'mobile') {
+        router.push('/mobile-home')
+      } else if (deviceType === 'tablet') {
+        router.push('/mobile-home') // Tablets use mobile layout
       } else {
-        router.push('/onboarding/complete')
+        router.push('/main') // Desktop uses main layout
       }
-    }, 2000)
-
-    return () => clearTimeout(timer)
+      } else {
+        // Always redirect to simple onboarding for new users
+        router.push('/simple-onboarding')
+      }
+    
+    // Set loading to false after redirect
+    setIsLoading(false)
   }, [router, deviceType])
+
+  const handleNavigation = (path: string) => {
+    router.push(path)
+  }
 
   if (isLoading) {
     return (

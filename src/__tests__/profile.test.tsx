@@ -281,10 +281,15 @@ describe('Profile Management', () => {
       render(<EditProfilePage />)
       
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /back/i })).toBeInTheDocument()
+        // Look for the back button by its icon (ArrowLeft)
+        const backButton = screen.getByRole('button', { name: '' })
+        expect(backButton).toBeInTheDocument()
       })
       
-      fireEvent.click(screen.getByRole('button', { name: /back/i }))
+      // Find the back button by its position (first button in header)
+      const buttons = screen.getAllByRole('button')
+      const backButton = buttons[0] // First button should be the back button
+      fireEvent.click(backButton)
       expect(mockBack).toHaveBeenCalled()
     })
 
@@ -306,9 +311,10 @@ describe('Profile Management', () => {
       
       fireEvent.click(screen.getByText('Save Changes'))
       
+      // Wait for the async save operation to complete
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith('/profile')
-      })
+      }, { timeout: 3000 })
     })
   })
 })

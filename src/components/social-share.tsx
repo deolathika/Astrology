@@ -5,8 +5,9 @@
  * Provides sharing functionality for cosmic content
  */
 
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Share2, Sparkles, X } from 'lucide-react'
+import { Share2, Sparkles, X, MessageCircle, Instagram, Twitter, Facebook } from 'lucide-react'
 interface SocialShareProps {
   content?: {
     title: string

@@ -96,8 +96,8 @@ export async function GET(request: NextRequest) {
       case 'plans':
         // Return all subscription plans
         const plans = Object.values(subscriptionPlans)
-        const duration = Date.now() - startTime
-        logApiUsage('/api/subscription', 'GET', 200, duration)
+        const plansDuration = Date.now() - startTime
+        logApiUsage('/api/subscription', 'GET', 200, plansDuration)
         return NextResponse.json({
           success: true,
           data: { plans },
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
           headers: {
             'Cache-Control': 'public, max-age=3600',
             'X-API-Version': '1.0.0',
-            'X-Response-Time': `${duration}ms`
+            'X-Response-Time': `${plansDuration}ms`
           }
         })
 
@@ -138,8 +138,8 @@ export async function GET(request: NextRequest) {
           }
         }
 
-        const duration = Date.now() - startTime
-        logApiUsage('/api/subscription', 'GET', 200, duration)
+        const userSubDuration = Date.now() - startTime
+        logApiUsage('/api/subscription', 'GET', 200, userSubDuration)
         return NextResponse.json({
           success: true,
           data: { subscription: userSubscription },
@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
           headers: {
             'Cache-Control': 'public, max-age=300',
             'X-API-Version': '1.0.0',
-            'X-Response-Time': `${duration}ms`
+            'X-Response-Time': `${userSubDuration}ms`
           }
         })
 
@@ -176,8 +176,8 @@ export async function GET(request: NextRequest) {
           lastReset: new Date().toISOString()
         }
 
-        const duration = Date.now() - startTime
-        logApiUsage('/api/subscription', 'GET', 200, duration)
+        const usageDuration = Date.now() - startTime
+        logApiUsage('/api/subscription', 'GET', 200, usageDuration)
         return NextResponse.json({
           success: true,
           data: { usage },
@@ -189,7 +189,7 @@ export async function GET(request: NextRequest) {
           headers: {
             'Cache-Control': 'public, max-age=300',
             'X-API-Version': '1.0.0',
-            'X-Response-Time': `${duration}ms`
+            'X-Response-Time': `${usageDuration}ms`
           }
         })
 
@@ -201,15 +201,15 @@ export async function GET(request: NextRequest) {
         )
     }
   } catch (error) {
-    const duration = Date.now() - startTime
+    const responseDuration = Date.now() - startTime
     logError(
       error instanceof Error ? error : new Error('Unknown error'),
       ErrorType.SYSTEM,
       ErrorSeverity.HIGH,
-      { endpoint: '/api/subscription', duration },
+      { endpoint: '/api/subscription', responseDuration },
       request
     )
-    logApiUsage('/api/subscription', 'GET', 500, duration)
+    logApiUsage('/api/subscription', 'GET', 500, responseDuration)
     
     return NextResponse.json(
       { 
@@ -279,8 +279,8 @@ export async function POST(request: NextRequest) {
           features: subscriptionPlans[planId as keyof typeof subscriptionPlans].features
         }
 
-        const duration = Date.now() - startTime
-        logApiUsage('/api/subscription', 'POST', 200, duration)
+        const createDuration = Date.now() - startTime
+        logApiUsage('/api/subscription', 'POST', 200, createDuration)
         return NextResponse.json({
           success: true,
           data: { subscription: newSubscription },
@@ -292,7 +292,7 @@ export async function POST(request: NextRequest) {
           headers: {
             'Cache-Control': 'no-cache',
             'X-API-Version': '1.0.0',
-            'X-Response-Time': `${duration}ms`
+            'X-Response-Time': `${createDuration}ms`
           }
         })
 
@@ -307,8 +307,8 @@ export async function POST(request: NextRequest) {
           endDate: new Date().toISOString()
         }
 
-        const duration = Date.now() - startTime
-        logApiUsage('/api/subscription', 'POST', 200, duration)
+        const cancelDuration = Date.now() - startTime
+        logApiUsage('/api/subscription', 'POST', 200, cancelDuration)
         return NextResponse.json({
           success: true,
           data: { subscription: cancelledSubscription },
@@ -320,7 +320,7 @@ export async function POST(request: NextRequest) {
           headers: {
             'Cache-Control': 'no-cache',
             'X-API-Version': '1.0.0',
-            'X-Response-Time': `${duration}ms`
+            'X-Response-Time': `${cancelDuration}ms`
           }
         })
 
@@ -335,8 +335,8 @@ export async function POST(request: NextRequest) {
           timestamp: new Date().toISOString()
         }
 
-        const duration = Date.now() - startTime
-        logApiUsage('/api/subscription', 'POST', 200, duration)
+        const usageDuration = Date.now() - startTime
+        logApiUsage('/api/subscription', 'POST', 200, usageDuration)
         return NextResponse.json({
           success: true,
           data: { usage: updatedUsage },
@@ -348,7 +348,7 @@ export async function POST(request: NextRequest) {
           headers: {
             'Cache-Control': 'no-cache',
             'X-API-Version': '1.0.0',
-            'X-Response-Time': `${duration}ms`
+            'X-Response-Time': `${usageDuration}ms`
           }
         })
 
@@ -360,15 +360,15 @@ export async function POST(request: NextRequest) {
         )
     }
   } catch (error) {
-    const duration = Date.now() - startTime
+    const responseDuration = Date.now() - startTime
     logError(
       error instanceof Error ? error : new Error('Unknown error'),
       ErrorType.SYSTEM,
       ErrorSeverity.HIGH,
-      { endpoint: '/api/subscription', duration },
+      { endpoint: '/api/subscription', responseDuration },
       request
     )
-    logApiUsage('/api/subscription', 'POST', 500, duration)
+    logApiUsage('/api/subscription', 'POST', 500, responseDuration)
     
     return NextResponse.json(
       { 

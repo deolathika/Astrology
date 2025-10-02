@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { Lightbulb, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 interface DayRulesCardProps {
   user?: any
 }

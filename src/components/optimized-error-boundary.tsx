@@ -1,6 +1,7 @@
 'use client'
 
 import { Component, ReactNode } from 'react'
+import { AlertTriangle, RefreshCw } from 'lucide-react'
 import { motion } from 'framer-motion'
 interface Props {
   children: ReactNode

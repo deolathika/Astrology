@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Gift, HelpCircle, Palette, Hash } from 'lucide-react'
 interface LuckyTrioCardProps {
   user?: any
 }
