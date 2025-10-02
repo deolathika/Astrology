@@ -41,12 +41,33 @@ export default function MainPage() {
   }, [])
 
   useEffect(() => {
-    // Load user profile
-    const profile = localStorage.getItem('userData')
-    if (profile) {
-      setUserProfile(JSON.parse(profile))
-    }
+    // Load personalized dashboard data
+    loadPersonalizedDashboard()
   }, [])
+
+  const loadPersonalizedDashboard = async () => {
+    try {
+      const response = await fetch('/api/dashboard/personalized')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          setUserProfile(data.data)
+          // Store user data for offline access
+          localStorage.setItem('userData', JSON.stringify(data.data.user))
+        }
+      } else if (response.status === 401) {
+        // User not authenticated, redirect to login
+        router.push('/auth/login')
+      }
+    } catch (error) {
+      console.error('Failed to load personalized dashboard:', error)
+      // Fallback to localStorage data
+      const profile = localStorage.getItem('userData')
+      if (profile) {
+        setUserProfile(JSON.parse(profile))
+      }
+    }
+  }
 
   const handleNavigation = (path: string) => {
     router.push(path)
@@ -243,15 +264,22 @@ export default function MainPage() {
             className="mb-8"
           >
             <h2 className="text-3xl font-bold text-slate-900 mb-2">
-              Welcome to Your Cosmic Dashboard
+              {userProfile?.personalizedContent?.greeting || 'Welcome to Your Cosmic Dashboard'}
             </h2>
             <p className="text-slate-600">
               Discover the secrets of the universe through personalized astrology, numerology, and cosmic guidance.
             </p>
-            {userProfile && (
-              <p className="text-violet-600 mt-2">
-                Welcome back, {userProfile.fullName || 'Cosmic Explorer'}!
-              </p>
+            {userProfile?.user && (
+              <div className="mt-4 p-4 bg-violet-50 rounded-lg">
+                <p className="text-violet-800 font-medium">
+                  {userProfile.user.name} • {userProfile.personalizedContent?.zodiacSign || 'Unknown Sign'} • {userProfile.user.role?.toUpperCase() || 'USER'}
+                </p>
+                {userProfile.personalizedContent?.todaysInsight && (
+                  <p className="text-violet-600 mt-2 text-sm">
+                    ✨ {userProfile.personalizedContent.todaysInsight}
+                  </p>
+                )}
+              </div>
             )}
           </motion.div>
 

@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth-config'
+import { prisma } from '@/lib/database'
 import { swissEphemeris } from '@/lib/astrology/swiss-ephemeris'
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { searchParams } = new URL(request.url)
     const profileId = searchParams.get('profileId')
 
@@ -13,17 +22,30 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // TODO: Fetch profile data from database
+    // Fetch actual user profile data from database
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: { profiles: true }
+    })
+
+    if (!user || !user.profiles.length) {
+      return NextResponse.json({ error: 'User profile not found' }, { status: 404 })
+    }
+
+    const userProfile = user.profiles[0]
+    const birthDate = userProfile.birthDate ? new Date(userProfile.birthDate) : new Date('1990-01-01')
+    const [birthHour, birthMinute] = (userProfile.birthTime || '12:00').split(':').map(Number)
+
     const birthData = {
-      year: 1990,
-      month: 1,
-      day: 1,
-      hour: 12,
-      minute: 0,
+      year: birthDate.getFullYear(),
+      month: birthDate.getMonth() + 1,
+      day: birthDate.getDate(),
+      hour: birthHour || 12,
+      minute: birthMinute || 0,
       second: 0,
-      latitude: 40.7128,
-      longitude: -74.0060,
-      timezone: -5
+      latitude: userProfile.latitude || 0,
+      longitude: userProfile.longitude || 0,
+      timezone: userProfile.timezone || 'UTC'
     }
 
     // Calculate natal chart

@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { 
   User, Calendar, MapPin, Star, Heart, 
-  ChevronRight, ChevronLeft, CheckCircle
+  ChevronRight, ChevronLeft, CheckCircle, Crown, Shield,
+  Sparkles, Smartphone, X
 } from 'lucide-react'
 
 interface OnboardingStep {

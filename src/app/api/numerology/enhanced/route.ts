@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth-config'
+import { prisma } from '@/lib/database'
 import { enhancedNumerology } from '@/lib/numerology/enhanced-numerology'
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { searchParams } = new URL(request.url)
     const profileId = searchParams.get('profileId')
     const system = searchParams.get('system') || 'pythagorean'
@@ -11,19 +20,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Profile ID required' }, { status: 400 })
     }
 
-    // Get user profile data (mock for now)
-    const userProfile = {
+    // Get actual user profile data from database
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: { profiles: true }
+    })
+
+    if (!user || !user.profiles.length) {
+      return NextResponse.json({ error: 'User profile not found' }, { status: 404 })
+    }
+
+    const userProfile = user.profiles[0]
+    const profileData = {
       id: profileId,
-      fullName: 'Alex Johnson',
-      birthDate: '1990-06-15',
-      currentName: 'Alex Johnson'
+      fullName: userProfile.fullName || user.name || 'User',
+      birthDate: userProfile.birthDate ? userProfile.birthDate.toISOString().split('T')[0] : '1990-01-01',
+      currentName: userProfile.fullName || user.name || 'User'
     }
 
     // Calculate enhanced numerology
     const numerologyData = enhancedNumerology.calculateProfile({
-      fullName: userProfile.fullName,
-      birthDate: userProfile.birthDate,
-      currentName: userProfile.currentName
+      fullName: profileData.fullName,
+      birthDate: profileData.birthDate,
+      currentName: profileData.currentName
     })
 
     // Get number meanings
