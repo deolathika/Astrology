@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST='{"lib/astrology/astrology-validator.ts -> ./zodiac-calculator":{"id":8304,"files":["static/chunks/8304.78a16b1ce73c445c.js"]}}';
