@@ -5,6 +5,7 @@
  * Optimized for WhatsApp sharing with Sri Lankan context
  */
 
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MessageCircle, Check, Copy } from 'lucide-react'
 interface WhatsAppShareProps {
