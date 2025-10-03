@@ -96,6 +96,7 @@
     "react-hook-form": "^7.47.0",
     "react-hot-toast": "^2.4.0",
     "sharp": "^0.32.6",
+    "sqlite3": "^5.1.7",
     "swr": "^2.2.0",
     "tailwindcss": "^3.3.0",
     "tesseract.js": "^4.1.1",

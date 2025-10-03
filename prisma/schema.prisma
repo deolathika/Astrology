@@ -67,36 +67,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Profile {
-  id        String   @id @default(cuid())
-  userId    String
-  fullName  String?
-  birthDate DateTime?
-  birthTime String?
-  birthPlace String?
-  latitude  Float?
-  longitude Float?
-  timezone  String?
-  language  String   @default("en")
-  theme     String   @default("cosmic")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  profiles     Profile[]
-  readings     AstrologyReading[]
-  numerology   NumerologyReading[]
-  dreams       Dream[]
-  settings     UserSettings[]
-  notifications Notification[]
-  subscriptions Subscription[]
-  matches      Match[]    @relation("UserMatches")
-  messages     ChatMessage[]
-  purchases    Purchase[]
-  donations    Donation[]
-
-  @@map("users")
-}
 
 model Profile {
   id           String  @id @default(cuid())
