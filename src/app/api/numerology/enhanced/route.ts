@@ -33,9 +33,9 @@ export async function GET(request: NextRequest) {
     const userProfile = user.profiles[0]
     const profileData = {
       id: profileId,
-      fullName: userProfile.fullName || user.name || 'User',
+      fullName: userProfile.name || user.name || 'User',
       birthDate: userProfile.birthDate ? userProfile.birthDate.toISOString().split('T')[0] : '1990-01-01',
-      currentName: userProfile.fullName || user.name || 'User'
+      currentName: userProfile.name || user.name || 'User'
     }
 
     // Calculate enhanced numerology

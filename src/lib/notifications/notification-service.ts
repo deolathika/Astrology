@@ -90,7 +90,7 @@ export class NotificationService {
         userVisibleOnly: true,
         applicationServerKey: this.urlBase64ToUint8Array(
           process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ''
-        )
+        ) as any
       })
 
       return subscription
@@ -132,12 +132,12 @@ export class NotificationService {
         body: data.body,
         icon: data.icon || '/icon-192.png',
         badge: data.badge || '/icon-192.png',
-        image: data.image,
+        // image: data.image, // Not supported in NotificationOptions
         tag: data.tag,
         data: data.data,
         requireInteraction: data.requireInteraction || false,
         silent: data.silent || false,
-        timestamp: data.timestamp || Date.now()
+        // timestamp: data.timestamp || Date.now() // Not supported in NotificationOptions
       })
 
       // Auto-close after 5 seconds unless requireInteraction is true

@@ -178,6 +178,52 @@ export default function ZodiacSystemsPage() {
       ]
     },
     {
+      id: 'sriLankan',
+      name: 'Sri Lankan Astrology',
+      description: 'Traditional Sinhala zodiac with cultural and spiritual elements',
+      icon: CircleDot,
+      color: 'text-teal-600',
+      bgColor: 'bg-teal-50',
+      origin: 'Ancient Sri Lanka (Sinhala Jyotish)',
+      elements: ['Fire', 'Earth', 'Air', 'Water'],
+      signs: [
+        { name: 'මේෂ (Mesha)', dates: 'Mar 21 - Apr 19', element: 'Fire', quality: 'Cardinal', ruler: 'Mars', symbol: '♈' },
+        { name: 'වෘෂභ (Vrishabha)', dates: 'Apr 20 - May 20', element: 'Earth', quality: 'Fixed', ruler: 'Venus', symbol: '♉' },
+        { name: 'මිථුන (Mithuna)', dates: 'May 21 - Jun 20', element: 'Air', quality: 'Mutable', ruler: 'Mercury', symbol: '♊' },
+        { name: 'කර්ක (Karka)', dates: 'Jun 21 - Jul 22', element: 'Water', quality: 'Cardinal', ruler: 'Moon', symbol: '♋' },
+        { name: 'සිංහ (Simha)', dates: 'Jul 23 - Aug 22', element: 'Fire', quality: 'Fixed', ruler: 'Sun', symbol: '♌' },
+        { name: 'කන්‍යා (Kanya)', dates: 'Aug 23 - Sep 22', element: 'Earth', quality: 'Mutable', ruler: 'Mercury', symbol: '♍' },
+        { name: 'තුලා (Tula)', dates: 'Sep 23 - Oct 22', element: 'Air', quality: 'Cardinal', ruler: 'Venus', symbol: '♎' },
+        { name: 'වෘශ්චික (Vrishchika)', dates: 'Oct 23 - Nov 21', element: 'Water', quality: 'Fixed', ruler: 'Mars', symbol: '♏' },
+        { name: 'ධනු (Dhanu)', dates: 'Nov 22 - Dec 21', element: 'Fire', quality: 'Mutable', ruler: 'Jupiter', symbol: '♐' },
+        { name: 'මකර (Makara)', dates: 'Dec 22 - Jan 19', element: 'Earth', quality: 'Cardinal', ruler: 'Saturn', symbol: '♑' },
+        { name: 'කුම්භ (Kumbha)', dates: 'Jan 20 - Feb 18', element: 'Air', quality: 'Fixed', ruler: 'Saturn', symbol: '♒' },
+        { name: 'මීන (Meena)', dates: 'Feb 19 - Mar 20', element: 'Water', quality: 'Mutable', ruler: 'Jupiter', symbol: '♓' }
+      ],
+      features: [
+        'Traditional Sinhala zodiac signs',
+        'Cultural and spiritual elements',
+        'Buddhist and Hindu influences',
+        'Local Sri Lankan traditions',
+        'Spiritual practices integration',
+        'Cultural compatibility insights'
+      ],
+      calculations: [
+        'Sinhala zodiac calculations',
+        'Cultural element integration',
+        'Spiritual practice recommendations',
+        'Local tradition compatibility',
+        'Cultural adaptation methods'
+      ],
+      benefits: [
+        'Cultural relevance for Sri Lankans',
+        'Spiritual and traditional insights',
+        'Local compatibility guidance',
+        'Cultural identity connection',
+        'Traditional wisdom integration'
+      ]
+    },
+    {
       id: 'hybrid',
       name: 'Hybrid System',
       description: 'Combines best features from multiple astrological traditions',
@@ -465,13 +511,15 @@ export default function ZodiacSystemsPage() {
                   <td className="py-3 px-4 text-center">Tropical</td>
                   <td className="py-3 px-4 text-center">Sidereal</td>
                   <td className="py-3 px-4 text-center">Animal Cycle</td>
+                  <td className="py-3 px-4 text-center">Sinhala</td>
                   <td className="py-3 px-4 text-center">Hybrid</td>
                 </tr>
                 <tr className="border-b">
                   <td className="py-3 px-4 font-medium">Elements</td>
                   <td className="py-3 px-4 text-center">4</td>
-                  <td className="py-4 text-center">4</td>
+                  <td className="py-3 px-4 text-center">4</td>
                   <td className="py-3 px-4 text-center">5</td>
+                  <td className="py-3 px-4 text-center">4</td>
                   <td className="py-3 px-4 text-center">5</td>
                 </tr>
                 <tr className="border-b">
@@ -479,6 +527,7 @@ export default function ZodiacSystemsPage() {
                   <td className="py-3 px-4 text-center">12</td>
                   <td className="py-3 px-4 text-center">12 + 27 Nakshatras</td>
                   <td className="py-3 px-4 text-center">12 Animals</td>
+                  <td className="py-3 px-4 text-center">12 Sinhala</td>
                   <td className="py-3 px-4 text-center">Variable</td>
                 </tr>
                 <tr className="border-b">
@@ -486,6 +535,7 @@ export default function ZodiacSystemsPage() {
                   <td className="py-3 px-4 text-center">Transits</td>
                   <td className="py-3 px-4 text-center">Dasha</td>
                   <td className="py-3 px-4 text-center">Yearly Cycle</td>
+                  <td className="py-3 px-4 text-center">Cultural</td>
                   <td className="py-3 px-4 text-center">Multiple</td>
                 </tr>
                 <tr>
@@ -493,6 +543,7 @@ export default function ZodiacSystemsPage() {
                   <td className="py-3 px-4 text-center">Personality</td>
                   <td className="py-3 px-4 text-center">Predictions</td>
                   <td className="py-3 px-4 text-center">Compatibility</td>
+                  <td className="py-3 px-4 text-center">Cultural</td>
                   <td className="py-3 px-4 text-center">Comprehensive</td>
                 </tr>
               </tbody>

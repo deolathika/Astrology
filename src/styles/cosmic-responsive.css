@@ -1,0 +1,607 @@
+/**
+ * Cosmic Responsive Design CSS
+ * Front-end Design System Expert + UI/UX Engineer
+ * 
+ * Responsive design system for cosmic theme
+ * Preserves 100% of existing functionality while enhancing visual appeal
+ */
+
+/* === MOBILE FIRST BREAKPOINTS === */
+:root {
+  --cosmic-mobile: 320px;
+  --cosmic-tablet: 768px;
+  --cosmic-desktop: 1024px;
+  --cosmic-wide: 1280px;
+  --cosmic-ultra-wide: 1536px;
+}
+
+/* === MOBILE STYLES (320px - 767px) === */
+@media (max-width: 767px) {
+  /* Cosmic Container */
+  .cosmic-container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  /* Cosmic Grid */
+  .cosmic-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .cosmic-grid-2,
+  .cosmic-grid-3,
+  .cosmic-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Cosmic Cards */
+  .cosmic-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .cosmic-card-lg {
+    padding: 1.5rem;
+  }
+
+  /* Cosmic Buttons */
+  .cosmic-button {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .cosmic-button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Cosmic Inputs */
+  .cosmic-input {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  /* Cosmic Navigation */
+  .cosmic-nav {
+    padding: 0.5rem;
+  }
+
+  .cosmic-nav-item {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  /* Cosmic Typography */
+  .cosmic-text-xs { font-size: 0.75rem; }
+  .cosmic-text-sm { font-size: 0.875rem; }
+  .cosmic-text-base { font-size: 1rem; }
+  .cosmic-text-lg { font-size: 1.125rem; }
+  .cosmic-text-xl { font-size: 1.25rem; }
+  .cosmic-text-2xl { font-size: 1.5rem; }
+  .cosmic-text-3xl { font-size: 1.875rem; }
+  .cosmic-text-4xl { font-size: 2.25rem; }
+  .cosmic-text-5xl { font-size: 2.5rem; }
+  .cosmic-text-6xl { font-size: 3rem; }
+
+  /* Cosmic Spacing */
+  .cosmic-spacing-xs { padding: 0.25rem; }
+  .cosmic-spacing-sm { padding: 0.5rem; }
+  .cosmic-spacing-md { padding: 0.75rem; }
+  .cosmic-spacing-lg { padding: 1rem; }
+  .cosmic-spacing-xl { padding: 1.25rem; }
+  .cosmic-spacing-2xl { padding: 1.5rem; }
+
+  /* Cosmic Layout */
+  .cosmic-layout {
+    padding: 1rem;
+  }
+
+  /* Cosmic Modal */
+  .cosmic-modal-content {
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  /* Hide complex animations on mobile */
+  .cosmic-particles,
+  .cosmic-stars {
+    display: none;
+  }
+
+  /* Simplify effects for mobile */
+  .cosmic-glow-hover:hover {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  }
+
+  .cosmic-scale-hover:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* === TABLET STYLES (768px - 1023px) === */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Cosmic Container */
+  .cosmic-container {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  /* Cosmic Grid */
+  .cosmic-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .cosmic-grid-3,
+  .cosmic-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Cosmic Cards */
+  .cosmic-card {
+    padding: 1.5rem;
+  }
+
+  .cosmic-card-lg {
+    padding: 2rem;
+  }
+
+  /* Cosmic Buttons */
+  .cosmic-button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .cosmic-button-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* Cosmic Inputs */
+  .cosmic-input {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Cosmic Navigation */
+  .cosmic-nav {
+    padding: 1rem;
+  }
+
+  .cosmic-nav-item {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Cosmic Typography */
+  .cosmic-text-xs { font-size: 0.75rem; }
+  .cosmic-text-sm { font-size: 0.875rem; }
+  .cosmic-text-base { font-size: 1rem; }
+  .cosmic-text-lg { font-size: 1.125rem; }
+  .cosmic-text-xl { font-size: 1.25rem; }
+  .cosmic-text-2xl { font-size: 1.5rem; }
+  .cosmic-text-3xl { font-size: 1.875rem; }
+  .cosmic-text-4xl { font-size: 2.25rem; }
+  .cosmic-text-5xl { font-size: 2.5rem; }
+  .cosmic-text-6xl { font-size: 3rem; }
+
+  /* Cosmic Spacing */
+  .cosmic-spacing-xs { padding: 0.25rem; }
+  .cosmic-spacing-sm { padding: 0.5rem; }
+  .cosmic-spacing-md { padding: 1rem; }
+  .cosmic-spacing-lg { padding: 1.5rem; }
+  .cosmic-spacing-xl { padding: 2rem; }
+  .cosmic-spacing-2xl { padding: 2.5rem; }
+
+  /* Cosmic Layout */
+  .cosmic-layout {
+    padding: 1.5rem;
+  }
+
+  /* Cosmic Modal */
+  .cosmic-modal-content {
+    margin: 2rem;
+    max-width: calc(100% - 4rem);
+  }
+
+  /* Moderate animations for tablet */
+  .cosmic-particles {
+    display: block;
+  }
+
+  .cosmic-stars {
+    display: block;
+  }
+}
+
+/* === DESKTOP STYLES (1024px - 1279px) === */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  /* Cosmic Container */
+  .cosmic-container {
+    padding: 2rem;
+    max-width: 1200px;
+  }
+
+  /* Cosmic Grid */
+  .cosmic-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .cosmic-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cosmic-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cosmic-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Cosmic Cards */
+  .cosmic-card {
+    padding: 2rem;
+  }
+
+  .cosmic-card-lg {
+    padding: 2.5rem;
+  }
+
+  /* Cosmic Buttons */
+  .cosmic-button {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  .cosmic-button-group {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  /* Cosmic Inputs */
+  .cosmic-input {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+  }
+
+  /* Cosmic Navigation */
+  .cosmic-nav {
+    padding: 1.5rem;
+  }
+
+  .cosmic-nav-item {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  /* Cosmic Typography */
+  .cosmic-text-xs { font-size: 0.75rem; }
+  .cosmic-text-sm { font-size: 0.875rem; }
+  .cosmic-text-base { font-size: 1rem; }
+  .cosmic-text-lg { font-size: 1.125rem; }
+  .cosmic-text-xl { font-size: 1.25rem; }
+  .cosmic-text-2xl { font-size: 1.5rem; }
+  .cosmic-text-3xl { font-size: 1.875rem; }
+  .cosmic-text-4xl { font-size: 2.25rem; }
+  .cosmic-text-5xl { font-size: 3rem; }
+  .cosmic-text-6xl { font-size: 3.75rem; }
+
+  /* Cosmic Spacing */
+  .cosmic-spacing-xs { padding: 0.25rem; }
+  .cosmic-spacing-sm { padding: 0.5rem; }
+  .cosmic-spacing-md { padding: 1rem; }
+  .cosmic-spacing-lg { padding: 1.5rem; }
+  .cosmic-spacing-xl { padding: 2rem; }
+  .cosmic-spacing-2xl { padding: 3rem; }
+
+  /* Cosmic Layout */
+  .cosmic-layout {
+    padding: 2rem;
+  }
+
+  /* Cosmic Modal */
+  .cosmic-modal-content {
+    margin: 3rem;
+    max-width: 600px;
+  }
+
+  /* Full animations for desktop */
+  .cosmic-particles {
+    display: block;
+  }
+
+  .cosmic-stars {
+    display: block;
+  }
+}
+
+/* === WIDE DESKTOP STYLES (1280px - 1535px) === */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  /* Cosmic Container */
+  .cosmic-container {
+    padding: 2.5rem;
+    max-width: 1400px;
+  }
+
+  /* Cosmic Grid */
+  .cosmic-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  .cosmic-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cosmic-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cosmic-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Cosmic Cards */
+  .cosmic-card {
+    padding: 2.5rem;
+  }
+
+  .cosmic-card-lg {
+    padding: 3rem;
+  }
+
+  /* Cosmic Buttons */
+  .cosmic-button {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.125rem;
+  }
+
+  .cosmic-button-group {
+    flex-direction: row;
+    gap: 1.25rem;
+  }
+
+  /* Cosmic Inputs */
+  .cosmic-input {
+    padding: 1.25rem 1.5rem;
+    font-size: 1.125rem;
+  }
+
+  /* Cosmic Navigation */
+  .cosmic-nav {
+    padding: 2rem;
+  }
+
+  .cosmic-nav-item {
+    padding: 1.25rem 2rem;
+    font-size: 1.125rem;
+  }
+
+  /* Cosmic Typography */
+  .cosmic-text-xs { font-size: 0.75rem; }
+  .cosmic-text-sm { font-size: 0.875rem; }
+  .cosmic-text-base { font-size: 1rem; }
+  .cosmic-text-lg { font-size: 1.125rem; }
+  .cosmic-text-xl { font-size: 1.25rem; }
+  .cosmic-text-2xl { font-size: 1.5rem; }
+  .cosmic-text-3xl { font-size: 1.875rem; }
+  .cosmic-text-4xl { font-size: 2.25rem; }
+  .cosmic-text-5xl { font-size: 3rem; }
+  .cosmic-text-6xl { font-size: 3.75rem; }
+
+  /* Cosmic Spacing */
+  .cosmic-spacing-xs { padding: 0.25rem; }
+  .cosmic-spacing-sm { padding: 0.5rem; }
+  .cosmic-spacing-md { padding: 1rem; }
+  .cosmic-spacing-lg { padding: 1.5rem; }
+  .cosmic-spacing-xl { padding: 2rem; }
+  .cosmic-spacing-2xl { padding: 3rem; }
+
+  /* Cosmic Layout */
+  .cosmic-layout {
+    padding: 2.5rem;
+  }
+
+  /* Cosmic Modal */
+  .cosmic-modal-content {
+    margin: 4rem;
+    max-width: 700px;
+  }
+}
+
+/* === ULTRA WIDE DESKTOP STYLES (1536px+) === */
+@media (min-width: 1536px) {
+  /* Cosmic Container */
+  .cosmic-container {
+    padding: 3rem;
+    max-width: 1600px;
+  }
+
+  /* Cosmic Grid */
+  .cosmic-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+  }
+
+  .cosmic-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cosmic-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cosmic-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Cosmic Cards */
+  .cosmic-card {
+    padding: 3rem;
+  }
+
+  .cosmic-card-lg {
+    padding: 4rem;
+  }
+
+  /* Cosmic Buttons */
+  .cosmic-button {
+    padding: 1.5rem 3rem;
+    font-size: 1.25rem;
+  }
+
+  .cosmic-button-group {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
+  /* Cosmic Inputs */
+  .cosmic-input {
+    padding: 1.5rem 2rem;
+    font-size: 1.25rem;
+  }
+
+  /* Cosmic Navigation */
+  .cosmic-nav {
+    padding: 2.5rem;
+  }
+
+  .cosmic-nav-item {
+    padding: 1.5rem 2.5rem;
+    font-size: 1.25rem;
+  }
+
+  /* Cosmic Typography */
+  .cosmic-text-xs { font-size: 0.75rem; }
+  .cosmic-text-sm { font-size: 0.875rem; }
+  .cosmic-text-base { font-size: 1rem; }
+  .cosmic-text-lg { font-size: 1.125rem; }
+  .cosmic-text-xl { font-size: 1.25rem; }
+  .cosmic-text-2xl { font-size: 1.5rem; }
+  .cosmic-text-3xl { font-size: 1.875rem; }
+  .cosmic-text-4xl { font-size: 2.25rem; }
+  .cosmic-text-5xl { font-size: 3rem; }
+  .cosmic-text-6xl { font-size: 3.75rem; }
+
+  /* Cosmic Spacing */
+  .cosmic-spacing-xs { padding: 0.25rem; }
+  .cosmic-spacing-sm { padding: 0.5rem; }
+  .cosmic-spacing-md { padding: 1rem; }
+  .cosmic-spacing-lg { padding: 1.5rem; }
+  .cosmic-spacing-xl { padding: 2rem; }
+  .cosmic-spacing-2xl { padding: 3rem; }
+
+  /* Cosmic Layout */
+  .cosmic-layout {
+    padding: 3rem;
+  }
+
+  /* Cosmic Modal */
+  .cosmic-modal-content {
+    margin: 5rem;
+    max-width: 800px;
+  }
+}
+
+/* === LANDSCAPE ORIENTATION === */
+@media (orientation: landscape) and (max-height: 600px) {
+  .cosmic-layout {
+    padding: 1rem;
+  }
+
+  .cosmic-card {
+    padding: 1rem;
+  }
+
+  .cosmic-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .cosmic-input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* === DARK MODE RESPONSIVE === */
+@media (prefers-color-scheme: dark) {
+  .cosmic-container {
+    background: var(--cosmic-bg-primary);
+  }
+
+  .cosmic-card {
+    background: var(--cosmic-bg-card);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .cosmic-input {
+    background: var(--cosmic-bg-glass);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--cosmic-text-primary);
+  }
+}
+
+/* === LIGHT MODE RESPONSIVE === */
+@media (prefers-color-scheme: light) {
+  .cosmic-container {
+    background: #ffffff;
+  }
+
+  .cosmic-card {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .cosmic-input {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #1a1a1a;
+  }
+}
+
+/* === REDUCED MOTION RESPONSIVE === */
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-float,
+  .cosmic-rotate,
+  .cosmic-glow-pulse,
+  .cosmic-scale-pulse,
+  .cosmic-shimmer,
+  .cosmic-text-shimmer,
+  .cosmic-gradient-animate,
+  .cosmic-border-animate,
+  .cosmic-stars-move,
+  .cosmic-nebula-rotate,
+  .cosmic-particle-float {
+    animation: none;
+  }
+
+  .cosmic-glow-hover:hover {
+    box-shadow: none;
+  }
+
+  .cosmic-scale-hover:hover {
+    transform: none;
+  }
+}
+
+/* === HIGH CONTRAST RESPONSIVE === */
+@media (prefers-contrast: high) {
+  .cosmic-card {
+    border: 2px solid var(--cosmic-gold);
+  }
+
+  .cosmic-button {
+    border: 2px solid var(--cosmic-gold);
+  }
+
+  .cosmic-input {
+    border: 2px solid var(--cosmic-gold);
+  }
+}

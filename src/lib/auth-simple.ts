@@ -26,21 +26,21 @@ const mockUsers: SimpleUser[] = [
     name: 'Free User',
     email: 'free@example.com',
     role: 'user',
-    image: null
+    image: undefined
   },
   {
     id: 'user-2',
     name: 'Premium User',
     email: 'premium@example.com',
     role: 'premium',
-    image: null
+    image: undefined
   },
   {
     id: 'user-3',
     name: 'Admin User',
     email: 'admin@example.com',
     role: 'admin',
-    image: null
+    image: undefined
   }
 ]
 

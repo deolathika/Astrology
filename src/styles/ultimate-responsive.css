@@ -1,0 +1,713 @@
+/**
+ * Ultimate Mobile-Responsive Design System
+ * Comprehensive responsive design for all advanced features
+ */
+
+/* === MOBILE FIRST BASE STYLES === */
+.ultimate-container {
+  @apply w-full max-w-sm mx-auto px-4;
+}
+
+.ultimate-card {
+  @apply bg-white rounded-xl shadow-lg p-4 mb-4 border border-gray-200;
+}
+
+.ultimate-button {
+  @apply w-full py-3 px-4 bg-indigo-600 text-white rounded-lg font-semibold text-center transition-colors hover:bg-indigo-700;
+}
+
+.ultimate-input {
+  @apply w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent;
+}
+
+.ultimate-text {
+  @apply text-sm text-gray-600 leading-relaxed;
+}
+
+.ultimate-heading {
+  @apply text-xl font-bold text-gray-900 mb-4;
+}
+
+/* === RESPONSIVE BREAKPOINTS === */
+
+/* Mobile (320px - 768px) */
+@media (max-width: 768px) {
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50;
+  }
+  
+  .mobile-nav-item {
+    @apply flex flex-col items-center py-2 px-3 text-xs text-gray-600 hover:text-indigo-600 transition-colors;
+  }
+  
+  .mobile-nav-icon {
+    @apply w-6 h-6 mb-1;
+  }
+  
+  .mobile-content {
+    @apply pb-20; /* Space for bottom navigation */
+  }
+  
+  .mobile-sidebar {
+    @apply hidden; /* Hide sidebar on mobile */
+  }
+  
+  .mobile-main {
+    @apply w-full; /* Full width on mobile */
+  }
+  
+  .mobile-grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-card-grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-text-responsive {
+    @apply text-sm;
+  }
+  
+  .mobile-heading-responsive {
+    @apply text-lg;
+  }
+  
+  .mobile-button-responsive {
+    @apply py-2 px-3 text-sm;
+  }
+  
+  .mobile-feature-grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-advanced-features {
+    @apply space-y-4;
+  }
+  
+  .mobile-astrology-grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-numerology-grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-ai-features {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-community-features {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-premium-features {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-admin-features {
+    @apply grid-cols-1 gap-4;
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .tablet-container {
+    @apply max-w-4xl mx-auto px-6;
+  }
+  
+  .tablet-sidebar {
+    @apply w-64 fixed left-0 top-0 h-full bg-white border-r border-gray-200 z-40;
+  }
+  
+  .tablet-main {
+    @apply ml-64 w-auto;
+  }
+  
+  .tablet-grid {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-card-grid {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-text-responsive {
+    @apply text-base;
+  }
+  
+  .tablet-heading-responsive {
+    @apply text-xl;
+  }
+  
+  .tablet-button-responsive {
+    @apply py-3 px-4 text-base;
+  }
+  
+  .tablet-feature-grid {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-advanced-features {
+    @apply space-y-6;
+  }
+  
+  .tablet-astrology-grid {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-numerology-grid {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-ai-features {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-community-features {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-premium-features {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .tablet-admin-features {
+    @apply grid-cols-2 gap-6;
+  }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  .desktop-container {
+    @apply max-w-7xl mx-auto px-8;
+  }
+  
+  .desktop-sidebar {
+    @apply w-80 fixed left-0 top-0 h-full bg-white border-r border-gray-200 z-40;
+  }
+  
+  .desktop-main {
+    @apply ml-80 w-auto;
+  }
+  
+  .desktop-grid {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-card-grid {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-text-responsive {
+    @apply text-lg;
+  }
+  
+  .desktop-heading-responsive {
+    @apply text-2xl;
+  }
+  
+  .desktop-button-responsive {
+    @apply py-4 px-6 text-lg;
+  }
+  
+  .desktop-feature-grid {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-advanced-features {
+    @apply space-y-8;
+  }
+  
+  .desktop-astrology-grid {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-numerology-grid {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-ai-features {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-community-features {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-premium-features {
+    @apply grid-cols-3 gap-8;
+  }
+  
+  .desktop-admin-features {
+    @apply grid-cols-3 gap-8;
+  }
+}
+
+/* === ROLE-BASED THEMING === */
+
+/* User Theme (Free) */
+.user-theme-ultimate {
+  @apply bg-gradient-to-br from-slate-50 to-gray-100;
+}
+
+.user-theme-ultimate .ultimate-card {
+  @apply bg-white border border-gray-200;
+}
+
+.user-theme-ultimate .ultimate-button {
+  @apply bg-indigo-600 hover:bg-indigo-700;
+}
+
+.user-theme-ultimate .ultimate-text {
+  @apply text-gray-700;
+}
+
+.user-theme-ultimate .ultimate-heading {
+  @apply text-gray-900;
+}
+
+/* Premium Theme */
+.premium-theme-ultimate {
+  @apply bg-gradient-to-br from-amber-50 to-orange-100;
+}
+
+.premium-theme-ultimate .ultimate-card {
+  @apply bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200;
+}
+
+.premium-theme-ultimate .ultimate-button {
+  @apply bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600;
+}
+
+.premium-theme-ultimate .ultimate-text {
+  @apply text-amber-800;
+}
+
+.premium-theme-ultimate .ultimate-heading {
+  @apply text-amber-900;
+}
+
+/* Admin Theme */
+.admin-theme-ultimate {
+  @apply bg-gradient-to-br from-slate-900 to-gray-900;
+}
+
+.admin-theme-ultimate .ultimate-card {
+  @apply bg-gradient-to-br from-slate-800 to-gray-800 border-2 border-pink-500;
+}
+
+.admin-theme-ultimate .ultimate-button {
+  @apply bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600;
+}
+
+.admin-theme-ultimate .ultimate-text {
+  @apply text-slate-200;
+}
+
+.admin-theme-ultimate .ultimate-heading {
+  @apply text-slate-100;
+}
+
+/* === ADVANCED FEATURE STYLES === */
+
+/* Astrology Features */
+.astrology-feature-card {
+  @apply bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200;
+}
+
+.astrology-feature-icon {
+  @apply text-purple-600;
+}
+
+.astrology-feature-button {
+  @apply bg-gradient-to-r from-purple-500 to-indigo-500 text-white;
+}
+
+/* Numerology Features */
+.numerology-feature-card {
+  @apply bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200;
+}
+
+.numerology-feature-icon {
+  @apply text-blue-600;
+}
+
+.numerology-feature-button {
+  @apply bg-gradient-to-r from-blue-500 to-cyan-500 text-white;
+}
+
+/* AI Features */
+.ai-feature-card {
+  @apply bg-gradient-to-br from-cyan-50 to-teal-50 border-2 border-cyan-200;
+}
+
+.ai-feature-icon {
+  @apply text-cyan-600;
+}
+
+.ai-feature-button {
+  @apply bg-gradient-to-r from-cyan-500 to-teal-500 text-white;
+}
+
+/* Community Features */
+.community-feature-card {
+  @apply bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200;
+}
+
+.community-feature-icon {
+  @apply text-green-600;
+}
+
+.community-feature-button {
+  @apply bg-gradient-to-r from-green-500 to-emerald-500 text-white;
+}
+
+/* Premium Features */
+.premium-feature-card {
+  @apply bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-200;
+}
+
+.premium-feature-icon {
+  @apply text-amber-600;
+}
+
+.premium-feature-button {
+  @apply bg-gradient-to-r from-amber-500 to-yellow-500 text-white;
+}
+
+/* Admin Features */
+.admin-feature-card {
+  @apply bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200;
+}
+
+.admin-feature-icon {
+  @apply text-red-600;
+}
+
+.admin-feature-button {
+  @apply bg-gradient-to-r from-red-500 to-pink-500 text-white;
+}
+
+/* === TOUCH INTERACTIONS === */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px]; /* Minimum touch target size */
+}
+
+.touch-button {
+  @apply touch-target flex items-center justify-center;
+}
+
+.touch-card {
+  @apply touch-target cursor-pointer transition-transform hover:scale-105 active:scale-95;
+}
+
+/* === GESTURE SUPPORT === */
+.swipe-container {
+  @apply overflow-x-auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.swipe-container::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+.swipe-item {
+  @apply flex-shrink-0 w-full;
+}
+
+.pull-to-refresh {
+  @apply relative;
+}
+
+.pull-to-refresh-indicator {
+  @apply absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full transition-transform duration-200;
+}
+
+/* === ACCESSIBILITY === */
+.screen-reader-only {
+  @apply sr-only;
+}
+
+.focus-visible {
+  @apply focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+}
+
+.high-contrast {
+  @apply text-black bg-white border-2 border-black;
+}
+
+/* === PERFORMANCE OPTIMIZATIONS === */
+.will-change-transform {
+  will-change: transform;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+}
+
+.smooth-scroll {
+  @apply scroll-smooth;
+}
+
+/* === LOADING STATES === */
+.skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+.skeleton-text {
+  @apply skeleton h-4 w-full mb-2;
+}
+
+.skeleton-card {
+  @apply skeleton h-32 w-full;
+}
+
+.loading-spinner {
+  @apply animate-spin rounded-full border-2 border-gray-300 border-t-indigo-600;
+}
+
+/* === ERROR STATES === */
+.error-card {
+  @apply bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg;
+}
+
+.error-button {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+/* === SUCCESS STATES === */
+.success-card {
+  @apply bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg;
+}
+
+.success-button {
+  @apply bg-green-600 text-white hover:bg-green-700;
+}
+
+/* === DARK MODE SUPPORT === */
+@media (prefers-color-scheme: dark) {
+  .dark-mode {
+    @apply bg-gray-900 text-white;
+  }
+  
+  .dark-mode .ultimate-card {
+    @apply bg-gray-800 border-gray-700;
+  }
+  
+  .dark-mode .ultimate-text {
+    @apply text-gray-300;
+  }
+  
+  .dark-mode .ultimate-heading {
+    @apply text-white;
+  }
+}
+
+/* === PRINT STYLES === */
+@media print {
+  .print-hidden {
+    @apply hidden;
+  }
+  
+  .print-visible {
+    @apply block;
+  }
+  
+  .print-text {
+    @apply text-black;
+  }
+  
+  .print-card {
+    @apply border border-gray-300 bg-white;
+  }
+}
+
+/* === ANIMATION UTILITIES === */
+.fade-in {
+  @apply animate-fade-in;
+}
+
+.slide-up {
+  @apply animate-slide-up;
+}
+
+.scale-in {
+  @apply animate-scale-in;
+}
+
+.bounce-in {
+  @apply animate-bounce-in;
+}
+
+/* === CUSTOM ANIMATIONS === */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scale-in {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+@keyframes bounce-in {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.3); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.05); 
+  }
+  70% { 
+    transform: scale(0.9); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.6s ease-out;
+}
+
+/* === ADVANCED FEATURE SPECIFIC STYLES === */
+
+/* NASA Validation */
+.nasa-validation-card {
+  @apply bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200;
+}
+
+.nasa-validation-icon {
+  @apply text-blue-600;
+}
+
+/* Swiss Ephemeris */
+.swiss-ephemeris-card {
+  @apply bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200;
+}
+
+.swiss-ephemeris-icon {
+  @apply text-purple-600;
+}
+
+/* Multi-Zodiac */
+.multi-zodiac-card {
+  @apply bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200;
+}
+
+.multi-zodiac-icon {
+  @apply text-orange-600;
+}
+
+/* Advanced Numerology */
+.advanced-numerology-card {
+  @apply bg-gradient-to-br from-teal-50 to-cyan-50 border-2 border-teal-200;
+}
+
+.advanced-numerology-icon {
+  @apply text-teal-600;
+}
+
+/* AI Integration */
+.ai-integration-card {
+  @apply bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-200;
+}
+
+.ai-integration-icon {
+  @apply text-violet-600;
+}
+
+/* Dream Analysis */
+.dream-analysis-card {
+  @apply bg-gradient-to-br from-pink-50 to-rose-50 border-2 border-pink-200;
+}
+
+.dream-analysis-icon {
+  @apply text-pink-600;
+}
+
+/* Community Features */
+.community-features-card {
+  @apply bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-200;
+}
+
+.community-features-icon {
+  @apply text-emerald-600;
+}
+
+/* Compatibility Matching */
+.compatibility-matching-card {
+  @apply bg-gradient-to-br from-rose-50 to-pink-50 border-2 border-rose-200;
+}
+
+.compatibility-matching-icon {
+  @apply text-rose-600;
+}
+
+/* Data Export */
+.data-export-card {
+  @apply bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-200;
+}
+
+.data-export-icon {
+  @apply text-amber-600;
+}
+
+/* Cosmic Calendar */
+.cosmic-calendar-card {
+  @apply bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200;
+}
+
+.cosmic-calendar-icon {
+  @apply text-indigo-600;
+}
+
+/* User Management */
+.user-management-card {
+  @apply bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200;
+}
+
+.user-management-icon {
+  @apply text-red-600;
+}
+
+/* System Analytics */
+.system-analytics-card {
+  @apply bg-gradient-to-br from-gray-50 to-slate-50 border-2 border-gray-200;
+}
+
+.system-analytics-icon {
+  @apply text-gray-600;
+}

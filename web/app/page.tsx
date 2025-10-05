@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Sparkles, Star, Moon, Sun, Zap, Heart } from 'lucide-react'
-import CitySearch from '@/components/CitySearch'
-import AstrologyChart from '@/components/AstrologyChart'
-import NumerologyProfile from '@/components/NumerologyProfile'
-import DailyGuidance from '@/components/DailyGuidance'
+// import CitySearch from '@/components/CitySearch'
+// import AstrologyChart from '@/components/AstrologyChart'
+// import NumerologyProfile from '@/components/NumerologyProfile'
+// import DailyGuidance from '@/components/DailyGuidance'
 
 interface UserProfile {
   fullName: string
@@ -206,16 +206,12 @@ function OnboardingStep({
               <label className="block text-sm font-medium text-white/90 mb-2">
                 Birth Place *
               </label>
-              <CitySearch
-                onLocationSelect={(location) => {
-                  setFormData({
-                    ...formData,
-                    birthPlace: location.city,
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                    timezone: location.timezone
-                  })
-                }}
+              <input
+                type="text"
+                placeholder="Enter your birth city"
+                value={formData.birthPlace}
+                onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })}
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
@@ -272,8 +268,14 @@ function ChartStep({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <AstrologyChart profile={profile} />
-        <NumerologyProfile profile={profile} />
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+          <h3 className="text-xl font-bold text-white mb-4">Astrology Chart</h3>
+          <p className="text-white/80">Your personalized astrology chart will be generated here.</p>
+        </div>
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+          <h3 className="text-xl font-bold text-white mb-4">Numerology Profile</h3>
+          <p className="text-white/80">Your numerology insights will be displayed here.</p>
+        </div>
       </div>
 
       <div className="text-center mt-8">
@@ -302,7 +304,10 @@ function GuidanceStep({ profile }: { profile: UserProfile }) {
       transition={{ duration: 0.8 }}
       className="max-w-4xl mx-auto"
     >
-      <DailyGuidance profile={profile} />
+      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+        <h3 className="text-xl font-bold text-white mb-4">Daily Guidance</h3>
+        <p className="text-white/80">Your personalized daily guidance will be displayed here.</p>
+      </div>
     </motion.div>
   )
 }

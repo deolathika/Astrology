@@ -255,8 +255,8 @@ export class OfflineService {
     dreams: OfflineDream[]
   }> {
     try {
-      const readings = await db.readings.where('synced').equals(false).toArray()
-      const dreams = await db.dreams.where('synced').equals(false).toArray()
+      const readings = await db.readings.where('synced').equals(0).toArray()
+      const dreams = await db.dreams.where('synced').equals(0).toArray()
       
       return { readings, dreams }
     } catch (error) {

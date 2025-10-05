@@ -345,17 +345,17 @@ export class NotificationSystem {
         tag: notification.id,
         data: notification.data,
         requireInteraction: notification.priority === 'high',
-        actions: [
-          {
-            action: 'view',
-            title: 'View',
-            icon: '/icon-192.png'
-          },
-          {
-            action: 'dismiss',
-            title: 'Dismiss'
-          }
-        ]
+        // actions: [ // Not supported in NotificationOptions
+        //   {
+        //     action: 'view',
+        //     title: 'View',
+        //     icon: '/icon-192.png'
+        //   },
+        //   {
+        //     action: 'dismiss',
+        //     title: 'Dismiss'
+        //   }
+        // ]
       })
 
       notif.onclick = () => {

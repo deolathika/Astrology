@@ -1,0 +1,435 @@
+/**
+ * Immersive Cosmic Space Experience
+ * Slow, elegant animations for a living universe feel
+ */
+
+:root {
+  /* Cosmic Space Colors */
+  --space-deep: #0a0a0f;
+  --space-dark: #1a1a2e;
+  --space-mid: #16213e;
+  --space-light: #0f3460;
+  --space-accent: #533483;
+  
+  /* Planet Colors */
+  --planet-mercury: #8c7853;
+  --planet-venus: #ffc649;
+  --planet-earth: #6b93d6;
+  --planet-mars: #cd5c5c;
+  --planet-jupiter: #d8ca9d;
+  --planet-saturn: #fad5a5;
+  --planet-uranus: #4fd0e7;
+  --planet-neptune: #4b70dd;
+  
+  /* Star Colors */
+  --star-blue: #87ceeb;
+  --star-white: #ffffff;
+  --star-yellow: #ffd700;
+  --star-red: #ff6b6b;
+  --star-purple: #dda0dd;
+  
+  /* Zodiac Colors */
+  --zodiac-aries: #ff6b6b;
+  --zodiac-taurus: #4ecdc4;
+  --zodiac-gemini: #45b7d1;
+  --zodiac-cancer: #96ceb4;
+  --zodiac-leo: #feca57;
+  --zodiac-virgo: #ff9ff3;
+  --zodiac-libra: #54a0ff;
+  --zodiac-scorpio: #5f27cd;
+  --zodiac-sagittarius: #00d2d3;
+  --zodiac-capricorn: #ff9f43;
+  --zodiac-aquarius: #74b9ff;
+  --zodiac-pisces: #a29bfe;
+}
+
+/* Base Space Background */
+.cosmic-space-bg {
+  background: radial-gradient(ellipse at center, var(--space-mid) 0%, var(--space-deep) 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Slow Star Field Animation */
+.cosmic-star-field {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  animation: driftStars 120s linear infinite;
+}
+
+@keyframes driftStars {
+  from { transform: translateY(0px) rotate(0deg); }
+  to { transform: translateY(-100vh) rotate(360deg); }
+}
+
+/* Individual Star Animations */
+.cosmic-star {
+  position: absolute;
+  border-radius: 50%;
+  animation: twinkleStar 8s ease-in-out infinite;
+}
+
+.cosmic-star:nth-child(odd) {
+  animation-delay: -2s;
+  animation-duration: 12s;
+}
+
+.cosmic-star:nth-child(even) {
+  animation-delay: -4s;
+  animation-duration: 10s;
+}
+
+@keyframes twinkleStar {
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2);
+  }
+}
+
+/* Planet Orbits */
+.cosmic-planet-orbit {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: slowOrbit 300s linear infinite;
+}
+
+.cosmic-planet-orbit:nth-child(2) {
+  animation-duration: 200s;
+  animation-direction: reverse;
+}
+
+.cosmic-planet-orbit:nth-child(3) {
+  animation-duration: 150s;
+}
+
+.cosmic-planet-orbit:nth-child(4) {
+  animation-duration: 100s;
+  animation-direction: reverse;
+}
+
+@keyframes slowOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Planet Bodies */
+.cosmic-planet {
+  position: absolute;
+  border-radius: 50%;
+  animation: planetRotate 60s linear infinite;
+}
+
+.cosmic-planet-mercury {
+  background: radial-gradient(circle at 30% 30%, var(--planet-mercury), #5a4a3a);
+  box-shadow: 0 0 20px rgba(140, 120, 83, 0.5);
+}
+
+.cosmic-planet-venus {
+  background: radial-gradient(circle at 30% 30%, var(--planet-venus), #cc9a00);
+  box-shadow: 0 0 25px rgba(255, 198, 73, 0.6);
+}
+
+.cosmic-planet-earth {
+  background: radial-gradient(circle at 30% 30%, var(--planet-earth), #4a6fa5);
+  box-shadow: 0 0 30px rgba(107, 147, 214, 0.7);
+}
+
+.cosmic-planet-mars {
+  background: radial-gradient(circle at 30% 30%, var(--planet-mars), #8b3a3a);
+  box-shadow: 0 0 20px rgba(205, 92, 92, 0.6);
+}
+
+@keyframes planetRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Zodiac Constellation Effects */
+.cosmic-zodiac-ring {
+  position: absolute;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: zodiacRotate 180s linear infinite;
+}
+
+.cosmic-zodiac-sign {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zodiacGlow 15s ease-in-out infinite;
+}
+
+.cosmic-zodiac-aries { background: var(--zodiac-aries); }
+.cosmic-zodiac-taurus { background: var(--zodiac-taurus); }
+.cosmic-zodiac-gemini { background: var(--zodiac-gemini); }
+.cosmic-zodiac-cancer { background: var(--zodiac-cancer); }
+.cosmic-zodiac-leo { background: var(--zodiac-leo); }
+.cosmic-zodiac-virgo { background: var(--zodiac-virgo); }
+.cosmic-zodiac-libra { background: var(--zodiac-libra); }
+.cosmic-zodiac-scorpio { background: var(--zodiac-scorpio); }
+.cosmic-zodiac-sagittarius { background: var(--zodiac-sagittarius); }
+.cosmic-zodiac-capricorn { background: var(--zodiac-capricorn); }
+.cosmic-zodiac-aquarius { background: var(--zodiac-aquarius); }
+.cosmic-zodiac-pisces { background: var(--zodiac-pisces); }
+
+@keyframes zodiacRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes zodiacGlow {
+  0%, 100% { 
+    opacity: 0.6; 
+    box-shadow: 0 0 10px currentColor;
+  }
+  50% { 
+    opacity: 1; 
+    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+/* Nebula Effects */
+.cosmic-nebula {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(138, 43, 226, 0.3) 0%, transparent 70%);
+  animation: nebulaDrift 200s ease-in-out infinite;
+  filter: blur(2px);
+}
+
+.cosmic-nebula:nth-child(2) {
+  background: radial-gradient(circle, rgba(255, 20, 147, 0.2) 0%, transparent 70%);
+  animation-duration: 250s;
+  animation-delay: -50s;
+}
+
+.cosmic-nebula:nth-child(3) {
+  background: radial-gradient(circle, rgba(0, 191, 255, 0.25) 0%, transparent 70%);
+  animation-duration: 180s;
+  animation-delay: -100s;
+}
+
+@keyframes nebulaDrift {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: translate(50px, -30px) scale(1.1);
+    opacity: 0.5;
+  }
+  50% { 
+    transform: translate(-30px, 50px) scale(0.9);
+    opacity: 0.4;
+  }
+  75% { 
+    transform: translate(40px, 20px) scale(1.05);
+    opacity: 0.6;
+  }
+}
+
+/* Cosmic Dust Particles */
+.cosmic-dust {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: dustFloat 40s linear infinite;
+}
+
+.cosmic-dust:nth-child(odd) {
+  animation-duration: 60s;
+  animation-delay: -20s;
+}
+
+.cosmic-dust:nth-child(even) {
+  animation-duration: 80s;
+  animation-delay: -40s;
+}
+
+@keyframes dustFloat {
+  from { 
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% { 
+    opacity: 1;
+  }
+  90% { 
+    opacity: 1;
+  }
+  to { 
+    transform: translateY(-100px) translateX(100px);
+    opacity: 0;
+  }
+}
+
+/* Slow Cosmic Sweep */
+.cosmic-sweep {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  animation: cosmicSweep 30s ease-in-out infinite;
+}
+
+@keyframes cosmicSweep {
+  0% { 
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% { 
+    opacity: 1;
+  }
+  100% { 
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Slow Pulsing Glow */
+.cosmic-pulse {
+  animation: slowPulse 8s ease-in-out infinite;
+}
+
+@keyframes slowPulse {
+  0%, 100% { 
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Gentle Floating Animation */
+.cosmic-float {
+  animation: gentleFloat 6s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+  0%, 100% { 
+    transform: translateY(0px);
+  }
+  50% { 
+    transform: translateY(-10px);
+  }
+}
+
+/* Slow Rotation */
+.cosmic-slow-rotate {
+  animation: slowRotate 20s linear infinite;
+}
+
+@keyframes slowRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Cosmic Text Glow */
+.cosmic-text-glow {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor,
+    0 0 20px currentColor;
+  animation: textGlow 4s ease-in-out infinite;
+}
+
+@keyframes textGlow {
+  0%, 100% { 
+    text-shadow: 
+      0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 15px currentColor;
+  }
+  50% { 
+    text-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 30px currentColor,
+      0 0 40px currentColor;
+  }
+}
+
+/* Slow Fade In */
+.cosmic-fade-in-slow {
+  animation: slowFadeIn 3s ease-out;
+}
+
+@keyframes slowFadeIn {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slow Scale In */
+.cosmic-scale-in-slow {
+  animation: slowScaleIn 2s ease-out;
+}
+
+@keyframes slowScaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .cosmic-star-field {
+    animation-duration: 80s;
+  }
+  
+  .cosmic-planet-orbit {
+    animation-duration: 200s;
+  }
+  
+  .cosmic-nebula {
+    animation-duration: 150s;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-star-field,
+  .cosmic-planet-orbit,
+  .cosmic-planet,
+  .cosmic-zodiac-ring,
+  .cosmic-nebula,
+  .cosmic-dust,
+  .cosmic-sweep {
+    animation: none;
+  }
+  
+  .cosmic-pulse,
+  .cosmic-float,
+  .cosmic-slow-rotate,
+  .cosmic-text-glow {
+    animation: none;
+  }
+}

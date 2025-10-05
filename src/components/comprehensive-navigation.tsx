@@ -13,7 +13,12 @@ import {
   Settings, 
   Search,
   Moon,
-  User
+  User,
+  Shield,
+  BookOpen,
+  Globe,
+  Target,
+  Gift
 } from 'lucide-react'
 
 interface NavigationItem {

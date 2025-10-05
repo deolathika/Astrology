@@ -1,69 +1,62 @@
+/**
+ * Root Layout
+ * Main layout component with providers and global styles
+ */
+
 import type { Metadata } from 'next'
-import { Inter, Cormorant_Garamond } from 'next/font/google'
+import { Inter } from 'next/font/google'
+import { QueryProvider } from '@/lib/providers/query-provider'
+import { AuthProvider } from '@/lib/contexts/auth-context'
+import { ThemeProvider } from '@/lib/theme-provider'
+import { Analytics } from '@/lib/monitoring/analytics'
+import { initSentry } from '@/lib/monitoring/sentry'
 import './globals.css'
-import '@/styles/responsive-design.css'
-import { Providers } from '@/components/providers'
-import { Toaster } from 'react-hot-toast'
+import '../styles/cosmic-theme.css'
+import '../styles/cosmic-luxury.css'
+import '../styles/cosmic-space.css'
+import '../styles/cosmic-minimalist.css'
+import '../styles/cosmic-destiny-effects.css'
+import '../styles/cosmic-star-rotations.css'
+import '../styles/cosmic-nebula-effects.css'
+import '../styles/cosmic-minimalist-modern.css'
+import '../styles/role-based-themes.css'
+import '../styles/mobile-responsive.css'
+import '../styles/ultimate-responsive.css'
+import '../styles/fonts.css'
 
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-cosmic',
-  display: 'swap',
-  preload: true,
-})
+// Initialize Sentry
+initSentry()
 
-const cormorant = Cormorant_Garamond({ 
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-accent',
-  display: 'swap',
-  preload: true,
-})
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Daily Secrets - Real Astrology & Numerology',
-  description: 'Discover the secrets of the universe through personalized astrology, numerology, and cosmic guidance. Multi-language support with deep space cosmic UI.',
-  keywords: ['astrology', 'numerology', 'cosmic', 'guidance', 'multi-language', 'daily secrets'],
+  title: 'Daily Secrets - Your Personal Cosmic Journey',
+  description: 'Discover your cosmic secrets with personalized astrology, numerology, and dream analysis. Your journey to self-discovery starts here.',
+  keywords: ['astrology', 'numerology', 'dreams', 'cosmic', 'personal', 'journey', 'insights'],
   authors: [{ name: 'Daily Secrets Team' }],
-  creator: 'Daily Secrets Team',
+  creator: 'Daily Secrets',
   publisher: 'Daily Secrets',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  metadataBase: new URL('https://daily-secrets.app'),
   alternates: {
     canonical: '/',
-    languages: {
-      'en-US': '/en',
-      'si-LK': '/si',
-      'ta-IN': '/ta',
-      'hi-IN': '/hi',
-      'zh-CN': '/zh',
-    },
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-    title: 'Daily Secrets - Real Astrology & Numerology',
-    description: 'Discover the secrets of the universe through personalized astrology, numerology, and cosmic guidance.',
+    url: 'https://daily-secrets.app',
+    title: 'Daily Secrets - Your Personal Cosmic Journey',
+    description: 'Discover your cosmic secrets with personalized astrology, numerology, and dream analysis.',
     siteName: 'Daily Secrets',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Daily Secrets - Cosmic Astrology App',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Daily Secrets - Real Astrology & Numerology',
-    description: 'Discover the secrets of the universe through personalized astrology, numerology, and cosmic guidance.',
-    images: ['/og-image.jpg'],
+    title: 'Daily Secrets - Your Personal Cosmic Journey',
+    description: 'Discover your cosmic secrets with personalized astrology, numerology, and dream analysis.',
     creator: '@dailysecrets',
   },
   robots: {
@@ -88,46 +81,31 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
+    <html lang="en" suppressHydrationWarning className="h-full">
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#7B4FFF" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Daily Secrets" />
       </head>
-      <body className={`${inter.className} antialiased`}>
-        <Providers>
-          {children}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: 'rgba(26, 26, 46, 0.9)',
-                color: '#F8F9FA',
-                border: '1px solid rgba(123, 79, 255, 0.3)',
-                borderRadius: '12px',
-                backdropFilter: 'blur(10px)',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#76FF9C',
-                  secondary: '#0A0A0F',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#FF4757',
-                  secondary: '#0A0A0F',
-                },
-              },
-            }}
-          />
-        </Providers>
-      </body>
+          <body className={`${inter.className} h-full cosmic-bg text-foreground antialiased`}>
+            <QueryProvider>
+              <AuthProvider>
+                <ThemeProvider>
+                  <div className="min-h-full flex flex-col">
+                    {children}
+                  </div>
+                </ThemeProvider>
+              </AuthProvider>
+            </QueryProvider>
+            <Analytics />
+          </body>
     </html>
   )
 }

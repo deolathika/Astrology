@@ -205,7 +205,7 @@ export default function SimpleOnboardingPage() {
                         required={field.required}
                       >
                         <option value="">{field.placeholder}</option>
-                        {field.options?.map((option) => (
+                        {'options' in field && field.options?.map((option) => (
                           <option key={option} value={option}>
                             {option.charAt(0).toUpperCase() + option.slice(1)}
                           </option>

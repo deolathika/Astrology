@@ -33,6 +33,117 @@ interface BirthProfile {
   houseCusps: any[]
 }
 
+// Type definitions for LLM knowledge base
+interface ZodiacSignData {
+  name: string
+  element: string
+  quality: string
+  rulingPlanet: string
+  symbol: string
+  dates: string
+  traits: {
+    positive: string[]
+    challenges: string[]
+    strengths: string[]
+    growth: string[]
+  }
+  compatibility: string[]
+  luckyNumbers: number[]
+  luckyColors: string[]
+  luckyDays: string[]
+  healthGuidance: string[]
+}
+
+interface PlanetData {
+  name: string
+  meaning: string
+  influence: string
+  positiveTraits: string[]
+  guidance: string[]
+}
+
+interface HouseData {
+  name: string
+  meaning: string
+  influence: string
+  guidance: string[]
+}
+
+interface AspectData {
+  name: string
+  meaning: string
+  influence: string
+  guidance: string
+}
+
+interface SystemData {
+  name: string
+  description: string
+  origin: string
+  strengths: string[]
+  applications: string[]
+}
+
+interface NumberData {
+  meaning: string
+  traits: {
+    positive: string[]
+    challenges: string[]
+    strengths: string[]
+    growth: string[]
+  }
+  careerPaths: string[]
+  relationships: string[]
+  spiritualPath: string[]
+  affirmations: string[]
+  luckyColors: string[]
+  gemstones: string[]
+}
+
+interface MasterNumberData {
+  meaning: string
+  traits: {
+    positive: string[]
+    challenges: string[]
+    strengths: string[]
+    growth: string[]
+  }
+  spiritualPath: string[]
+  affirmations: string[]
+}
+
+interface CalculationData {
+  name: string
+  description: string
+  calculation: string
+  significance: string
+}
+
+interface CulturalData {
+  name: string
+  description: string
+  uniqueFeatures: string[]
+  guidance: string[]
+}
+
+interface LanguageData {
+  name: string
+  culturalContext: string
+}
+
+interface GuidanceData {
+  approach: string
+  principles: string[]
+  examples: string[]
+}
+
+interface PositivityFramework {
+  name: string
+  principles: string[]
+  applications: string[]
+  examples: string[]
+}
+
 interface LLMKnowledgeBase {
   astrology: {
     zodiacSigns: Record<string, ZodiacSignData>
@@ -105,9 +216,9 @@ interface PositivityFramework {
 }
 
 class EnhancedLLMSystem {
-  private knowledgeBase: LLMKnowledgeBase
-  private positivityFrameworks: PositivityFramework[]
-  private culturalContexts: Map<string, any>
+  private knowledgeBase!: LLMKnowledgeBase
+  private positivityFrameworks!: PositivityFramework[]
+  private culturalContexts!: Map<string, any>
 
   constructor() {
     this.initializeKnowledgeBase()
@@ -251,12 +362,14 @@ class EnhancedLLMSystem {
           'western': {
             name: 'Western Tropical Astrology',
             description: 'Based on the seasons and the relationship between Earth and Sun',
+            origin: 'Ancient Greece and Mesopotamia',
             strengths: ['Psychological insights', 'Personal development focus'],
             applications: ['Personality analysis', 'Life guidance', 'Relationship compatibility']
           },
           'vedic': {
             name: 'Vedic Sidereal Astrology',
             description: 'Ancient Indian system based on fixed star positions',
+            origin: 'Ancient India',
             strengths: ['Karmic insights', 'Spiritual guidance', 'Predictive accuracy'],
             applications: ['Life purpose', 'Spiritual development', 'Timing of events']
           }
@@ -295,7 +408,7 @@ class EnhancedLLMSystem {
               strengths: ['Psychic abilities', 'Spiritual leadership', 'Inspiration'],
               growth: ['Grounding spiritual insights', 'Managing sensitivity']
             },
-            spiritualPath: 'Bringing spiritual wisdom to the material world',
+            spiritualPath: ['Bringing spiritual wisdom to the material world'],
             affirmations: [
               'I trust my intuitive insights and spiritual guidance',
               'My sensitivity is a gift that helps me understand others',

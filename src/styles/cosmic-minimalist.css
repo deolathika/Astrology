@@ -1,0 +1,336 @@
+/**
+ * Minimalist Cosmic Design
+ * Clean, elegant space experience with subtle effects
+ */
+
+:root {
+  /* Minimalist Cosmic Colors */
+  --space-deep: #0a0a0f;
+  --space-dark: #1a1a2e;
+  --space-mid: #16213e;
+  --space-light: #0f3460;
+  --space-accent: #533483;
+  
+  /* Subtle Glass Effects */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  
+  /* Minimalist Text Colors */
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-accent: #06b6d4;
+  
+  /* Subtle Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+/* Base Minimalist Space Background */
+.cosmic-minimalist-bg {
+  background: radial-gradient(ellipse at center, var(--space-mid) 0%, var(--space-deep) 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Subtle Star Field */
+.cosmic-stars-minimal {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+    animation: driftStarsMinimal 300s linear infinite;
+}
+
+@keyframes driftStarsMinimal {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-100vh); }
+}
+
+/* Individual Stars - Minimal */
+.cosmic-star-minimal {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+    animation: twinkleMinimal 25s ease-in-out infinite;
+}
+
+.cosmic-star-minimal:nth-child(odd) {
+  animation-delay: -3s;
+  animation-duration: 30s;
+}
+
+.cosmic-star-minimal:nth-child(even) {
+  animation-delay: -6s;
+  animation-duration: 35s;
+}
+
+@keyframes twinkleMinimal {
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.1);
+  }
+}
+
+/* Minimalist Glass Cards */
+.cosmic-glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s ease;
+}
+
+.cosmic-glass-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Minimalist Navigation */
+.cosmic-nav-minimal {
+  background: rgba(26, 26, 46, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Subtle Button Styles */
+.cosmic-btn-minimal {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-btn-minimal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.cosmic-btn-minimal:active {
+  transform: translateY(0);
+}
+
+/* Minimalist Text Effects */
+.cosmic-text-gradient-minimal {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cosmic-text-glow-minimal {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+/* Subtle Animations */
+.cosmic-fade-in-minimal {
+  animation: fadeInMinimal 0.8s ease-out;
+}
+
+@keyframes fadeInMinimal {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cosmic-scale-in-minimal {
+  animation: scaleInMinimal 0.6s ease-out;
+}
+
+@keyframes scaleInMinimal {
+  from { 
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Gentle Float Animation */
+.cosmic-float-minimal {
+    animation: floatMinimal 15s ease-in-out infinite;
+}
+
+@keyframes floatMinimal {
+  0%, 100% { 
+    transform: translateY(0px);
+  }
+  50% { 
+    transform: translateY(-5px);
+  }
+}
+
+/* Subtle Pulse */
+.cosmic-pulse-minimal {
+    animation: pulseMinimal 12s ease-in-out infinite;
+}
+
+@keyframes pulseMinimal {
+  0%, 100% { 
+    opacity: 0.8;
+  }
+  50% { 
+    opacity: 1;
+  }
+}
+
+/* Minimalist Input Styles */
+.cosmic-input-minimal {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.cosmic-input-minimal:focus {
+  outline: none;
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+}
+
+.cosmic-input-minimal::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Minimalist Card Hover Effects */
+.cosmic-card-minimal {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.cosmic-card-minimal:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Subtle Loading Spinner */
+.cosmic-spinner-minimal {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid var(--text-accent);
+  border-radius: 50%;
+  animation: spinMinimal 1s linear infinite;
+}
+
+@keyframes spinMinimal {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Minimalist Form Styles */
+.cosmic-form-minimal {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: var(--glass-shadow);
+}
+
+/* Subtle Divider */
+.cosmic-divider-minimal {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  margin: 24px 0;
+}
+
+/* Minimalist Badge */
+.cosmic-badge-minimal {
+  background: var(--gradient-subtle);
+  color: var(--text-primary);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .cosmic-stars-minimal {
+    animation-duration: 120s;
+  }
+  
+  .cosmic-glass-card {
+    padding: 16px;
+  }
+  
+  .cosmic-form-minimal {
+    padding: 24px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-stars-minimal,
+  .cosmic-star-minimal,
+  .cosmic-float-minimal,
+  .cosmic-pulse-minimal,
+  .cosmic-spinner-minimal {
+    animation: none;
+  }
+  
+  .cosmic-fade-in-minimal,
+  .cosmic-scale-in-minimal {
+    animation: none;
+  }
+}
+
+/* Minimalist Nebula Animation */
+@keyframes nebulaDriftMinimal {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: translate(20px, -10px) scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+  }
+}

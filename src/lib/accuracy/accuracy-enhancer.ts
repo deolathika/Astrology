@@ -502,7 +502,7 @@ class AccuracyEnhancer {
     if (!issue) {
       return {
         success: false,
-        newAccuracy: this.currentAccuracy[issue?.category || 'astrology'],
+        newAccuracy: this.currentAccuracy['astrology'],
         improvement: 0,
         message: 'Issue not found'
       }

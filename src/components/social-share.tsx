@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Share2, Sparkles, X, MessageCircle, Instagram, Twitter, Facebook } from 'lucide-react'
+import { Share2, Sparkles, X, MessageCircle, Instagram, Twitter, Facebook, Mail, Check, Copy } from 'lucide-react'
 interface SocialShareProps {
   content?: {
     title: string
@@ -101,7 +101,7 @@ export function SocialShare({ content, title, text, url, onShare }: SocialShareP
   }
 
   const shareToEmail = () => {
-    const subject = encodeURIComponent(content.title)
+    const subject = encodeURIComponent(content?.title || title || '')
     const body = encodeURIComponent(`${shareText}\n\n${shareUrl}`)
     const url = `mailto:?subject=${subject}&body=${body}`
     window.open(url)

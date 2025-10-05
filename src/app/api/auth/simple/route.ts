@@ -5,10 +5,15 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { simpleAuth } from '@/lib/auth-simple'
+import { applyRateLimit, rateLimiters } from '@/lib/security/rate-limiting'
+import { applySecurityHeaders } from '@/lib/security/security-headers'
+import { dataProtector } from '@/lib/security/data-protection'
 
-export async function POST(request: NextRequest) {
-  try {
-    const { action, email, password, userId, newRole } = await request.json()
+export const POST = applyRateLimit(
+  rateLimiters.auth,
+  async (request: NextRequest) => {
+    try {
+      const { action, email, password, userId, newRole } = await request.json()
 
     switch (action) {
       case 'login':
@@ -22,14 +27,16 @@ export async function POST(request: NextRequest) {
         }
 
         const session = simpleAuth.createSession(user)
-        return simpleAuth.createSessionResponse(session)
+        const loginResponse = simpleAuth.createSessionResponse(session)
+        return applySecurityHeaders(loginResponse)
 
       case 'logout':
         const sessionId = request.headers.get('x-session-id')
         if (sessionId) {
           simpleAuth.clearSession(sessionId)
         }
-        return NextResponse.json({ success: true, message: 'Logged out' })
+        const logoutResponse = NextResponse.json({ success: true, message: 'Logged out' })
+        return applySecurityHeaders(logoutResponse)
 
       case 'getUser':
         const sessionId2 = request.headers.get('x-session-id')
@@ -42,7 +49,9 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Invalid session' }, { status: 401 })
         }
 
-        return NextResponse.json({ user: session2.user })
+        const maskedUser = dataProtector.maskUserData(session2.user, 'user', true)
+        const userResponse = NextResponse.json({ user: maskedUser })
+        return applySecurityHeaders(userResponse)
 
       case 'getAllUsers':
         const sessionId3 = request.headers.get('x-session-id')
@@ -55,7 +64,10 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
         }
 
-        return NextResponse.json({ users: simpleAuth.getAllUsers() })
+        const allUsers = simpleAuth.getAllUsers()
+        const maskedUsers = allUsers.map(user => dataProtector.maskUserData(user, 'admin', false))
+        const usersResponse = NextResponse.json({ users: maskedUsers })
+        return applySecurityHeaders(usersResponse)
 
       case 'updateRole':
         if (!userId || !newRole) {
@@ -77,16 +89,19 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        return NextResponse.json({ success: true, message: 'Role updated' })
+        const roleResponse = NextResponse.json({ success: true, message: 'Role updated' })
+        return applySecurityHeaders(roleResponse)
 
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
-  } catch (error) {
-    console.error('Authentication error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    } catch (error) {
+      console.error('Authentication error:', error)
+      const errorResponse = NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+      return applySecurityHeaders(errorResponse)
+    }
   }
-}
+)
 
 export async function GET(request: NextRequest) {
   try {

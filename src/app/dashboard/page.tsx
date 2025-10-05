@@ -1,411 +1,286 @@
+/**
+ * Free User Dashboard
+ * Full-Stack Engineer + UX Flow Designer
+ * 
+ * Dashboard for free users with basic features and upgrade prompts
+ */
+
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { CosmicLayout, CosmicCard, CosmicButton } from '@/components/cosmic'
+import { FeatureGate } from '@/components/user-flow/FeatureGate'
+import { UserFlowRouter } from '@/components/user-flow/UserFlowRouter'
 import { 
-  Sparkles, Heart, Moon, Star, Users, Scale, Bell, Wallet, 
-  User, Settings, ChevronRight, Info, Zap, Shield, Globe,
-  TrendingUp, Calendar, Clock, Target, Gift, BookOpen,
-  Calculator, Brain, Compass, Crown, Diamond, Eye, Sun,
-  Menu, X, Home as HomeIcon, ArrowLeft, ArrowRight,
-  ChevronDown, ChevronUp, ExternalLink, Plus, Minus, Share2,
-  Smartphone, Tablet, Monitor, Wifi, Battery, Volume2,
-  Search, Filter, Grid, List, RefreshCw, Download,
-  MessageCircle, Phone, Mail, MapPin, CreditCard,
-  BarChart3, PieChart, TrendingDown, Activity,
-  Lock, Unlock, Key, Database, Server, Cloud,
-  CheckCircle
+  Star, 
+  Sparkles, 
+  Moon, 
+  Heart, 
+  Users, 
+  Crown, 
+  Zap, 
+  ArrowRight,
+  Calendar,
+  TrendingUp,
+  MessageCircle
 } from 'lucide-react'
-import { Breadcrumbs } from '@/components/breadcrumbs'
-import { CosmicNavigation } from '@/components/cosmic-navigation'
 
-interface FeatureCategory {
-  id: string
-  title: string
-  description: string
-  icon: React.ComponentType<any>
-  color: string
-  bgColor: string
-  features: {
-    id: string
-    title: string
-    description: string
-    icon: React.ComponentType<any>
-    route: string
-    status: 'active' | 'beta' | 'coming-soon'
-  }[]
-}
-
-export default function DashboardPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [isMobile, setIsMobile] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+export default function FreeUserDashboard() {
+  const { data: session } = useSession()
+  const router = useRouter()
+  const [dailyInsights, setDailyInsights] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+    if (session?.user) {
+      loadDailyInsights()
     }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  }, [session])
 
-  const featureCategories: FeatureCategory[] = [
-    {
-      id: 'daily-guidance',
-      title: 'Daily Guidance',
-      description: 'Your personalized daily cosmic insights',
-      icon: Sparkles,
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50',
-      features: [
-        {
-          id: 'todays-secret',
-          title: "Today's Secret",
-          description: 'Personalized daily cosmic guidance',
-          icon: Sparkles,
-          route: '/today',
-          status: 'active'
-        },
-        {
-          id: 'lucky-trio',
-          title: 'Lucky Trio',
-          description: 'Your cosmic lucky elements for today',
-          icon: Star,
-          route: '/today',
-          status: 'active'
-        },
-        {
-          id: 'moon-phases',
-          title: 'Moon Phases',
-          description: 'Lunar cycle guidance and rituals',
-          icon: Moon,
-          route: '/moon-phases',
-          status: 'beta'
-        }
-      ]
-    },
-    {
-      id: 'astrology',
-      title: 'Astrology',
-      description: 'Complete astrological analysis and charts',
-      icon: Globe,
-      color: 'text-violet-600',
-      bgColor: 'bg-violet-50',
-      features: [
-        {
-          id: 'cosmic-profile',
-          title: 'Cosmic Profile',
-          description: 'Complete astrological and numerological analysis',
-          icon: User,
-          route: '/profile',
-          status: 'active'
-        },
-        {
-          id: 'zodiac-systems',
-          title: 'Zodiac Systems',
-          description: 'Western, Vedic, Chinese, and Hybrid systems',
-          icon: Globe,
-          route: '/zodiac-systems',
-          status: 'active'
-        },
-        {
-          id: 'compatibility',
-          title: 'Compatibility',
-          description: 'Relationship analysis and synastry',
-          icon: Heart,
-          route: '/compatibility',
-          status: 'active'
-        }
-      ]
-    },
-    {
-      id: 'numerology',
-      title: 'Numerology',
-      description: 'Numerical analysis and life path guidance',
-      icon: Calculator,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      features: [
-        {
-          id: 'life-path',
-          title: 'Life Path Analysis',
-          description: 'Your numerological life path and purpose',
-          icon: Target,
-          route: '/numerology',
-          status: 'active'
-        },
-        {
-          id: 'expression-number',
-          title: 'Expression Number',
-          description: 'Your talents and abilities',
-          icon: Brain,
-          route: '/numerology',
-          status: 'active'
-        }
-      ]
-    },
-    {
-      id: 'community',
-      title: 'Community',
-      description: 'Connect with like-minded cosmic souls',
-      icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      features: [
-        {
-          id: 'cosmic-chat',
-          title: 'Cosmic Chat',
-          description: 'Emoji-based cosmic conversations',
-          icon: MessageCircle,
-          route: '/community',
-          status: 'active'
-        },
-        {
-          id: 'cosmic-groups',
-          title: 'Cosmic Groups',
-          description: 'Join groups based on your cosmic profile',
-          icon: Users,
-          route: '/groups',
-          status: 'beta'
-        }
-      ]
-    },
-    {
-      id: 'premium',
-      title: 'Premium Services',
-      description: 'Advanced features and expert consultations',
-      icon: Crown,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50',
-      features: [
-        {
-          id: 'expert-consultations',
-          title: 'Expert Consultations',
-          description: 'One-on-one sessions with certified astrologers',
-          icon: Users,
-          route: '/consultations',
-          status: 'active'
-        },
-        {
-          id: 'premium-features',
-          title: 'Premium Features',
-          description: 'Unlock all advanced cosmic features',
-          icon: Diamond,
-          route: '/premium-services',
-          status: 'active'
-        }
-      ]
-    }
-  ]
-
-  const filteredCategories = featureCategories.filter(category =>
-    category.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    category.description.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'text-green-600 bg-green-100'
-      case 'beta': return 'text-yellow-600 bg-yellow-100'
-      case 'coming-soon': return 'text-blue-600 bg-blue-100'
-      default: return 'text-gray-600 bg-gray-100'
+  const loadDailyInsights = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/user/daily-insights')
+      const data = await response.json()
+      setDailyInsights(data)
+    } catch (error) {
+      console.error('Error loading daily insights:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active': return CheckCircle
-      case 'beta': return Zap
-      case 'coming-soon': return Clock
-      default: return Info
+  const handleUpgrade = () => {
+    router.push('/subscription')
+  }
+
+  const handleFeatureClick = (feature: string) => {
+    if (feature === 'premium') {
+      router.push('/subscription')
+    } else {
+      router.push(`/${feature}`)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <Breadcrumbs />
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Grid className="w-6 h-6 text-white" />
+    <UserFlowRouter>
+      <CosmicLayout variant="nebula" size="lg" background="nebula">
+        <div className="cosmic-container max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold cosmic-text-gradient mb-2">
+              Welcome back, {session?.user?.name || 'Cosmic Soul'}!
+            </h1>
+            <p className="text-cosmic-text-secondary">
+              Your personalized cosmic dashboard
+            </p>
+          </div>
+
+          {/* Daily Insights */}
+          <CosmicCard variant="glass" size="lg" className="mb-8">
+            <h2 className="text-2xl font-semibold text-cosmic-gold mb-6">
+              Today's Cosmic Insights
+            </h2>
+            
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="w-8 h-8 border-4 border-cosmic-gold/30 border-t-cosmic-gold rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-cosmic-text-secondary">Loading your cosmic insights...</p>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">Cosmic Dashboard</h1>
-                <p className="text-slate-600">Explore all features of Daily Secrets</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Star className="w-8 h-8 text-cosmic-gold" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
+                    Astrology
+                  </h3>
+                  <p className="text-sm text-cosmic-text-secondary">
+                    {dailyInsights?.astrology || 'Your daily astrological insights will appear here.'}
+                  </p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-8 h-8 text-cosmic-blue" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-cosmic-blue mb-2">
+                    Numerology
+                  </h3>
+                  <p className="text-sm text-cosmic-text-secondary">
+                    {dailyInsights?.numerology || 'Your daily numerology insights will appear here.'}
+                  </p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Moon className="w-8 h-8 text-cosmic-silver" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-cosmic-silver mb-2">
+                    Guidance
+                  </h3>
+                  <p className="text-sm text-cosmic-text-secondary">
+                    {dailyInsights?.guidance || 'Your daily cosmic guidance will appear here.'}
+                  </p>
+                </div>
+              </div>
+            )}
+          </CosmicCard>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {/* Basic Features */}
+            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+              <div className="text-center" onClick={() => handleFeatureClick('numerology')}>
+                <div className="w-12 h-12 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-6 h-6 text-cosmic-gold" />
+                </div>
+                <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
+                  Numerology
+                </h3>
+                <p className="text-sm text-cosmic-text-secondary mb-4">
+                  Discover your life path and destiny numbers
+                </p>
+                <CosmicButton variant="ghost" size="sm">
+                  Explore
+                </CosmicButton>
+              </div>
+            </CosmicCard>
+
+            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+              <div className="text-center" onClick={() => handleFeatureClick('astrology')}>
+                <div className="w-12 h-12 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Star className="w-6 h-6 text-cosmic-blue" />
+                </div>
+                <h3 className="text-lg font-semibold text-cosmic-blue mb-2">
+                  Astrology
+                </h3>
+                <p className="text-sm text-cosmic-text-secondary mb-4">
+                  Your personalized birth chart and insights
+                </p>
+                <CosmicButton variant="ghost" size="sm">
+                  Explore
+                </CosmicButton>
+              </div>
+            </CosmicCard>
+
+            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+              <div className="text-center" onClick={() => handleFeatureClick('compatibility')}>
+                <div className="w-12 h-12 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Heart className="w-6 h-6 text-cosmic-silver" />
+                </div>
+                <h3 className="text-lg font-semibold text-cosmic-silver mb-2">
+                  Compatibility
+                </h3>
+                <p className="text-sm text-cosmic-text-secondary mb-4">
+                  Basic relationship compatibility check
+                </p>
+                <CosmicButton variant="ghost" size="sm">
+                  Explore
+                </CosmicButton>
+              </div>
+            </CosmicCard>
+
+            {/* Premium Features with Gates */}
+            <FeatureGate feature="dreamAnalysis">
+              <CosmicCard variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Moon className="w-6 h-6 text-cosmic-gold" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
+                    Dream Analysis
+                  </h3>
+                  <p className="text-sm text-cosmic-text-secondary mb-4">
+                    AI-powered dream interpretation
+                  </p>
+                  <CosmicButton variant="premium" size="sm">
+                    Unlock
+                  </CosmicButton>
+                </div>
+              </CosmicCard>
+            </FeatureGate>
+
+            <FeatureGate feature="aiChat">
+              <CosmicCard variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MessageCircle className="w-6 h-6 text-cosmic-blue" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-cosmic-blue mb-2">
+                    AI Chat
+                  </h3>
+                  <p className="text-sm text-cosmic-text-secondary mb-4">
+                    Unlimited cosmic guidance
+                  </p>
+                  <CosmicButton variant="premium" size="sm">
+                    Unlock
+                  </CosmicButton>
+                </div>
+              </CosmicCard>
+            </FeatureGate>
+
+            <FeatureGate feature="premiumDashboard">
+              <CosmicCard variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Crown className="w-6 h-6 text-cosmic-silver" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-cosmic-silver mb-2">
+                    Premium Dashboard
+                  </h3>
+                  <p className="text-sm text-cosmic-text-secondary mb-4">
+                    Advanced insights and reports
+                  </p>
+                  <CosmicButton variant="premium" size="sm">
+                    Unlock
+                  </CosmicButton>
+                </div>
+              </CosmicCard>
+            </FeatureGate>
+          </div>
+
+          {/* Upgrade Prompt */}
+          <CosmicCard variant="premium" size="lg" className="text-center">
+            <h2 className="text-2xl font-bold text-cosmic-gold mb-4">
+              Ready to Unlock Your Full Cosmic Potential?
+            </h2>
+            <p className="text-cosmic-text-secondary mb-6">
+              Get unlimited access to all premium features and advanced cosmic insights
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-4 mb-6">
+              <div className="flex items-center text-sm text-cosmic-text-secondary">
+                <Crown className="w-4 h-4 text-cosmic-gold mr-2" />
+                Premium Dashboard
+              </div>
+              <div className="flex items-center text-sm text-cosmic-text-secondary">
+                <Zap className="w-4 h-4 text-cosmic-gold mr-2" />
+                AI Dream Analysis
+              </div>
+              <div className="flex items-center text-sm text-cosmic-text-secondary">
+                <MessageCircle className="w-4 h-4 text-cosmic-gold mr-2" />
+                Unlimited AI Chat
+              </div>
+              <div className="flex items-center text-sm text-cosmic-text-secondary">
+                <Heart className="w-4 h-4 text-cosmic-gold mr-2" />
+                Full Compatibility
               </div>
             </div>
             
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search features..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Feature Categories */}
-        <div className="space-y-8">
-          {filteredCategories.map((category, categoryIndex) => (
-            <motion.div
-              key={category.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
-              className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
+            <CosmicButton
+              variant="premium"
+              size="lg"
+              onClick={handleUpgrade}
             >
-              {/* Category Header */}
-              <div className="p-6 border-b border-slate-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 ${category.bgColor} rounded-xl flex items-center justify-center`}>
-                      <category.icon className={`w-6 h-6 ${category.color}`} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-semibold text-slate-900">{category.title}</h2>
-                      <p className="text-slate-600">{category.description}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
-                    className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
-                  >
-                    {selectedCategory === category.id ? (
-                      <ChevronUp className="w-5 h-5" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Category Features */}
-              <AnimatePresence>
-                {selectedCategory === category.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {category.features.map((feature, featureIndex) => {
-                        const StatusIcon = getStatusIcon(feature.status)
-                        return (
-                          <motion.div
-                            key={feature.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: featureIndex * 0.1 }}
-                            className="bg-slate-50 rounded-lg p-4 hover:bg-slate-100 transition-colors cursor-pointer group"
-                          >
-                            <div className="flex items-center space-x-3 mb-3">
-                              <div className={`w-8 h-8 ${category.bgColor} rounded-lg flex items-center justify-center`}>
-                                <feature.icon className={`w-4 h-4 ${category.color}`} />
-                              </div>
-                              <div className="flex-1">
-                                <h3 className="font-semibold text-slate-900">{feature.title}</h3>
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(feature.status)}`}>
-                                  <StatusIcon className="w-3 h-3 inline mr-1" />
-                                  {feature.status}
-                                </span>
-                              </div>
-                            </div>
-                            <p className="text-sm text-slate-600 mb-3">{feature.description}</p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-slate-500">Click to explore</span>
-                              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
-                            </div>
-                          </motion.div>
-                        )
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
+              Upgrade to Premium
+            </CosmicButton>
+          </CosmicCard>
         </div>
-
-        {/* Quick Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6"
-        >
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-slate-900">
-                  {featureCategories.reduce((acc, cat) => acc + cat.features.filter(f => f.status === 'active').length, 0)}
-                </div>
-                <div className="text-sm text-slate-600">Active Features</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-slate-900">
-                  {featureCategories.reduce((acc, cat) => acc + cat.features.filter(f => f.status === 'beta').length, 0)}
-                </div>
-                <div className="text-sm text-slate-600">Beta Features</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-slate-900">
-                  {featureCategories.reduce((acc, cat) => acc + cat.features.filter(f => f.status === 'coming-soon').length, 0)}
-                </div>
-                <div className="text-sm text-slate-600">Coming Soon</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                <Grid className="w-5 h-5 text-violet-600" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-slate-900">
-                  {featureCategories.length}
-                </div>
-                <div className="text-sm text-slate-600">Categories</div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      <CosmicNavigation />
-    </div>
+      </CosmicLayout>
+    </UserFlowRouter>
   )
 }

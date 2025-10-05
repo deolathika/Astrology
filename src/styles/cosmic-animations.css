@@ -1,0 +1,380 @@
+/**
+ * Cosmic Animations CSS
+ * Front-end Design System Expert + UI/UX Engineer
+ * 
+ * Additional cosmic animations and effects
+ * Preserves 100% of existing functionality while enhancing visual appeal
+ */
+
+/* === COSMIC PARTICLE SYSTEM === */
+.cosmic-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cosmic-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--cosmic-gold);
+  border-radius: 50%;
+  animation: cosmic-particle-float 6s ease-in-out infinite;
+}
+
+.cosmic-particle:nth-child(odd) {
+  background: var(--cosmic-blue);
+  animation-duration: 8s;
+}
+
+.cosmic-particle:nth-child(3n) {
+  background: var(--cosmic-silver);
+  animation-duration: 10s;
+}
+
+@keyframes cosmic-particle-float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-100px) translateX(50px);
+  }
+}
+
+/* === COSMIC STARS BACKGROUND === */
+.cosmic-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(2px 2px at 20px 30px, var(--cosmic-gold), transparent),
+              radial-gradient(2px 2px at 40px 70px, var(--cosmic-blue), transparent),
+              radial-gradient(1px 1px at 90px 40px, var(--cosmic-silver), transparent),
+              radial-gradient(1px 1px at 130px 80px, var(--cosmic-gold), transparent),
+              radial-gradient(2px 2px at 160px 30px, var(--cosmic-blue), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: cosmic-stars-move 20s linear infinite;
+}
+
+@keyframes cosmic-stars-move {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
+
+/* === COSMIC NEBULA EFFECT === */
+.cosmic-nebula {
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-nebula::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(139, 216, 230, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 40% 40%, rgba(58, 0, 105, 0.1) 0%, transparent 50%);
+  animation: cosmic-nebula-rotate 30s linear infinite;
+}
+
+@keyframes cosmic-nebula-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* === COSMIC GLOW EFFECTS === */
+.cosmic-glow-hover {
+  transition: all 0.3s ease-in-out;
+}
+
+.cosmic-glow-hover:hover {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4),
+              0 0 40px rgba(255, 215, 0, 0.2),
+              0 0 60px rgba(255, 215, 0, 0.1);
+}
+
+.cosmic-glow-pulse {
+  animation: cosmic-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes cosmic-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6),
+                0 0 60px rgba(255, 215, 0, 0.3);
+  }
+}
+
+/* === COSMIC SHIMMER EFFECT === */
+.cosmic-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: cosmic-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes cosmic-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* === COSMIC FLOATING EFFECT === */
+.cosmic-float {
+  animation: cosmic-float 3s ease-in-out infinite;
+}
+
+@keyframes cosmic-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* === COSMIC ROTATION EFFECT === */
+.cosmic-rotate {
+  animation: cosmic-rotate 10s linear infinite;
+}
+
+@keyframes cosmic-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* === COSMIC SCALE EFFECT === */
+.cosmic-scale-hover {
+  transition: transform 0.3s ease-in-out;
+}
+
+.cosmic-scale-hover:hover {
+  transform: scale(1.05);
+}
+
+.cosmic-scale-pulse {
+  animation: cosmic-scale-pulse 2s ease-in-out infinite;
+}
+
+@keyframes cosmic-scale-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* === COSMIC FADE EFFECTS === */
+.cosmic-fade-in {
+  animation: cosmic-fade-in 0.6s ease-out;
+}
+
+@keyframes cosmic-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cosmic-slide-up {
+  animation: cosmic-slide-up 0.8s ease-out;
+}
+
+@keyframes cosmic-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cosmic-slide-left {
+  animation: cosmic-slide-left 0.6s ease-out;
+}
+
+@keyframes cosmic-slide-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.cosmic-slide-right {
+  animation: cosmic-slide-right 0.6s ease-out;
+}
+
+@keyframes cosmic-slide-right {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* === COSMIC GRADIENT ANIMATIONS === */
+.cosmic-gradient-animate {
+  background: linear-gradient(
+    45deg,
+    var(--cosmic-violet),
+    var(--cosmic-blue),
+    var(--cosmic-gold),
+    var(--cosmic-silver)
+  );
+  background-size: 400% 400%;
+  animation: cosmic-gradient-animate 3s ease infinite;
+}
+
+@keyframes cosmic-gradient-animate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* === COSMIC TEXT EFFECTS === */
+.cosmic-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--cosmic-gold),
+    var(--cosmic-silver),
+    var(--cosmic-blue),
+    var(--cosmic-gold)
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cosmic-text-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes cosmic-text-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.cosmic-text-glow {
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5),
+               0 0 20px rgba(255, 215, 0, 0.3),
+               0 0 30px rgba(255, 215, 0, 0.1);
+}
+
+/* === COSMIC BORDER EFFECTS === */
+.cosmic-border-glow {
+  border: 1px solid var(--cosmic-gold);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3),
+              inset 0 0 10px rgba(255, 215, 0, 0.1);
+}
+
+.cosmic-border-animate {
+  border: 1px solid transparent;
+  background: linear-gradient(var(--cosmic-bg-card), var(--cosmic-bg-card)) padding-box,
+              linear-gradient(45deg, var(--cosmic-gold), var(--cosmic-blue), var(--cosmic-silver)) border-box;
+  animation: cosmic-border-animate 3s ease infinite;
+}
+
+@keyframes cosmic-border-animate {
+  0% {
+    background: linear-gradient(var(--cosmic-bg-card), var(--cosmic-bg-card)) padding-box,
+                linear-gradient(45deg, var(--cosmic-gold), var(--cosmic-blue), var(--cosmic-silver)) border-box;
+  }
+  50% {
+    background: linear-gradient(var(--cosmic-bg-card), var(--cosmic-bg-card)) padding-box,
+                linear-gradient(45deg, var(--cosmic-silver), var(--cosmic-gold), var(--cosmic-blue)) border-box;
+  }
+  100% {
+    background: linear-gradient(var(--cosmic-bg-card), var(--cosmic-bg-card)) padding-box,
+                linear-gradient(45deg, var(--cosmic-blue), var(--cosmic-silver), var(--cosmic-gold)) border-box;
+  }
+}
+
+/* === RESPONSIVE ANIMATIONS === */
+@media (max-width: 640px) {
+  .cosmic-float {
+    animation-duration: 2s;
+  }
+  
+  .cosmic-rotate {
+    animation-duration: 8s;
+  }
+  
+  .cosmic-particles {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-float,
+  .cosmic-rotate,
+  .cosmic-glow-pulse,
+  .cosmic-scale-pulse,
+  .cosmic-shimmer,
+  .cosmic-text-shimmer,
+  .cosmic-gradient-animate,
+  .cosmic-border-animate,
+  .cosmic-stars-move,
+  .cosmic-nebula-rotate,
+  .cosmic-particle-float {
+    animation: none;
+  }
+}

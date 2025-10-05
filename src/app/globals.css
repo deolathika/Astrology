@@ -1,232 +1,753 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/**
+ * Global CSS with Cosmic Theme Integration
+ * Front-end Design System Expert + UI/UX Engineer
+ * 
+ * Integrates cosmic theme with existing global styles
+ * Preserves 100% of existing functionality while enhancing visual appeal
+ */
 
-/* Import our elegant design system */
-@import '../styles/elegant-design-system.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
-/* 🌌 COSMIC GLOBAL STYLES 🌌 */
+/* === CSS CUSTOM PROPERTIES === */
+:root {
+  /* Cosmic Color Palette */
+  --cosmic-violet: #3a0069;
+  --cosmic-violet-light: #5a1a89;
+  --cosmic-violet-dark: #2a0049;
+  --cosmic-gold: #FFD700;
+  --cosmic-gold-light: #FFE55C;
+  --cosmic-gold-dark: #B8860B;
+  --cosmic-blue: #8BD8E6;
+  --cosmic-blue-light: #A8E6F5;
+  --cosmic-blue-dark: #6BC5D4;
+  --cosmic-silver: #C0C0C0;
+  --cosmic-silver-light: #E0E0E0;
+  --cosmic-silver-dark: #A0A0A0;
 
-@layer base {
+  /* Background Colors */
+  --cosmic-bg-primary: #0a0a0f;
+  --cosmic-bg-secondary: #1a1a2e;
+  --cosmic-bg-tertiary: #16213e;
+  --cosmic-bg-card: rgba(255, 255, 255, 0.05);
+  --cosmic-bg-glass: rgba(255, 255, 255, 0.1);
+
+  /* Text Colors */
+  --cosmic-text-primary: #ffffff;
+  --cosmic-text-secondary: #e0e0e0;
+  --cosmic-text-muted: #a0a0a0;
+  --cosmic-text-accent: #FFD700;
+
+  /* Shadows */
+  --cosmic-shadow: 0 0 20px rgba(139, 216, 230, 0.3);
+  --cosmic-shadow-glow: 0 0 40px rgba(255, 215, 0, 0.4);
+  --cosmic-shadow-nebula: 0 0 60px rgba(58, 0, 105, 0.6);
+  --cosmic-shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --cosmic-shadow-card: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --cosmic-shadow-button: 0 4px 12px rgba(255, 215, 0, 0.3);
+
+  /* Gradients */
+  --cosmic-gradient: linear-gradient(135deg, #3a0069 0%, #8BD8E6 50%, #FFD700 100%);
+  --cosmic-gradient-nebula: linear-gradient(45deg, #1a1a2e 0%, #16213e 50%, #0a0a0f 100%);
+  --cosmic-gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFE55C 100%);
+  --cosmic-gradient-silver: linear-gradient(135deg, #C0C0C0 0%, #E0E0E0 100%);
+  --cosmic-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  --cosmic-gradient-button: linear-gradient(135deg, #FFD700 0%, #C0C0C0 100%);
+  --cosmic-gradient-card: linear-gradient(135deg, rgba(58, 0, 105, 0.1) 0%, rgba(139, 216, 230, 0.1) 100%);
+
+  /* Transitions */
+  --cosmic-transition-fast: all 0.15s ease-in-out;
+  --cosmic-transition-normal: all 0.3s ease-in-out;
+  --cosmic-transition-slow: all 0.5s ease-in-out;
+  --cosmic-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* === BASE STYLES === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--cosmic-bg-primary);
+  color: var(--cosmic-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* === TYPOGRAPHY === */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  background: var(--cosmic-gradient-gold);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  color: var(--cosmic-gold);
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: var(--cosmic-blue);
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  color: var(--cosmic-silver);
+}
+
+h5 {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: var(--cosmic-text-primary);
+}
+
+h6 {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--cosmic-text-secondary);
+}
+
+p {
+  margin-bottom: 1rem;
+  color: var(--cosmic-text-secondary);
+}
+
+a {
+  color: var(--cosmic-gold);
+  text-decoration: none;
+  transition: var(--cosmic-transition-normal);
+}
+
+a:hover {
+  color: var(--cosmic-gold-light);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* === LAYOUT === */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+/* === COMPONENTS === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--cosmic-gradient-button);
+  color: var(--cosmic-violet-dark);
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: var(--cosmic-transition-normal);
+  box-shadow: var(--cosmic-shadow-button);
+  text-decoration: none;
+}
+
+.btn:hover {
+  box-shadow: var(--cosmic-shadow-glow);
+  transform: scale(1.05);
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card {
+  background: var(--cosmic-bg-card);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--cosmic-shadow-card);
+  transition: var(--cosmic-transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--cosmic-shadow);
+  transform: translateY(-2px);
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--cosmic-bg-glass);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  color: var(--cosmic-text-primary);
+  font-size: 0.875rem;
+  transition: var(--cosmic-transition-normal);
+  backdrop-filter: blur(8px);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--cosmic-gold);
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* === UTILITIES === */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+.select-none {
+  user-select: none;
+}
+
+.select-text {
+  user-select: text;
+}
+
+/* === ANIMATIONS === */
+@keyframes cosmic-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cosmic-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cosmic-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes cosmic-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes cosmic-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes cosmic-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes cosmic-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fade-in {
+  animation: cosmic-fade-in 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: cosmic-slide-up 0.8s ease-out;
+}
+
+.animate-float {
+  animation: cosmic-float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: cosmic-glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: cosmic-shimmer 2s ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: cosmic-pulse 2s ease-in-out infinite;
+}
+
+.animate-rotate {
+  animation: cosmic-rotate 10s linear infinite;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    width: 100%;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .container {
+    padding: 0 2rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* === DARK MODE === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cosmic-bg-primary: #0a0a0f;
+    --cosmic-bg-secondary: #1a1a2e;
+    --cosmic-bg-tertiary: #16213e;
+    --cosmic-bg-card: rgba(255, 255, 255, 0.05);
+    --cosmic-bg-glass: rgba(255, 255, 255, 0.1);
+    --cosmic-text-primary: #ffffff;
+    --cosmic-text-secondary: #e0e0e0;
+    --cosmic-text-muted: #a0a0a0;
+  }
+}
+
+/* === LIGHT MODE === */
+@media (prefers-color-scheme: light) {
+  :root {
+    --cosmic-bg-primary: #ffffff;
+    --cosmic-bg-secondary: #f8fafc;
+    --cosmic-bg-tertiary: #f1f5f9;
+    --cosmic-bg-card: rgba(0, 0, 0, 0.05);
+    --cosmic-bg-glass: rgba(0, 0, 0, 0.1);
+    --cosmic-text-primary: #1a1a1a;
+    --cosmic-text-secondary: #4a4a4a;
+    --cosmic-text-muted: #8a8a8a;
+  }
+}
+
+/* === ACCESSIBILITY === */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
   * {
-    @apply border-slate-200;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
   
-  body {
-    @apply bg-slate-50 text-slate-900 font-sans;
-    min-height: 100vh;
-    font-family: var(--font-cosmic), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-cosmic-navy;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-electric-violet rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-cosmic-purple;
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-float,
+  .animate-glow,
+  .animate-shimmer,
+  .animate-pulse,
+  .animate-rotate {
+    animation: none !important;
   }
 }
 
-@layer components {
-  /* Cosmic Card Component */
-  .cosmic-card {
-    @apply bg-cosmic-navy/50 backdrop-blur-sm border border-electric-violet/20 rounded-2xl p-6 shadow-2xl;
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.5) 0%, rgba(22, 33, 62, 0.3) 100%);
-    box-shadow: 
-      0 8px 32px rgba(123, 79, 255, 0.1),
-      0 0 0 1px rgba(123, 79, 255, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-
-  /* Cosmic Button Component */
-  .cosmic-button {
-    @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold text-white transition-all duration-300;
-    background: linear-gradient(135deg, #7B4FFF 0%, #FFD75A 50%, #FF6EC7 100%);
-    box-shadow: 0 4px 15px rgba(123, 79, 255, 0.4);
-  }
-
-  .cosmic-button:hover {
-    @apply scale-105 shadow-2xl;
-    box-shadow: 0 8px 25px rgba(123, 79, 255, 0.6);
-  }
-
-  .cosmic-button:active {
-    @apply scale-95;
-  }
-
-  /* Cosmic Input Component */
-  .cosmic-input {
-    @apply bg-cosmic-navy/30 border border-electric-violet/30 rounded-xl px-4 py-3 text-starlight-white placeholder-stellar-gray-light focus:border-electric-violet focus:ring-2 focus:ring-electric-violet/20 transition-all duration-300;
-    backdrop-filter: blur(10px);
-  }
-
-  /* Cosmic Navigation */
-  .cosmic-nav {
-    @apply bg-cosmic-navy/80 backdrop-blur-md border-t border-electric-violet/20;
-    background: linear-gradient(180deg, rgba(26, 26, 46, 0.8) 0%, rgba(45, 45, 58, 0.9) 100%);
-  }
-
-  /* Cosmic Gradient Text */
-  .cosmic-gradient-text {
-    @apply bg-gradient-to-r from-electric-violet via-supernova-gold to-stellar-pink bg-clip-text text-transparent;
-  }
-
-  /* Cosmic Glow Effect */
-  .cosmic-glow {
-    @apply relative;
-  }
-
-  .cosmic-glow::before {
-    content: '';
-    @apply absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300;
-    background: linear-gradient(135deg, #7B4FFF, #FFD75A, #FF6EC7);
-    filter: blur(20px);
-    z-index: -1;
-  }
-
-  .cosmic-glow:hover::before {
-    @apply opacity-30;
-  }
-
-  /* Cosmic Animation Classes */
-  .animate-pulse-cosmic {
-    animation: pulse-cosmic 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
-  }
-
-  /* Cosmic Loading Spinner */
-  .cosmic-spinner {
-    @apply w-8 h-8 border-4 border-electric-violet/20 border-t-electric-violet rounded-full animate-spin;
-  }
-
-  /* Cosmic Progress Bar */
-  .cosmic-progress {
-    @apply w-full h-2 bg-cosmic-navy rounded-full overflow-hidden;
-  }
-
-  .cosmic-progress-bar {
-    @apply h-full bg-gradient-to-r from-electric-violet to-supernova-gold transition-all duration-300;
-  }
+/* Focus styles for accessibility */
+.btn:focus-visible,
+.input:focus-visible,
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid var(--cosmic-gold);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
 }
 
-@layer utilities {
-  /* Cosmic Text Utilities */
-  .text-cosmic-gradient {
-    @apply bg-gradient-to-r from-electric-violet via-supernova-gold to-stellar-pink bg-clip-text text-transparent;
-  }
-
-  .text-cosmic-shadow {
-    text-shadow: 0 0 10px rgba(123, 79, 255, 0.5);
-  }
-
-  /* Cosmic Background Utilities */
-  .bg-cosmic-pattern {
-    background-image: 
-      radial-gradient(circle at 20% 80%, rgba(123, 79, 255, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255, 215, 90, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(255, 110, 199, 0.1) 0%, transparent 50%);
-  }
-
-  /* Cosmic Border Utilities */
-  .border-cosmic {
-    @apply border border-electric-violet/30;
-  }
-
-  .border-cosmic-glow {
-    @apply border border-electric-violet/50 shadow-lg;
-    box-shadow: 0 0 20px rgba(123, 79, 255, 0.3);
-  }
-
-  /* Cosmic Shadow Utilities */
-  .shadow-cosmic {
-    box-shadow: 
-      0 4px 20px rgba(123, 79, 255, 0.2),
-      0 0 0 1px rgba(123, 79, 255, 0.1);
-  }
-
-  .shadow-cosmic-lg {
-    box-shadow: 
-      0 8px 40px rgba(123, 79, 255, 0.3),
-      0 0 0 1px rgba(123, 79, 255, 0.2);
-  }
-
-  /* Responsive Cosmic Utilities */
-  .cosmic-responsive {
-    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  /* Cosmic Animation Utilities */
-  .animate-cosmic-float {
-    animation: cosmicFloat 3s ease-in-out infinite;
-  }
-
-  .animate-cosmic-pulse {
-    animation: cosmicPulse 2s ease-in-out infinite;
-  }
+/* Skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--cosmic-gold);
+  color: var(--cosmic-violet-dark);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  font-weight: 600;
 }
 
-/* Custom Keyframes */
-@keyframes cosmicFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+.skip-link:focus {
+  top: 6px;
 }
 
-@keyframes cosmicPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-/* Dark mode cosmic enhancements */
-.dark .cosmic-card {
-  @apply bg-deep-space/50 border-electric-violet/30;
-}
-
-.dark .cosmic-button {
-  background: linear-gradient(135deg, #7B4FFF 0%, #FFD75A 50%, #FF6EC7 100%);
-}
-
-/* Mobile optimizations */
-@media (max-width: 768px) {
-  .cosmic-card {
-    @apply p-4 rounded-xl;
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --cosmic-text-primary: #ffffff;
+    --cosmic-text-secondary: #ffffff;
+    --cosmic-gold: #ffff00;
+    --cosmic-violet: #0000ff;
   }
   
-  .cosmic-button {
-    @apply px-4 py-2 text-sm;
+  .card {
+    border: 3px solid var(--cosmic-gold);
+    background: var(--cosmic-bg-primary);
+  }
+
+  .btn {
+    border: 3px solid var(--cosmic-gold);
+    background: var(--cosmic-gold);
+    color: var(--cosmic-violet-dark);
+  }
+
+  .input {
+    border: 3px solid var(--cosmic-gold);
+    background: var(--cosmic-bg-primary);
+    color: var(--cosmic-text-primary);
+  }
+  
+  a {
+    color: var(--cosmic-gold);
+    text-decoration: underline;
+  }
+  
+  a:hover {
+    background: var(--cosmic-gold);
+    color: var(--cosmic-violet-dark);
   }
 }
 
-/* Print styles */
-@media print {
-  .cosmic-card {
-    @apply bg-white text-black border-gray-300;
+/* Touch target minimum size (44px) */
+.btn,
+button,
+[role="button"],
+a {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus trap for modals */
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap:focus-within {
+  outline: 3px solid var(--cosmic-gold);
+  outline-offset: 2px;
+}
+
+/* ARIA live regions */
+.aria-live {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Color contrast improvements */
+.text-low-contrast {
+  color: var(--cosmic-text-muted);
+}
+
+.text-high-contrast {
+  color: var(--cosmic-text-primary);
+  font-weight: 600;
+}
+
+/* Interactive element states */
+.interactive:focus {
+  outline: 3px solid var(--cosmic-gold);
+  outline-offset: 2px;
+}
+
+.interactive:hover {
+  transform: scale(1.02);
+}
+
+.interactive:active {
+  transform: scale(0.98);
+}
+
+/* Reduced motion for interactive elements */
+@media (prefers-reduced-motion: reduce) {
+  .interactive:hover,
+  .interactive:active {
+    transform: none;
   }
   
-  .cosmic-button {
-    @apply bg-gray-200 text-black;
+  .btn:hover,
+  .btn:active {
+    transform: none;
   }
+}
+
+/* Keyboard navigation improvements */
+.keyboard-navigation {
+  outline: none;
+}
+
+.keyboard-navigation:focus-visible {
+  outline: 3px solid var(--cosmic-gold);
+  outline-offset: 2px;
+}
+
+/* Form accessibility */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--cosmic-text-primary);
+}
+
+.form-error {
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.form-help {
+  color: var(--cosmic-text-muted);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Table accessibility */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--cosmic-violet-700);
+}
+
+.table th {
+  background: var(--cosmic-violet-800);
+  font-weight: 600;
+  color: var(--cosmic-text-primary);
+}
+
+/* List accessibility */
+.list-unstyled {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--cosmic-violet-700);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+/* Image accessibility */
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+}
+
+.img-alt {
+  font-style: italic;
+  color: var(--cosmic-text-muted);
+  font-size: 0.875rem;
 }

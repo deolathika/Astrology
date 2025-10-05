@@ -1,100 +1,86 @@
 /**
  * Admin User Management API
- * Allows admins to view and manage all users
+ * Full-Stack Engineer + UX Flow Designer
+ * 
+ * Handles user management for admin users
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { requireRole, filterUserDataByRole } from '@/lib/auth/role-middleware'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth-config'
 import { prisma } from '@/lib/database'
+import { z } from 'zod'
+
+const userUpdateSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  email: z.string().email().optional(),
+  role: z.enum(['user', 'premium', 'admin']).optional()
+})
 
 export async function GET(request: NextRequest) {
   try {
-    const authResult = await requireRole(request, 'admin')
+    const session = await getServerSession(authOptions)
     
-    if (authResult instanceof NextResponse) {
-      return authResult
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Admin access required' },
+        { status: 403 }
+      )
     }
-
+    
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
     const role = searchParams.get('role')
-    const search = searchParams.get('search')
-
+    
     const skip = (page - 1) * limit
-
-    // Build query filters
-    const where: any = {}
     
-    if (role && role !== 'all') {
-      where.role = role
-    }
+    // Build where clause
+    const where = role ? { role } : {}
     
-    if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } }
-      ]
-    }
-
-    // Get users with profiles
-    const [users, totalCount] = await Promise.all([
+    // Get users with pagination
+    const [users, total] = await Promise.all([
       prisma.user.findMany({
         where,
-        include: {
-          profiles: true,
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
           _count: {
             select: {
-              purchases: true,
-              donations: true
+              profiles: true,
+              subscriptions: true
             }
           }
         },
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit
+        orderBy: { createdAt: 'desc' }
       }),
       prisma.user.count({ where })
     ])
-
-    // Format user data for admin view
-    const formattedUsers = users.map(user => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      profile: user.profiles[0] ? {
-        fullName: user.profiles[0].fullName,
-        birthDate: user.profiles[0].birthDate,
-        birthPlace: user.profiles[0].birthPlace,
-        zodiacSign: user.profiles[0].zodiacSign,
-        system: user.profiles[0].system
-      } : null,
-      stats: {
-        totalPurchases: user._count.purchases,
-        totalDonations: user._count.donations
-      }
-    }))
-
+    
     return NextResponse.json({
       success: true,
       data: {
-        users: formattedUsers,
+        users,
         pagination: {
           page,
           limit,
-          total: totalCount,
-          pages: Math.ceil(totalCount / limit)
+          total,
+          pages: Math.ceil(total / limit)
         }
       }
     })
-
+    
   } catch (error) {
-    console.error('Admin users fetch error:', error)
+    console.error('Get users error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch users' },
+      { success: false, error: 'Failed to fetch users' },
       { status: 500 }
     )
   }
@@ -102,54 +88,53 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const authResult = await requireRole(request, 'admin')
+    const session = await getServerSession(authOptions)
     
-    if (authResult instanceof NextResponse) {
-      return authResult
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Admin access required' },
+        { status: 403 }
+      )
     }
-
+    
     const body = await request.json()
-    const { userId, updates } = body
-
-    if (!userId) {
-      return NextResponse.json({ error: 'User ID required' }, { status: 400 })
-    }
-
-    // Validate allowed updates
-    const allowedUpdates = ['name', 'email', 'role']
-    const validUpdates: any = {}
-
-    for (const [key, value] of Object.entries(updates)) {
-      if (allowedUpdates.includes(key)) {
-        validUpdates[key] = value
-      }
-    }
-
+    const { id, name, email, role } = userUpdateSchema.parse(body)
+    
     // Update user
     const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: validUpdates,
-      include: { profiles: true }
+      where: { id },
+      data: {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(role && { role })
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        updatedAt: true
+      }
     })
-
+    
     return NextResponse.json({
       success: true,
-      data: {
-        user: {
-          id: updatedUser.id,
-          name: updatedUser.name,
-          email: updatedUser.email,
-          role: updatedUser.role,
-          updatedAt: updatedUser.updatedAt
-        }
-      },
-      message: 'User updated successfully'
+      message: 'User updated successfully',
+      user: updatedUser
     })
-
+    
   } catch (error) {
-    console.error('Admin user update error:', error)
+    console.error('Update user error:', error)
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid input data', details: error.errors },
+        { status: 400 }
+      )
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to update user' },
+      { success: false, error: 'Failed to update user' },
       { status: 500 }
     )
   }
@@ -157,40 +142,47 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const authResult = await requireRole(request, 'admin')
+    const session = await getServerSession(authOptions)
     
-    if (authResult instanceof NextResponse) {
-      return authResult
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Admin access required' },
+        { status: 403 }
+      )
     }
-
+    
     const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
-
+    const userId = searchParams.get('id')
+    
     if (!userId) {
-      return NextResponse.json({ error: 'User ID required' }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: 'User ID required' },
+        { status: 400 }
+      )
     }
-
+    
     // Prevent admin from deleting themselves
-    if (userId === authResult.session.user.id) {
-      return NextResponse.json({ 
-        error: 'Cannot delete your own account' 
-      }, { status: 400 })
+    if (userId === session.user.id) {
+      return NextResponse.json(
+        { success: false, error: 'Cannot delete your own account' },
+        { status: 400 }
+      )
     }
-
-    // Delete user and all related data (cascade)
+    
+    // Delete user (cascade will handle related records)
     await prisma.user.delete({
       where: { id: userId }
     })
-
+    
     return NextResponse.json({
       success: true,
       message: 'User deleted successfully'
     })
-
+    
   } catch (error) {
-    console.error('Admin user delete error:', error)
+    console.error('Delete user error:', error)
     return NextResponse.json(
-      { error: 'Failed to delete user' },
+      { success: false, error: 'Failed to delete user' },
       { status: 500 }
     )
   }

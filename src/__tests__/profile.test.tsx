@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import ProfilePage from '@/app/profile/page'
 import EditProfilePage from '@/app/profile/edit/page'
-import { mockUser, mockProfile, mockCountries, mockCities } from './fixtures/mock-data'
+import { mockUser, mockProfile } from './fixtures/mock-data'
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({

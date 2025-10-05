@@ -133,9 +133,6 @@ export default function DashboardEnhanced() {
                   }`}>
                     {userSubscription?.status?.charAt(0).toUpperCase()}{userSubscription?.status?.slice(1)}
                   </span>
-                  {userSubscription?.autoRenew && (
-                    <span className="text-sm text-slate-500">Auto-renewal enabled</span>
-                  )}
                 </div>
               </div>
             </div>

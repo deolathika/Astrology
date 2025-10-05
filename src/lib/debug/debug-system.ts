@@ -263,7 +263,7 @@ class DebugSystem {
     
     this.events = this.events.filter(event => event.timestamp >= cutoffTime)
     
-    for (const [sessionId, session] of this.sessions.entries()) {
+    for (const [sessionId, session] of Array.from(this.sessions.entries())) {
       if (session.startTime < cutoffTime) {
         this.sessions.delete(sessionId)
       }

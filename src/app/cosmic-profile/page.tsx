@@ -36,6 +36,26 @@ interface AstrologyData {
     dasha: { current: string; next: string; years: number; lord: string }
     elements: { fire: number; earth: number; air: number; water: number }
   }
+  chinese: {
+    animal: string
+    element: string
+    yinYang: string
+    luckyNumbers: number[]
+    luckyColors: string[]
+    luckyStones: string[]
+    career: string[]
+    health: string[]
+  }
+  sriLankan: {
+    sinhalaSign: string
+    element: string
+    luckyNumbers: number[]
+    luckyColors: string[]
+    luckyStones: string[]
+    career: string[]
+    health: string[]
+    spiritual: string[]
+  }
 }
 
 interface NumerologyData {
@@ -66,25 +86,28 @@ export default function CosmicProfilePage() {
 
   const loadProfileData = async () => {
     try {
-      // Load birth data
-      const userData = localStorage.getItem('userData')
-      if (userData) {
-        const profile = JSON.parse(userData)
-        setBirthData({
-          name: profile.name,
-          birthDate: profile.birthDate,
-          birthTime: profile.birthTime,
-          birthPlace: profile.birthPlace,
-          latitude: profile.latitude || 0,
-          longitude: profile.longitude || 0,
-          timezone: profile.timezone || 'UTC'
-        })
+      // Load user profile data from API
+      const profileResponse = await fetch('/api/users/profile')
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json()
+        if (profileData.success && profileData.user.profiles.length > 0) {
+          const profile = profileData.user.profiles[0]
+          setBirthData({
+            name: profile.name,
+            birthDate: profile.birthDate ? new Date(profile.birthDate).toISOString().split('T')[0] : '',
+            birthTime: profile.birthTime,
+            birthPlace: profile.placeLabel,
+            latitude: profile.lat || 0,
+            longitude: profile.lng || 0,
+            timezone: profile.tzIana || 'UTC'
+          })
+        }
       }
 
       // Load astrology data
       const [natalResponse, numerologyResponse] = await Promise.all([
-        fetch('/api/astro/natal?profileId=test123'),
-        fetch('/api/numerology/enhanced?profileId=test123')
+        fetch('/api/astro/natal?profileId=user'),
+        fetch('/api/numerology/enhanced?profileId=user')
       ])
 
       if (natalResponse.ok && numerologyResponse.ok) {
@@ -95,6 +118,7 @@ export default function CosmicProfilePage() {
         setNumerologyData(numerology.numerology)
       }
     } catch (error) {
+      console.error('Failed to load profile data:', error)
       // Use mock data for development
       setAstrologyData({
         western: {
@@ -132,6 +156,26 @@ export default function CosmicProfilePage() {
           ascendant: { sign: 'Taurus', degree: 8.5 },
           dasha: { current: 'Venus', next: 'Sun', years: 2.5, lord: 'Venus' },
           elements: { fire: 2, earth: 4, air: 3, water: 3 }
+        },
+        chinese: {
+          animal: 'Pig',
+          element: 'Wood',
+          yinYang: 'Yin',
+          luckyNumbers: [2, 5, 8],
+          luckyColors: ['Green', 'Blue', 'Black'],
+          luckyStones: ['Jade', 'Emerald', 'Aquamarine'],
+          career: ['Teaching', 'Healthcare', 'Social Work'],
+          health: ['Digestive system', 'Emotional balance', 'Stress management']
+        },
+        sriLankan: {
+          sinhalaSign: 'මේෂ (Aries)',
+          element: 'Fire',
+          luckyNumbers: [1, 3, 9],
+          luckyColors: ['Red', 'Orange', 'Gold'],
+          luckyStones: ['Ruby', 'Carnelian', 'Citrine'],
+          career: ['Leadership', 'Entrepreneurship', 'Sports'],
+          health: ['Head and face', 'Nervous system', 'Energy levels'],
+          spiritual: ['Meditation', 'Yoga', 'Breathing exercises']
         }
       })
 
@@ -194,6 +238,20 @@ export default function CosmicProfilePage() {
       icon: Globe,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50'
+    },
+    {
+      id: 'chinese',
+      title: 'Chinese Astrology',
+      icon: Sun,
+      color: 'text-red-600',
+      bgColor: 'bg-red-50'
+    },
+    {
+      id: 'sriLankan',
+      title: 'Sri Lankan Astrology',
+      icon: Moon,
+      color: 'text-teal-600',
+      bgColor: 'bg-teal-50'
     },
     {
       id: 'numerology',
@@ -276,6 +334,8 @@ export default function CosmicProfilePage() {
                         {section.id === 'identity' && 'Your birth information and basic details'}
                         {section.id === 'western' && 'Tropical zodiac analysis and planetary positions'}
                         {section.id === 'vedic' && 'Sidereal zodiac with Nakshatras and Dasha'}
+                        {section.id === 'chinese' && '12-year animal cycle with five elements and Yin/Yang'}
+                        {section.id === 'sriLankan' && 'Traditional Sinhala zodiac with cultural elements'}
                         {section.id === 'numerology' && 'Pythagorean and Chaldean number analysis'}
                         {section.id === 'elements' && 'Fire, Earth, Air, and Water balance'}
                         {section.id === 'houses' && '12 houses and planetary placements'}
@@ -421,6 +481,167 @@ export default function CosmicProfilePage() {
                               <div className="text-xs text-gray-500 mt-1">
                                 Next: {astrologyData.vedic.dasha.next}
                               </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {section.id === 'chinese' && astrologyData && (
+                        <div className="space-y-6">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="text-center p-4 bg-red-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-2">Animal Sign</h4>
+                              <div className="text-3xl font-bold text-red-600">
+                                {astrologyData.chinese.animal}
+                              </div>
+                              <div className="text-sm text-gray-600">12-Year Cycle</div>
+                            </div>
+                            <div className="text-center p-4 bg-green-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-2">Element</h4>
+                              <div className="text-2xl font-bold text-green-600">
+                                {astrologyData.chinese.element}
+                              </div>
+                              <div className="text-sm text-gray-600">Five Elements</div>
+                            </div>
+                            <div className="text-center p-4 bg-purple-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-2">Yin/Yang</h4>
+                              <div className="text-2xl font-bold text-purple-600">
+                                {astrologyData.chinese.yinYang}
+                              </div>
+                              <div className="text-sm text-gray-600">Energy Balance</div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="p-4 bg-yellow-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Lucky Numbers</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {astrologyData.chinese.luckyNumbers.map((number, index) => (
+                                  <span key={index} className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">
+                                    {number}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="p-4 bg-blue-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Lucky Colors</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {astrologyData.chinese.luckyColors.map((color, index) => (
+                                  <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                                    {color}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="p-4 bg-green-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Lucky Stones</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {astrologyData.chinese.luckyStones.map((stone, index) => (
+                                  <span key={index} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
+                                    {stone}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="p-4 bg-orange-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Career Guidance</h4>
+                              <ul className="space-y-1">
+                                {astrologyData.chinese.career.map((career, index) => (
+                                  <li key={index} className="text-sm text-gray-700">• {career}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-4 bg-pink-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Health Focus</h4>
+                              <ul className="space-y-1">
+                                {astrologyData.chinese.health.map((health, index) => (
+                                  <li key={index} className="text-sm text-gray-700">• {health}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {section.id === 'sriLankan' && astrologyData && (
+                        <div className="space-y-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="text-center p-4 bg-teal-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-2">Sinhala Sign</h4>
+                              <div className="text-2xl font-bold text-teal-600">
+                                {astrologyData.sriLankan.sinhalaSign}
+                              </div>
+                              <div className="text-sm text-gray-600">Traditional Sinhala Zodiac</div>
+                            </div>
+                            <div className="text-center p-4 bg-orange-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-2">Element</h4>
+                              <div className="text-2xl font-bold text-orange-600">
+                                {astrologyData.sriLankan.element}
+                              </div>
+                              <div className="text-sm text-gray-600">Elemental Energy</div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="p-4 bg-red-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Lucky Numbers</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {astrologyData.sriLankan.luckyNumbers.map((number, index) => (
+                                  <span key={index} className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold">
+                                    {number}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="p-4 bg-yellow-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Lucky Colors</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {astrologyData.sriLankan.luckyColors.map((color, index) => (
+                                  <span key={index} className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">
+                                    {color}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="p-4 bg-green-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Lucky Stones</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {astrologyData.sriLankan.luckyStones.map((stone, index) => (
+                                  <span key={index} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
+                                    {stone}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="p-4 bg-blue-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Career Guidance</h4>
+                              <ul className="space-y-1">
+                                {astrologyData.sriLankan.career.map((career, index) => (
+                                  <li key={index} className="text-sm text-gray-700">• {career}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-4 bg-purple-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Health Focus</h4>
+                              <ul className="space-y-1">
+                                {astrologyData.sriLankan.health.map((health, index) => (
+                                  <li key={index} className="text-sm text-gray-700">• {health}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-4 bg-indigo-50 rounded-lg">
+                              <h4 className="font-semibold text-gray-900 mb-3">Spiritual Practices</h4>
+                              <ul className="space-y-1">
+                                {astrologyData.sriLankan.spiritual.map((practice, index) => (
+                                  <li key={index} className="text-sm text-gray-700">• {practice}</li>
+                                ))}
+                              </ul>
                             </div>
                           </div>
                         </div>

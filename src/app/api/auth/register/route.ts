@@ -62,15 +62,16 @@ export async function POST(request: NextRequest) {
     const profile = await prisma.profile.create({
       data: {
         userId: user.id,
-        fullName: nameValidation.data,
+        name: nameValidation.data,
         birthDate: new Date(birthDate),
         birthTime: birthTime,
-        birthPlace: birthPlace,
-        latitude: parseFloat(latitude) || 0,
-        longitude: parseFloat(longitude) || 0,
-        timezone: timezone || 'UTC',
-        zodiacSign: zodiacSign || '',
-        system: system || 'western'
+        placeLabel: birthPlace,
+        lat: parseFloat(latitude) || 0,
+        lng: parseFloat(longitude) || 0,
+        tzIana: timezone || 'UTC',
+        systemPref: system || 'western',
+        localePref: 'en-US',
+        privacy: '{}'
       }
     })
 

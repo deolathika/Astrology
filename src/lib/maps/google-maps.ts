@@ -24,11 +24,28 @@ export interface PlaceResult {
   types: string[]
 }
 
+// Google Maps type declarations
+declare global {
+  interface Window {
+    google: any
+  }
+  namespace google {
+    namespace maps {
+      class Map {}
+      class Geocoder {}
+      class TimeZoneService {}
+      namespace places {
+        class PlacesService {}
+      }
+    }
+  }
+}
+
 export class GoogleMapsService {
-  private map: google.maps.Map | null = null
-  private placesService: google.maps.places.PlacesService | null = null
-  private geocoder: google.maps.Geocoder | null = null
-  private timezoneService: google.maps.TimeZoneService | null = null
+  private map: any = null
+  private placesService: any = null
+  private geocoder: any = null
+  private timezoneService: any = null
   private isInitialized = false
 
   constructor() {
@@ -39,8 +56,8 @@ export class GoogleMapsService {
     try {
       // Initialize Google Maps services
       if (typeof window !== 'undefined' && window.google) {
-        this.geocoder = new google.maps.Geocoder()
-        this.timezoneService = new google.maps.TimeZoneService()
+        this.geocoder = new (window.google.maps as any).Geocoder()
+        this.timezoneService = new (window.google.maps as any).TimeZoneService()
         this.isInitialized = true
       }
     } catch (error) {
@@ -126,22 +143,22 @@ export class GoogleMapsService {
     }
 
     try {
-      const request: google.maps.places.PlaceSearchRequest = {
+      const request: any = {
         query,
         fields: ['place_id', 'name', 'formatted_address', 'geometry', 'types']
       }
 
       if (location) {
-        request.location = new google.maps.LatLng(location.lat, location.lng)
+        request.location = new (window.google.maps as any).LatLng(location.lat, location.lng)
         request.radius = 50000 // 50km radius
       }
 
-      const service = new google.maps.places.PlacesService(document.createElement('div'))
+      const service = new (window.google.maps as any).places.PlacesService(document.createElement('div'))
       
       return new Promise((resolve, reject) => {
-        service.textSearch(request, (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-            const places: PlaceResult[] = results.map(result => ({
+        service.textSearch(request, (results: any, status: any) => {
+          if (status === (window.google.maps as any).places.PlacesServiceStatus.OK && results) {
+            const places: PlaceResult[] = results.map((result: any) => ({
               placeId: result.place_id!,
               name: result.name!,
               address: result.formatted_address!,
@@ -165,20 +182,20 @@ export class GoogleMapsService {
   /**
    * Get place details
    */
-  async getPlaceDetails(placeId: string): Promise<google.maps.places.PlaceResult | null> {
+  async getPlaceDetails(placeId: string): Promise<any> {
     if (!this.isInitialized) {
       await this.initialize()
     }
 
     try {
-      const service = new google.maps.places.PlacesService(document.createElement('div'))
+      const service = new (window.google.maps as any).places.PlacesService(document.createElement('div'))
       
       return new Promise((resolve, reject) => {
         service.getDetails({
           placeId,
           fields: ['place_id', 'name', 'formatted_address', 'geometry', 'types', 'website', 'phone_number']
-        }, (result, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && result) {
+        }, (result: any, status: any) => {
+          if (status === (window.google.maps as any).places.PlacesServiceStatus.OK && result) {
             resolve(result)
           } else {
             reject(new Error(`Place details failed: ${status}`))
@@ -205,10 +222,10 @@ export class GoogleMapsService {
     try {
       return new Promise((resolve, reject) => {
         this.timezoneService!.getTimezone({
-          location: new google.maps.LatLng(lat, lng),
+          location: new (window.google.maps as any).LatLng(lat, lng),
           timestamp: Date.now() / 1000
-        }, (result, status) => {
-          if (status === google.maps.TimeZoneStatus.OK && result) {
+        }, (result: any, status: any) => {
+          if (status === (window.google.maps as any).TimeZoneStatus.OK && result) {
             resolve({
               timeZoneId: result.timeZoneId,
               timeZoneName: result.timeZoneName,
@@ -314,7 +331,7 @@ export class GoogleMapsService {
    * Get address component from address components array
    */
   private getAddressComponent(
-    components: google.maps.GeocoderAddressComponent[],
+    components: any[],
     type: string
   ): string | null {
     const component = components.find(comp => comp.types.includes(type))

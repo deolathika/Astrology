@@ -435,7 +435,7 @@ describe('Final Coverage Tests - 95%+ Target', () => {
             const result = await response.json()
             setData(result)
           } catch (error) {
-            setData({ error: 'Failed to fetch' })
+            setData({ error: 'Failed to fetch' } as any)
           } finally {
             setLoading(false)
           }
@@ -513,7 +513,7 @@ describe('Final Coverage Tests - 95%+ Target', () => {
           try {
             await fetch('/api/network-error')
           } catch (err) {
-            setError('Network error occurred')
+            setError('Network error occurred' as any)
           }
         }
         

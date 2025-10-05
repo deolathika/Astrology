@@ -48,10 +48,10 @@ export async function POST(request: NextRequest) {
       second: 0,
       latitude: validatedData.birthPlace.coordinates.latitude,
       longitude: validatedData.birthPlace.coordinates.longitude,
-      timezone: validatedData.birthPlace.timezone
+      timezone: parseFloat(validatedData.birthPlace.timezone)
     }
 
-    const swissData = await swissEphemeris.calculateAstrologyData(birthData)
+    const swissData = await SwissEphemerisEngine.generateBirthChart(birthData)
 
     // Step 5: Get LLM analysis
     const llmRequest = {
@@ -60,7 +60,14 @@ export async function POST(request: NextRequest) {
       birthPlace: {
         country: validatedData.birthPlace.country,
         city: validatedData.birthPlace.city,
-        coordinates: validatedData.birthPlace.coordinates
+        coordinates: {
+          latitude: validatedData.birthPlace.coordinates.latitude,
+          longitude: validatedData.birthPlace.coordinates.longitude,
+          elevation: 0,
+          timezone: validatedData.birthPlace.timezone,
+          country: validatedData.birthPlace.country,
+          city: validatedData.birthPlace.city
+        }
       },
       system: 'western' as const,
       language: 'en',
@@ -118,13 +125,11 @@ export async function POST(request: NextRequest) {
 
       // Swiss Ephemeris Data
       swissData: {
-        planets: swissData.planets,
+        positions: swissData.positions,
         houses: swissData.houses,
-        ascendant: swissData.ascendant,
-        midheaven: swissData.midheaven,
-        sunSign: swissData.sunSign,
-        moonSign: swissData.moonSign,
-        risingSign: swissData.risingSign
+        aspects: swissData.aspects,
+        accuracy: swissData.accuracy,
+        timestamp: swissData.timestamp
       },
 
       // LLM Analysis

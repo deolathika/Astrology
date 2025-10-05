@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Account {
@@ -16,12 +16,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -53,10 +53,16 @@ model User {
   profiles Profile[]
   matches  Match[]    @relation("UserMatches")
   matches2 Match[]    @relation("MatchedUser")
-  messages ChatMessage[]
+  messages ChatMessage[] @relation("ChatMessages")
   purchases Purchase[]
   donations Donation[]
-  analytics Analytics[]
+  analytics Analytics[] @relation("UserAnalytics")
+  astrologyReadings AstrologyReading[]
+  numerologyReadings NumerologyReading[]
+  dreams Dream[]
+  userSettings UserSettings? @relation("UserSettings")
+  notifications Notification[]
+  subscriptions Subscription[]
 }
 
 model VerificationToken {
@@ -70,7 +76,7 @@ model VerificationToken {
 
 model Profile {
   id           String  @id @default(cuid())
-  userId       String
+  userId       String  @unique
   name         String
   birthDate    DateTime
   birthTime    String        // "HH:mm"
@@ -80,14 +86,14 @@ model Profile {
   tzIana       String        // "Asia/Colombo"
   systemPref   String        // "vedic" | "western" | "chinese" | "hybrid"
   localePref   String        // e.g. "hi-IN"
-  privacy      Json          // consent flags
+  privacy      String        // consent flags (JSON string)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   // caches
-  natalCache   Json?         // full JSON of computed chart
-  numerology   Json?         // core numbers
-  todayCache   Json?         // last today output for fast load
+  natalCache   String?       // full JSON of computed chart
+  numerology   String?       // core numbers
+  todayCache   String?       // last today output for fast load
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -99,7 +105,7 @@ model AstrologyReading {
   userId      String
   type        String   // "daily", "weekly", "monthly", "yearly"
   system      String   // "western", "vedic", "chinese", "sri_lankan"
-  data        Json     // Swiss Ephemeris calculation results
+  data        String   // Swiss Ephemeris calculation results (JSON string)
   insights    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -130,11 +136,11 @@ model Dream {
   userId      String
   title       String
   description String
-  symbols     String[] // Array of dream symbols
+  symbols     String   // Array of dream symbols (JSON string)
   interpretation String?
   emotionalTone String?
   significance String?
-  tags        String[]
+  tags        String   // Array of tags (JSON string)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -145,22 +151,52 @@ model Dream {
 
 model UserSettings {
   id          String   @id @default(cuid())
-  userId      String
+  userId      String   @unique
+  language    String   @default("en")
+  theme       String   @default("auto")
+  timezone    String   @default("UTC")
   notifications Boolean @default(true)
+  dailyInsights Boolean @default(true)
   dailyGuidance Boolean @default(true)
   dreamAlerts Boolean @default(true)
   compatibilityUpdates Boolean @default(false)
   cosmicEvents Boolean @default(true)
   pushNotifications Boolean @default(true)
   emailNotifications Boolean @default(false)
-  profileVisibility String @default("private")
+  profileVisibility Boolean @default(true)
   dataSharing Boolean @default(false)
   analytics   Boolean @default(true)
   crashReports Boolean @default(true)
+  
+  // Astrology settings
+  astrologySystem String? @default("western")
+  houseSystem String? @default("placidus")
+  ayanamsa String? @default("lahiri")
+  aspectOrbs String? // JSON string for aspect orbs
+  planetSelection String? // JSON string for planet selection
+  aspectTypes String? // JSON string for aspect types
+  
+  // Numerology settings
+  numerologySystem String? @default("pythagorean")
+  includeMasterNumbers Boolean @default(true)
+  includeKarmicDebt Boolean @default(false)
+  includePinnacles Boolean @default(false)
+  includeChallenges Boolean @default(false)
+  
+  // Display settings
+  showDegrees Boolean @default(true)
+  showMinutes Boolean @default(false)
+  showSeconds Boolean @default(false)
+  showRetrograde Boolean @default(true)
+  showAspects Boolean @default(true)
+  showHouses Boolean @default(true)
+  showElements Boolean @default(true)
+  showModalities Boolean @default(true)
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation("UserSettings", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_settings")
 }
@@ -207,8 +243,8 @@ model CompatibilityCheck {
   person2Name String
   person2Sign String
   score       Int
-  strengths   String[]
-  challenges  String[]
+  strengths   String   // Array of strengths (JSON string)
+  challenges  String   // Array of challenges (JSON string)
   advice      String?
   createdAt   DateTime @default(now())
 
@@ -219,7 +255,7 @@ model CommunityPost {
   id        String   @id @default(cuid())
   userId    String
   content   String
-  tags      String[]
+  tags      String   // Array of tags (JSON string)
   likes     Int      @default(0)
   comments  Int      @default(0)
   shares    Int      @default(0)
@@ -237,6 +273,9 @@ model Match {
   summary  String
   createdAt DateTime @default(now())
 
+  userA User @relation("UserMatches", fields: [aId], references: [id], onDelete: Cascade)
+  userB User @relation("MatchedUser", fields: [bId], references: [id], onDelete: Cascade)
+
   @@map("matches")
 }
 
@@ -248,6 +287,8 @@ model ChatMessage {
   emojiOnly  Boolean @default(true)
   queued     Boolean @default(false)  // offline queue flag
   createdAt  DateTime @default(now())
+
+  fromUser User @relation("ChatMessages", fields: [fromId], references: [id], onDelete: Cascade)
 
   @@map("chat_messages")
 }
@@ -281,8 +322,10 @@ model Analytics {
   id        String   @id @default(cuid())
   event     String
   userId    String?
-  metadata  Json?
+  metadata  String?  // JSON string
   timestamp DateTime @default(now())
+
+  user User? @relation("UserAnalytics", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("analytics")
 }

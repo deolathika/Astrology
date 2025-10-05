@@ -19,7 +19,7 @@ interface PolicyNavigationProps {
 }
 
 export function PolicyNavigation({ 
-  feature = 'main',
+  feature = 'home',
   showBreadcrumbs = true,
   showBackButton = true,
   showProgress = false,
@@ -57,7 +57,7 @@ export function PolicyNavigation({
 
   const getBreadcrumbs = () => {
     const segments = pathname.split('/').filter(Boolean)
-    const breadcrumbs = []
+    const breadcrumbs: Array<{ label: string; href: string; isLast?: boolean }> = []
     
     let currentPath = ''
     segments.forEach((segment, index) => {
@@ -66,7 +66,7 @@ export function PolicyNavigation({
       
       breadcrumbs.push({
         label: segment.charAt(0).toUpperCase() + segment.slice(1),
-        path: currentPath,
+        href: currentPath,
         isLast
       })
     })

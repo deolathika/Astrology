@@ -1,0 +1,443 @@
+/**
+ * Cosmic Theme Integration CSS
+ * Front-end Design System Expert + UI/UX Engineer
+ * 
+ * Integration styles for applying cosmic theme to existing components
+ * Preserves 100% of existing functionality while enhancing visual appeal
+ */
+
+/* === EXISTING COMPONENT OVERRIDES === */
+
+/* Button Overrides */
+.btn, .button, button {
+  background: var(--cosmic-gradient-button) !important;
+  color: var(--cosmic-violet-dark) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 500 !important;
+  transition: var(--cosmic-transition-normal) !important;
+  box-shadow: var(--cosmic-shadow-button) !important;
+  cursor: pointer !important;
+}
+
+.btn:hover, .button:hover, button:hover {
+  box-shadow: var(--cosmic-shadow-glow) !important;
+  transform: scale(1.05) !important;
+}
+
+.btn:active, .button:active, button:active {
+  transform: scale(0.95) !important;
+}
+
+.btn:disabled, .button:disabled, button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Card Overrides */
+.card, .panel, .container {
+  background: var(--cosmic-bg-card) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 1rem !important;
+  box-shadow: var(--cosmic-shadow-card) !important;
+  transition: var(--cosmic-transition-normal) !important;
+}
+
+.card:hover, .panel:hover, .container:hover {
+  box-shadow: var(--cosmic-shadow) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Input Overrides */
+input, textarea, select {
+  background: var(--cosmic-bg-glass) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 0.75rem !important;
+  color: var(--cosmic-text-primary) !important;
+  padding: 0.75rem 1rem !important;
+  transition: var(--cosmic-transition-normal) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none !important;
+  border-color: var(--cosmic-gold) !important;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Navigation Overrides */
+nav, .navbar, .navigation {
+  background: rgba(26, 26, 46, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+nav a, .navbar a, .navigation a {
+  color: rgba(255, 255, 255, 0.8) !important;
+  text-decoration: none !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.5rem !important;
+  transition: var(--cosmic-transition-normal) !important;
+}
+
+nav a:hover, .navbar a:hover, .navigation a:hover {
+  color: var(--cosmic-gold) !important;
+  background: rgba(255, 215, 0, 0.1) !important;
+}
+
+nav a.active, .navbar a.active, .navigation a.active {
+  color: var(--cosmic-gold) !important;
+  background: rgba(255, 215, 0, 0.1) !important;
+  box-shadow: var(--cosmic-shadow) !important;
+}
+
+/* Modal Overrides */
+.modal, .dialog, .popup {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.modal-content, .dialog-content, .popup-content {
+  background: var(--cosmic-bg-secondary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 1rem !important;
+  box-shadow: var(--cosmic-shadow-glass) !important;
+}
+
+/* Badge Overrides */
+.badge, .tag, .chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+}
+
+.badge-premium, .tag-premium, .chip-premium {
+  background: var(--cosmic-gradient-gold) !important;
+  color: var(--cosmic-violet-dark) !important;
+}
+
+.badge-free, .tag-free, .chip-free {
+  background: var(--cosmic-bg-glass) !important;
+  color: var(--cosmic-blue) !important;
+  border: 1px solid rgba(139, 216, 230, 0.3) !important;
+}
+
+/* Text Overrides */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--cosmic-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+h1 {
+  font-size: 2.25rem !important;
+  line-height: 2.5rem !important;
+  background: var(--cosmic-gradient-gold) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+h2 {
+  font-size: 1.875rem !important;
+  line-height: 2.25rem !important;
+  color: var(--cosmic-gold) !important;
+}
+
+h3 {
+  font-size: 1.5rem !important;
+  line-height: 2rem !important;
+  color: var(--cosmic-blue) !important;
+}
+
+p, span, div {
+  color: var(--cosmic-text-secondary) !important;
+}
+
+/* Link Overrides */
+a {
+  color: var(--cosmic-gold) !important;
+  text-decoration: none !important;
+  transition: var(--cosmic-transition-normal) !important;
+}
+
+a:hover {
+  color: var(--cosmic-gold-light) !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+}
+
+/* Form Overrides */
+form {
+  background: var(--cosmic-bg-card) !important;
+  border-radius: 1rem !important;
+  padding: 2rem !important;
+  box-shadow: var(--cosmic-shadow-card) !important;
+}
+
+label {
+  color: var(--cosmic-gold) !important;
+  font-weight: 500 !important;
+  margin-bottom: 0.5rem !important;
+  display: block !important;
+}
+
+/* Table Overrides */
+table {
+  background: var(--cosmic-bg-card) !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+  box-shadow: var(--cosmic-shadow-card) !important;
+}
+
+th, td {
+  padding: 1rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+th {
+  background: var(--cosmic-bg-glass) !important;
+  color: var(--cosmic-gold) !important;
+  font-weight: 600 !important;
+}
+
+td {
+  color: var(--cosmic-text-secondary) !important;
+}
+
+/* List Overrides */
+ul, ol {
+  color: var(--cosmic-text-secondary) !important;
+}
+
+li {
+  margin-bottom: 0.5rem !important;
+}
+
+/* Code Overrides */
+code, pre {
+  background: var(--cosmic-bg-glass) !important;
+  color: var(--cosmic-gold) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.25rem 0.5rem !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+pre {
+  padding: 1rem !important;
+  overflow-x: auto !important;
+}
+
+/* Image Overrides */
+img {
+  border-radius: 0.75rem !important;
+  box-shadow: var(--cosmic-shadow-card) !important;
+  transition: var(--cosmic-transition-normal) !important;
+}
+
+img:hover {
+  box-shadow: var(--cosmic-shadow) !important;
+  transform: scale(1.02) !important;
+}
+
+/* Video Overrides */
+video {
+  border-radius: 0.75rem !important;
+  box-shadow: var(--cosmic-shadow-card) !important;
+}
+
+/* Iframe Overrides */
+iframe {
+  border-radius: 0.75rem !important;
+  box-shadow: var(--cosmic-shadow-card) !important;
+}
+
+/* === PREMIUM COMPONENT OVERRIDES === */
+
+/* Premium Card */
+.premium-card, .premium-panel {
+  background: var(--cosmic-gradient-card) !important;
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
+  box-shadow: var(--cosmic-shadow-glow) !important;
+}
+
+/* Premium Button */
+.premium-button, .premium-btn {
+  background: var(--cosmic-gradient-button) !important;
+  color: var(--cosmic-violet-dark) !important;
+  box-shadow: var(--cosmic-shadow-glow) !important;
+  animation: cosmic-glow 2s ease-in-out infinite !important;
+}
+
+/* Premium Input */
+.premium-input {
+  background: var(--cosmic-gradient-glass) !important;
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
+  color: var(--cosmic-gold) !important;
+}
+
+.premium-input:focus {
+  border-color: var(--cosmic-gold) !important;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* === ANIMATION INTEGRATION === */
+
+/* Fade In Animation */
+.fade-in {
+  animation: cosmic-fade-in 0.6s ease-out !important;
+}
+
+/* Slide Up Animation */
+.slide-up {
+  animation: cosmic-slide-up 0.8s ease-out !important;
+}
+
+/* Float Animation */
+.float {
+  animation: cosmic-float 3s ease-in-out infinite !important;
+}
+
+/* Glow Animation */
+.glow {
+  animation: cosmic-glow 2s ease-in-out infinite !important;
+}
+
+/* Shimmer Animation */
+.shimmer {
+  animation: cosmic-shimmer 2s ease-in-out infinite !important;
+}
+
+/* === RESPONSIVE INTEGRATION === */
+
+/* Mobile Overrides */
+@media (max-width: 767px) {
+  .btn, .button, button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .card, .panel, .container {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  input, textarea, select {
+    padding: 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  h1 {
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+}
+
+/* Tablet Overrides */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .btn, .button, button {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  .card, .panel, .container {
+    padding: 1.5rem !important;
+  }
+
+  input, textarea, select {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Desktop Overrides */
+@media (min-width: 1024px) {
+  .btn, .button, button {
+    padding: 1rem 2rem !important;
+    font-size: 1rem !important;
+  }
+
+  .card, .panel, .container {
+    padding: 2rem !important;
+  }
+
+  input, textarea, select {
+    padding: 1rem 1.25rem !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* === DARK MODE INTEGRATION === */
+@media (prefers-color-scheme: dark) {
+  .card, .panel, .container {
+    background: var(--cosmic-bg-card) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  input, textarea, select {
+    background: var(--cosmic-bg-glass) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--cosmic-text-primary) !important;
+  }
+}
+
+/* === LIGHT MODE INTEGRATION === */
+@media (prefers-color-scheme: light) {
+  .card, .panel, .container {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  input, textarea, select {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    color: #1a1a1a !important;
+  }
+}
+
+/* === REDUCED MOTION INTEGRATION === */
+@media (prefers-reduced-motion: reduce) {
+  .btn, .button, button,
+  .card, .panel, .container,
+  input, textarea, select {
+    transition: none !important;
+  }
+
+  .float, .glow, .shimmer {
+    animation: none !important;
+  }
+}
+
+/* === HIGH CONTRAST INTEGRATION === */
+@media (prefers-contrast: high) {
+  .card, .panel, .container {
+    border: 2px solid var(--cosmic-gold) !important;
+  }
+
+  .btn, .button, button {
+    border: 2px solid var(--cosmic-gold) !important;
+  }
+
+  input, textarea, select {
+    border: 2px solid var(--cosmic-gold) !important;
+  }
+}

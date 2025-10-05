@@ -90,4 +90,13 @@ export function validateExternalUrl(url: string): boolean {
   }
 }
 
+// Subscription schema
+export const subscriptionSchema = z.object({
+  plan: z.enum(['free', 'premium', 'admin']),
+  status: z.enum(['active', 'inactive', 'cancelled', 'expired']).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  autoRenew: z.boolean().optional()
+})
+
 

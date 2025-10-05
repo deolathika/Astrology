@@ -11,44 +11,27 @@ import {
   Volume2, Lock, Unlock, Key, Database, Server,
   Cloud, CheckCircle, Zap, Clock, Info, Plus,
   Minus, ArrowLeft, ArrowRight, ExternalLink,
-  Share2, Download, Upload, Copy, Cut, Paste,
+  Share2, Download, Upload, Copy,
   Save, Trash2, Edit, Eye, EyeOff, Maximize,
   Minimize, RotateCcw, RotateCw, ZoomIn, ZoomOut,
   Move, Hand, MousePointer, Touchpad, Keyboard,
   Type, AlignLeft, AlignCenter, AlignRight, Bold,
   Italic, Underline, Strikethrough, Link, Unlink,
   Code, Hash, AtSign, Percent, DollarSign, Euro,
-  Pound, Yen, Bitcoin, CreditCard, Banknote,
+  Bitcoin, CreditCard, Banknote,
   Receipt, BarChart3, PieChart, TrendingUp,
-  TrendingDown, Activity, Pulse, Smile, Frown,
-  Meh, Laugh, Angry, Sad, Surprised, Confused,
-  Wink, Kiss, Tongue, ThumbsUp, ThumbsDown,
-  Clap, Wave, Point, Stop, Play, Pause,
+  TrendingDown, Activity, Smile, Frown,
+  Meh, Laugh, Angry, 
+  ThumbsUp, ThumbsDown,
+  // Clap, // Not available in lucide-react
+  Play, Pause,
   SkipBack, SkipForward, Repeat, Shuffle,
   Volume1, VolumeX, Mic, MicOff, Video, VideoOff,
   Camera, Image, File, FileText, FileImage,
-  FileVideo, FileAudio, FileText, FileText,
-  FileText, FileText, Archive, Code,
-  FileText, FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText, FileText,
-  FileText, FileText, FileText, FileText,
+  FileVideo, FileAudio, FileArchive, FileCode,
+  FileJson,
   Youtube, Facebook, Instagram, Twitter,
-  FileText, Linkedin, Camera, FileText,
-  MessageCircle, MessageCircle, MessageSquare, Users,
-  Share, MessageCircle, Send, Phone,
-  Video, Mail, Globe, Users,
-  Heart, Star, Bookmark, Bell,
-  Settings, Search, Filter, Sort,
-  Download, Upload, Link, Copy,
-  Edit, Trash, Plus, Minus,
-  Check, X, Info, AlertCircle
+  Linkedin
 } from 'lucide-react'
 
 interface NavigationItem {
@@ -84,6 +67,7 @@ export function UnifiedNavigation() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [userProfile, setUserProfile] = useState<any>(null)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -92,6 +76,13 @@ export function UnifiedNavigation() {
     
     checkMobile()
     window.addEventListener('resize', checkMobile)
+    
+    // Load user profile
+    const storedData = localStorage.getItem('userData')
+    if (storedData) {
+      setUserProfile(JSON.parse(storedData))
+    }
+    
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
@@ -109,7 +100,7 @@ export function UnifiedNavigation() {
           title: 'Home',
           description: 'Your cosmic dashboard',
           icon: Home,
-          route: '/home',
+          route: '/app',
           color: 'text-indigo-600',
           bgColor: 'bg-indigo-50',
           status: 'active',
@@ -372,6 +363,15 @@ export function UnifiedNavigation() {
     }
   }
 
+  const handleNavigation = (route: string) => {
+    window.location.href = route
+    setIsOpen(false)
+  }
+
+  const isCurrentRoute = (route: string) => {
+    return window.location.pathname === route || window.location.pathname.startsWith(route + '/')
+  }
+
   return (
     <>
       {/* Mobile Navigation Button */}
@@ -394,7 +394,9 @@ export function UnifiedNavigation() {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-slate-900">Daily Secrets</h1>
-                <p className="text-sm text-slate-600">Navigation</p>
+                <p className="text-sm text-slate-600">
+                  {userProfile ? `Welcome, ${userProfile.name}!` : 'Navigation'}
+                </p>
               </div>
             </div>
 
@@ -412,7 +414,7 @@ export function UnifiedNavigation() {
 
             {/* Navigation Categories */}
             <div className="space-y-4">
-              {filteredCategories.map((category, categoryIndex) => (
+              {filteredCategories.map((category) => (
                 <div key={category.id} className="space-y-2">
                   <button
                     onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
@@ -446,19 +448,24 @@ export function UnifiedNavigation() {
                         <div className="ml-4 space-y-1">
                           {category.items.map((item, itemIndex) => {
                             const StatusIcon = getStatusIcon(item.status)
+                            const isActive = isCurrentRoute(item.route)
                             return (
-                              <motion.a
+                              <motion.button
                                 key={item.id}
-                                href={item.route}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.3, delay: itemIndex * 0.1 }}
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 transition-colors group"
+                                onClick={() => handleNavigation(item.route)}
+                                className={`w-full flex items-center space-x-3 p-2 rounded-lg transition-colors group ${
+                                  isActive 
+                                    ? 'bg-violet-50 text-violet-700 border border-violet-200' 
+                                    : 'hover:bg-slate-50'
+                                }`}
                               >
                                 <div className={`w-6 h-6 ${item.bgColor} rounded-lg flex items-center justify-center`}>
                                   <item.icon className={`w-3 h-3 ${item.color}`} />
                                 </div>
-                                <div className="flex-1">
+                                <div className="flex-1 text-left">
                                   <div className="flex items-center space-x-2">
                                     <span className="text-sm font-medium text-slate-900">{item.title}</span>
                                     <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
@@ -468,8 +475,10 @@ export function UnifiedNavigation() {
                                   </div>
                                   <div className="text-xs text-slate-600">{item.description}</div>
                                 </div>
-                                <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-slate-600 transition-colors" />
-                              </motion.a>
+                                {isActive && (
+                                  <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                                )}
+                              </motion.button>
                             )
                           })}
                         </div>
@@ -509,7 +518,9 @@ export function UnifiedNavigation() {
                     </div>
                     <div>
                       <h1 className="text-lg font-bold text-slate-900">Daily Secrets</h1>
-                      <p className="text-sm text-slate-600">Navigation</p>
+                      <p className="text-sm text-slate-600">
+                        {userProfile ? `Welcome, ${userProfile.name}!` : 'Navigation'}
+                      </p>
                     </div>
                   </div>
                   <button
@@ -534,7 +545,7 @@ export function UnifiedNavigation() {
 
                 {/* Navigation Categories */}
                 <div className="space-y-4">
-                  {filteredCategories.map((category, categoryIndex) => (
+                  {filteredCategories.map((category) => (
                     <div key={category.id} className="space-y-2">
                       <button
                         onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
@@ -568,20 +579,24 @@ export function UnifiedNavigation() {
                             <div className="ml-4 space-y-1">
                               {category.items.map((item, itemIndex) => {
                                 const StatusIcon = getStatusIcon(item.status)
+                                const isActive = isCurrentRoute(item.route)
                                 return (
-                                  <motion.a
+                                  <motion.button
                                     key={item.id}
-                                    href={item.route}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.3, delay: itemIndex * 0.1 }}
-                                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-slate-50 transition-colors group"
-                                    onClick={() => setIsOpen(false)}
+                                    onClick={() => handleNavigation(item.route)}
+                                    className={`w-full flex items-center space-x-3 p-2 rounded-lg transition-colors group ${
+                                      isActive 
+                                        ? 'bg-violet-50 text-violet-700 border border-violet-200' 
+                                        : 'hover:bg-slate-50'
+                                    }`}
                                   >
                                     <div className={`w-6 h-6 ${item.bgColor} rounded-lg flex items-center justify-center`}>
                                       <item.icon className={`w-3 h-3 ${item.color}`} />
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="flex-1 text-left">
                                       <div className="flex items-center space-x-2">
                                         <span className="text-sm font-medium text-slate-900">{item.title}</span>
                                         <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
@@ -591,8 +606,10 @@ export function UnifiedNavigation() {
                                       </div>
                                       <div className="text-xs text-slate-600">{item.description}</div>
                                     </div>
-                                    <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-slate-600 transition-colors" />
-                                  </motion.a>
+                                    {isActive && (
+                                      <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                                    )}
+                                  </motion.button>
                                 )
                               })}
                             </div>
@@ -610,5 +627,3 @@ export function UnifiedNavigation() {
     </>
   )
 }
-
-

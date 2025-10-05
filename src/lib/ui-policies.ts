@@ -253,7 +253,7 @@ export const securityPolicies = {
 }
 
 export function getUIPolicy(feature: keyof typeof featurePolicies): UIPolicy {
-  return featurePolicies[feature] || defaultUIPolicies
+  return (featurePolicies[feature] || defaultUIPolicies) as UIPolicy
 }
 
 export function applyUIPolicy(policy: UIPolicy): void {

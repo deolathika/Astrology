@@ -1,8 +1,16 @@
 {
+  "../node_modules/@tanstack/query-devtools/build/index.js -> ./DevtoolsComponent/NCMVHL6D.js": {
+    "id": null,
+    "files": []
+  },
+  "../node_modules/@tanstack/query-devtools/build/index.js -> ./DevtoolsPanelComponent/2AITGKQY.js": {
+    "id": null,
+    "files": []
+  },
   "lib/astrology/astrology-validator.ts -> ./zodiac-calculator": {
-    "id": "lib/astrology/astrology-validator.ts -> ./zodiac-calculator",
+    "id": 8304,
     "files": [
-      "static/chunks/_app-pages-browser_src_lib_astrology_zodiac-calculator_ts.js"
+      "static/chunks/common-dbe5379e77afad80.js"
     ]
   }
 }

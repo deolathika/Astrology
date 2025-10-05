@@ -197,7 +197,7 @@ export class NASAJPLValidator {
     if (!cached) return false
     
     const now = Date.now()
-    const cacheTime = this.cache.get(`${cacheKey}_time`) as number
+    const cacheTime = this.cache.get(`${cacheKey}_time`) as unknown as number
     return now - cacheTime < this.cacheExpiry
   }
 
@@ -206,9 +206,9 @@ export class NASAJPLValidator {
    */
   clearExpiredCache(): void {
     const now = Date.now()
-    for (const [key, value] of this.cache.entries()) {
+    for (const [key, value] of Array.from(this.cache.entries())) {
       if (key.endsWith('_time')) {
-        const cacheTime = value as number
+        const cacheTime = value as unknown as number
         if (now - cacheTime > this.cacheExpiry) {
           this.cache.delete(key)
           this.cache.delete(key.replace('_time', ''))

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
 import { prisma } from '@/lib/database'
-import { swissEphemeris } from '@/lib/astrology/swiss-ephemeris'
+import SwissEphemerisEngine from '@/lib/astrology/swiss-ephemeris'
 
 export async function GET(request: NextRequest) {
   try {
@@ -37,19 +37,20 @@ export async function GET(request: NextRequest) {
     const [birthHour, birthMinute] = (userProfile.birthTime || '12:00').split(':').map(Number)
 
     const birthData = {
-      year: birthDate.getFullYear(),
-      month: birthDate.getMonth() + 1,
-      day: birthDate.getDate(),
-      hour: birthHour || 12,
-      minute: birthMinute || 0,
-      second: 0,
-      latitude: userProfile.latitude || 0,
-      longitude: userProfile.longitude || 0,
-      timezone: userProfile.timezone || 'UTC'
+      date: birthDate,
+      time: new Date(birthDate.getFullYear(), birthDate.getMonth(), birthDate.getDate(), birthHour || 12, birthMinute || 0, 0),
+      location: {
+        latitude: userProfile.lat || 0,
+        longitude: userProfile.lng || 0,
+        altitude: 0,
+        timezone: userProfile.tzIana || 'UTC',
+        name: userProfile.placeLabel || 'Unknown'
+      },
+      timezone: userProfile.tzIana || 'UTC'
     }
 
     // Calculate natal chart
-    const astrologyData = await swissEphemeris.calculateAstrologyData(birthData)
+    const astrologyData = await SwissEphemerisEngine.generateBirthChart(birthData)
 
     return NextResponse.json({
       success: true,
@@ -61,10 +62,10 @@ export async function GET(request: NextRequest) {
         },
         natal: {
           tropical: {
-            planets: astrologyData.planets,
-            asc: astrologyData.ascendant,
-            mc: astrologyData.midheaven,
-            houses: astrologyData.houses
+            positions: astrologyData.positions,
+            houses: astrologyData.houses,
+            aspects: astrologyData.aspects,
+            accuracy: astrologyData.accuracy
           },
           sidereal: {
             // TODO: Calculate sidereal positions

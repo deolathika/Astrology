@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { AuthNavigation } from '@/components/auth-navigation'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -31,6 +32,15 @@ export default function LoginPage() {
       }
     }
     checkSession()
+
+    // Check for success message from signup
+    const urlParams = new URLSearchParams(window.location.search)
+    const message = urlParams.get('message')
+    if (message) {
+      toast.success(message)
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
   }, [router])
 
   const handleInputChange = (field: string, value: string) => {
@@ -112,6 +122,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+      <AuthNavigation />
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-20 w-32 h-32 bg-violet-200 rounded-full opacity-20 animate-pulse"></div>

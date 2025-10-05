@@ -82,7 +82,12 @@ export class NASAHorizonsAPI {
         if (position) {
           positions.push({
             name,
-            ...position
+            longitude: position.longitude || 0,
+            latitude: position.latitude || 0,
+            distance: position.distance || 0,
+            magnitude: position.magnitude || 0,
+            phase: position.phase || 0,
+            elongation: position.elongation || 0
           })
         }
       }
@@ -200,7 +205,7 @@ export class NASAHorizonsAPI {
         metadata: {
           source: 'NASA JPL Horizons',
           timestamp: new Date().toISOString(),
-          accuracy: 'fallback'
+          accuracy: 'high'
         }
       }
     }

@@ -134,7 +134,7 @@ export default function MasterNumbersPage() {
       }
     }
     
-    return [...new Set(masterNums)] // Remove duplicates
+    return Array.from(new Set(masterNums)) // Remove duplicates
   }
 
   const calculateLifePath = (birthDate: string): number => {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { swissEphemeris } from '@/lib/astrology/swiss-ephemeris'
+import SwissEphemerisEngine from '@/lib/astrology/swiss-ephemeris'
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate astrology data using Swiss Ephemeris
-    const astrologyData = await swissEphemeris.calculateAstrologyData(birthData)
+    const astrologyData = await SwissEphemerisEngine.generateBirthChart(birthData)
 
     return NextResponse.json({
       success: true,

@@ -257,7 +257,7 @@ class AstrologyCalculationValidator {
     
     const recommendations = this.generateRecommendations(testResults)
     
-    logSuccess('validation', `Comprehensive validation completed. Overall accuracy: ${overallAccuracy.toFixed(2)}%`)
+    console.log(`Comprehensive validation completed. Overall accuracy: ${overallAccuracy.toFixed(2)}%`)
     
     return {
       overallAccuracy,

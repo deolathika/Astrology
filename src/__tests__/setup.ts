@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { TextEncoder, TextDecoder } from 'util'
 
 // Mock TextEncoder and TextDecoder for Node.js environment
-global.TextEncoder = TextEncoder
+global.TextEncoder = TextEncoder as any
 global.TextDecoder = TextDecoder as any
 
 // Mock fetch for API tests
@@ -49,25 +49,19 @@ const originalConsoleError = console.error
 const originalConsoleWarn = console.warn
 
 beforeAll(() => {
-  console.error = (...args: any[]) => {
+  // Suppress console warnings and errors in tests
+  const suppressConsole = (originalMethod: any) => (...args: any[]) => {
     if (
       typeof args[0] === 'string' &&
       (args[0].includes('Warning:') || args[0].includes('Error:'))
     ) {
       return
     }
-    originalConsoleError.call(console, ...args)
+    originalMethod.call(console, ...args)
   }
   
-  console.warn = (...args: any[]) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning:')
-    ) {
-      return
-    }
-    originalConsoleWarn.call(console, ...args)
-  }
+  console.error = suppressConsole(originalConsoleError)
+  console.warn = suppressConsole(originalConsoleWarn)
 })
 
 afterAll(() => {

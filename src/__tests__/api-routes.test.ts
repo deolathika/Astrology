@@ -3,8 +3,6 @@ import { NextRequest } from 'next/server'
 // Mock API route handlers
 describe('API Routes Tests', () => {
   test('health endpoint returns 200', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/health')
-    
     // Mock response
     const mockResponse = {
       ok: true,
@@ -17,8 +15,6 @@ describe('API Routes Tests', () => {
   })
 
   test('profile endpoint handles GET request', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/users/profile')
-    
     // Mock successful response
     const mockResponse = {
       ok: true,
@@ -38,13 +34,11 @@ describe('API Routes Tests', () => {
   })
 
   test('profile endpoint handles POST request', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/users/profile', {
-      method: 'POST',
-      body: JSON.stringify({
-        name: 'Test User',
-        email: 'test@example.com'
-      })
-    })
+    // Mock POST request data
+    const _requestData = {
+      name: 'Test User',
+      email: 'test@example.com'
+    }
     
     // Mock successful response
     const mockResponse = {
@@ -61,7 +55,7 @@ describe('API Routes Tests', () => {
   })
 
   test('today endpoint returns daily insights', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/today')
+    const _mockRequest = new NextRequest('http://localhost:3000/api/today')
     
     // Mock successful response
     const mockResponse = {
@@ -83,7 +77,7 @@ describe('API Routes Tests', () => {
   })
 
   test('numerology endpoint calculates numbers', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/numerology/calculate', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/numerology/calculate', {
       method: 'POST',
       body: JSON.stringify({
         fullName: 'John Doe',
@@ -110,7 +104,7 @@ describe('API Routes Tests', () => {
   })
 
   test('astrology endpoint calculates positions', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/astro/natal', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/astro/natal', {
       method: 'POST',
       body: JSON.stringify({
         birthDate: '1990-01-01',
@@ -139,7 +133,7 @@ describe('API Routes Tests', () => {
   })
 
   test('subscription endpoint returns plans', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/subscription?action=plans')
+    const _mockRequest = new NextRequest('http://localhost:3000/api/subscription?action=plans')
     
     // Mock successful response
     const mockResponse = {
@@ -161,7 +155,7 @@ describe('API Routes Tests', () => {
   })
 
   test('community endpoint handles chat', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/community/chat', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/community/chat', {
       method: 'POST',
       body: JSON.stringify({
         message: 'Hello',
@@ -188,7 +182,7 @@ describe('API Routes Tests', () => {
   })
 
   test('notifications endpoint sends notification', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/notifications/send', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/notifications/send', {
       method: 'POST',
       body: JSON.stringify({
         userId: '1',
@@ -215,7 +209,7 @@ describe('API Routes Tests', () => {
   })
 
   test('complete analysis endpoint returns comprehensive data', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/astro/complete-analysis', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/astro/complete-analysis', {
       method: 'POST',
       body: JSON.stringify({
         fullName: 'John Doe',
@@ -256,7 +250,7 @@ describe('API Routes Tests', () => {
   })
 
   test('transits endpoint calculates current transits', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/astro/transits', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/astro/transits', {
       method: 'POST',
       body: JSON.stringify({
         birthDate: '1990-01-01',
@@ -285,7 +279,7 @@ describe('API Routes Tests', () => {
   })
 
   test('validation endpoint validates birth data', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/astro/validate', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/astro/validate', {
       method: 'POST',
       body: JSON.stringify({
         birthDate: '1990-01-01',
@@ -314,7 +308,7 @@ describe('API Routes Tests', () => {
   })
 
   test('offline AI endpoint provides guidance', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/ai/offline', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/ai/offline', {
       method: 'POST',
       body: JSON.stringify({
         prompt: 'What should I focus on today?'
@@ -338,7 +332,7 @@ describe('API Routes Tests', () => {
   })
 
   test('auth register endpoint handles registration', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/auth/register', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({
         name: 'John Doe',
@@ -368,7 +362,7 @@ describe('API Routes Tests', () => {
   })
 
   test('numerology core endpoint calculates core numbers', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/numerology/core', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/numerology/core', {
       method: 'POST',
       body: JSON.stringify({
         fullName: 'John Doe',
@@ -396,7 +390,7 @@ describe('API Routes Tests', () => {
   })
 
   test('numerology enhanced endpoint provides detailed analysis', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/numerology/enhanced', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/numerology/enhanced', {
       method: 'POST',
       body: JSON.stringify({
         fullName: 'John Doe',
@@ -429,7 +423,7 @@ describe('API Routes Tests', () => {
   })
 
   test('payments create intent endpoint handles payment', async () => {
-    const mockRequest = new NextRequest('http://localhost:3000/api/payments/create-intent', {
+    const _mockRequest = new NextRequest('http://localhost:3000/api/payments/create-intent', {
       method: 'POST',
       body: JSON.stringify({
         amount: 999,

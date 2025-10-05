@@ -60,7 +60,7 @@ export class SubscriptionService {
       startDate: new Date().toISOString(),
       endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
       autoRenew: false,
-      features: freePlan.features,
+      features: [...freePlan.features],
       usage: {
         dailyInsights: 0,
         expertConsultations: 0,
@@ -166,7 +166,7 @@ export class SubscriptionService {
       startDate: new Date().toISOString(),
       endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
       autoRenew: true,
-      features: plan.features,
+      features: [...plan.features],
       usage: {
         dailyInsights: 0,
         expertConsultations: 0,
@@ -195,14 +195,18 @@ export class SubscriptionService {
    * Get subscription plans
    */
   async getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
-    return Object.values(subscriptionPlans)
+    return Object.values(subscriptionPlans).map(plan => ({
+      ...plan,
+      features: [...plan.features],
+      limitations: [...plan.limitations]
+    }))
   }
 
   /**
    * Reset daily usage (called by cron job)
    */
   async resetDailyUsage(): Promise<void> {
-    for (const [userId, subscription] of this.subscriptions.entries()) {
+    for (const [userId, subscription] of Array.from(this.subscriptions.entries())) {
       subscription.usage.dailyInsights = 0
       this.subscriptions.set(userId, subscription)
     }

@@ -158,7 +158,7 @@ describe('Comprehensive Coverage Tests - 95%+ Target', () => {
     test('handles user authentication flow', () => {
       const AuthFlow = () => {
         const [isAuthenticated, setIsAuthenticated] = React.useState(false)
-        const [user, setUser] = React.useState(null)
+        const [user, setUser] = React.useState<any>(null)
         
         const login = () => {
           setIsAuthenticated(true)
@@ -287,7 +287,7 @@ describe('Comprehensive Coverage Tests - 95%+ Target', () => {
           time: '',
           place: ''
         })
-        const [results, setResults] = React.useState(null)
+        const [results, setResults] = React.useState<any>(null)
         
         const calculate = () => {
           setResults({
@@ -355,7 +355,7 @@ describe('Comprehensive Coverage Tests - 95%+ Target', () => {
       const NumerologyCalculator = () => {
         const [name, setName] = React.useState('')
         const [birthDate, setBirthDate] = React.useState('')
-        const [results, setResults] = React.useState(null)
+        const [results, setResults] = React.useState<any>(null)
         
         const calculate = () => {
           setResults({
@@ -530,9 +530,9 @@ describe('Comprehensive Coverage Tests - 95%+ Target', () => {
   describe('API Integration and Data Management', () => {
     test('handles API requests and responses', async () => {
       const ApiManager = () => {
-        const [data, setData] = React.useState(null)
+        const [data, setData] = React.useState<any>(null)
         const [loading, setLoading] = React.useState(false)
-        const [error, setError] = React.useState(null)
+        const [error, setError] = React.useState<any>(null)
         
         const fetchData = async () => {
           setLoading(true)
@@ -542,7 +542,7 @@ describe('Comprehensive Coverage Tests - 95%+ Target', () => {
             const result = await response.json()
             setData(result)
           } catch (err) {
-            setError('Failed to fetch data')
+            setError('Failed to fetch data' as any)
           } finally {
             setLoading(false)
           }

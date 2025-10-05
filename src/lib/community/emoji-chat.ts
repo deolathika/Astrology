@@ -295,8 +295,8 @@ export class EmojiChatSystem {
   }
 
   private findMessage(messageId: string): ChatMessage | null {
-    for (const messages of this.messages.values()) {
-      const message = messages.find(m => m.id === messageId)
+    for (const messages of Array.from(this.messages.values())) {
+      const message = messages.find((m: any) => m.id === messageId)
       if (message) return message
     }
     return null

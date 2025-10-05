@@ -67,10 +67,10 @@ export function logError(
     stack: typeof error === 'object' ? error.stack : undefined,
     context,
     timestamp,
-    requestId: request?.headers.get('x-request-id'),
+    requestId: request?.headers.get('x-request-id') || undefined,
     url: request?.url,
-    userAgent: request?.headers.get('user-agent'),
-    ip: request?.ip || request?.headers.get('x-forwarded-for')
+    userAgent: request?.headers.get('user-agent') || undefined,
+    ip: request?.ip || request?.headers.get('x-forwarded-for') || undefined
   }
   
   // Store error
@@ -133,14 +133,14 @@ function generateErrorId(): string {
 export function getErrorStats(): Record<string, any> {
   const stats: Record<string, any> = {}
   
-  for (const [type, errors] of errorStore.entries()) {
+  for (const [type, errors] of Array.from(errorStore.entries())) {
     stats[type] = {
       total: errors.length,
       bySeverity: {
-        [ErrorSeverity.LOW]: errors.filter(e => e.severity === ErrorSeverity.LOW).length,
-        [ErrorSeverity.MEDIUM]: errors.filter(e => e.severity === ErrorSeverity.MEDIUM).length,
-        [ErrorSeverity.HIGH]: errors.filter(e => e.severity === ErrorSeverity.HIGH).length,
-        [ErrorSeverity.CRITICAL]: errors.filter(e => e.severity === ErrorSeverity.CRITICAL).length
+        [ErrorSeverity.LOW]: errors.filter((e: any) => e.severity === ErrorSeverity.LOW).length,
+        [ErrorSeverity.MEDIUM]: errors.filter((e: any) => e.severity === ErrorSeverity.MEDIUM).length,
+        [ErrorSeverity.HIGH]: errors.filter((e: any) => e.severity === ErrorSeverity.HIGH).length,
+        [ErrorSeverity.CRITICAL]: errors.filter((e: any) => e.severity === ErrorSeverity.CRITICAL).length
       },
       lastError: errors[errors.length - 1]?.timestamp
     }

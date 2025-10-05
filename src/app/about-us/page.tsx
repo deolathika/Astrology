@@ -1,257 +1,198 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import { 
-  Heart, Users, Star, Globe, Shield, ArrowRight, BookOpen
-} from 'lucide-react'
-import { CosmicNavigation } from '@/components/cosmic-navigation'
-import { Breadcrumbs } from '@/components/breadcrumbs'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Star, Heart, Shield, Users, Globe, Zap } from 'lucide-react';
+import CosmicCard from '@/components/ui/CosmicCard';
 
-const teamMembers = [
-  {
-    name: 'Dr. Sarah Chen',
-    role: 'Lead Astrologer & Founder',
-    expertise: 'Vedic & Western Astrology',
-    experience: '15+ years',
-    image: '/team/sarah.jpg',
-    bio: 'Dr. Sarah Chen is a renowned astrologer with over 15 years of experience in both Vedic and Western astrology. She holds a PhD in Astronomy and has helped thousands of people understand their cosmic blueprint.'
-  },
-  {
-    name: 'Marcus Rodriguez',
-    role: 'Numerology Expert',
-    expertise: 'Pythagorean & Chaldean Systems',
-    experience: '12+ years',
-    image: '/team/marcus.jpg',
-    bio: 'Marcus is a certified numerologist specializing in both Pythagorean and Chaldean systems. His unique approach combines ancient wisdom with modern psychology.'
-  },
-  {
-    name: 'Dr. Priya Sharma',
-    role: 'Vedic Astrology Specialist',
-    expertise: 'Nakshatra & Dasha Systems',
-    experience: '18+ years',
-    image: '/team/priya.jpg',
-    bio: 'Dr. Priya Sharma is a third-generation Vedic astrologer from India, specializing in Nakshatra analysis and Dasha systems. She brings authentic traditional knowledge to our platform.'
-  },
-  {
-    name: 'Alex Thompson',
-    role: 'AI & Technology Lead',
-    expertise: 'Machine Learning & Astrology',
-    experience: '10+ years',
-    image: '/team/alex.jpg',
-    bio: 'Alex combines his background in AI and machine learning with a deep passion for astrology, creating innovative tools that make cosmic wisdom accessible to everyone.'
-  }
-]
+const AboutUs: React.FC = () => {
+  const features = [
+    {
+      icon: Star,
+      title: 'Astrological Accuracy',
+      description: 'Powered by Swiss Ephemeris and NASA data for precise calculations'
+    },
+    {
+      icon: Heart,
+      title: 'Personalized Guidance',
+      description: 'AI-powered insights tailored to your unique astrological profile'
+    },
+    {
+      icon: Shield,
+      title: 'Privacy First',
+      description: 'Your data is encrypted and never shared with third parties'
+    },
+    {
+      icon: Users,
+      title: 'Community Driven',
+      description: 'Connect with like-minded individuals on their spiritual journey'
+    },
+    {
+      icon: Globe,
+      title: 'Multi-Cultural',
+      description: 'Supporting Western, Vedic, Sri Lankan, and Chinese astrology systems'
+    },
+    {
+      icon: Zap,
+      title: 'Real-Time Updates',
+      description: 'Daily insights and guidance updated with current planetary positions'
+    }
+  ];
 
-const values = [
-  {
-    icon: Heart,
-    title: 'Authentic Wisdom',
-    description: 'We combine ancient astrological and numerological traditions with modern scientific understanding to provide accurate, meaningful guidance.'
-  },
-  {
-    icon: Shield,
-    title: 'Privacy & Security',
-    description: 'Your personal data and cosmic information are protected with enterprise-grade security. We never share your information without consent.'
-  },
-  {
-    icon: Globe,
-    title: 'Global Community',
-    description: 'We serve users worldwide, respecting cultural differences while providing universal cosmic insights that transcend boundaries.'
-  },
-  {
-    icon: Star,
-    title: 'Personalized Guidance',
-    description: 'Every reading is tailored to your unique birth chart and life circumstances, ensuring relevant and actionable insights.'
-  }
-]
-
-const milestones = [
-  {
-    year: '2020',
-    title: 'Daily Secrets Founded',
-    description: 'Started with a vision to make authentic astrology and numerology accessible to everyone.'
-  },
-  {
-    year: '2021',
-    title: 'First 10,000 Users',
-    description: 'Reached our first major milestone with users from over 50 countries.'
-  },
-  {
-    year: '2022',
-    title: 'AI Integration',
-    description: 'Launched our AI-powered cosmic guidance system for personalized daily insights.'
-  },
-  {
-    year: '2023',
-    title: 'Community Features',
-    description: 'Introduced cosmic community features for users to connect and share experiences.'
-  },
-  {
-    year: '2024',
-    title: 'Premium Services',
-    description: 'Launched comprehensive premium services with advanced features and expert consultations.'
-  }
-]
-
-export default function AboutUsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 py-6">
-          <Breadcrumbs />
-          <div className="flex items-center space-x-4 mt-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <Heart className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">About Daily Secrets</h1>
-              <p className="text-slate-600 mt-1">Discover the story behind your cosmic journey</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Mission Statement */}
-        <motion.section
+    <div className="min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900">
+      <div className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold text-slate-900 mb-6">Our Mission</h2>
-          <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed">
-            At Daily Secrets, we believe that everyone deserves access to authentic cosmic wisdom. 
-            Our mission is to democratize astrology and numerology by combining ancient traditions 
-            with modern technology, making personalized cosmic guidance accessible, accurate, and meaningful 
-            for people from all walks of life.
+          <h1 className="text-5xl font-bold text-white mb-6">
+            About Daily Secrets
+          </h1>
+          <p className="text-xl text-violet-300 max-w-3xl mx-auto">
+            Discover the cosmic wisdom that guides your life through personalized astrology, 
+            numerology, and AI-powered spiritual guidance.
           </p>
-        </motion.section>
+        </motion.div>
 
-        {/* Values */}
-        <motion.section
+        {/* Mission Statement */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ delay: 0.2 }}
           className="mb-16"
         >
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">Our Values</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
+          <CosmicCard>
+            <div className="p-8 text-center">
+              <h2 className="text-3xl font-bold text-white mb-6">Our Mission</h2>
+              <p className="text-lg text-violet-300 leading-relaxed">
+                To make ancient wisdom accessible through modern technology, helping people 
+                understand their cosmic blueprint and navigate life with greater awareness 
+                and purpose. We believe that everyone deserves access to personalized 
+                spiritual guidance that respects their cultural background and personal journey.
+              </p>
+            </div>
+          </CosmicCard>
+        </motion.div>
+
+        {/* Features Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mb-16"
+        >
+          <h2 className="text-3xl font-bold text-white text-center mb-12">
+            What Makes Us Special
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
               <motion.div
-                key={value.title}
+                key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-                className="text-center p-6 bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
+                transition={{ delay: 0.6 + index * 0.1 }}
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <value.icon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-3">{value.title}</h3>
-                <p className="text-slate-600">{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Team */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mb-16"
-        >
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">Meet Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div className="h-48 bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                  <Users className="w-16 h-16 text-white opacity-80" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-1">{member.name}</h3>
-                  <p className="text-violet-600 font-medium mb-2">{member.role}</p>
-                  <p className="text-sm text-slate-600 mb-3">{member.expertise} • {member.experience}</p>
-                  <p className="text-sm text-slate-500">{member.bio}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Timeline */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="mb-16"
-        >
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">Our Journey</h2>
-          <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-violet-500 to-purple-600 rounded-full"></div>
-            {milestones.map((milestone, index) => (
-              <motion.div
-                key={milestone.year}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
-                className={`relative flex items-center mb-8 ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
-              >
-                <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
-                  <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <div className="text-violet-600 font-bold text-lg mb-2">{milestone.year}</div>
-                    <h3 className="text-xl font-semibold text-slate-900 mb-2">{milestone.title}</h3>
-                    <p className="text-slate-600">{milestone.description}</p>
+                <CosmicCard className="h-full">
+                  <div className="p-6 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-gold-400 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <feature.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-3">
+                      {feature.title}
+                    </h3>
+                    <p className="text-violet-300">
+                      {feature.description}
+                    </p>
                   </div>
-                </div>
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-violet-600 rounded-full border-4 border-white shadow-lg"></div>
-                <div className="w-1/2"></div>
+                </CosmicCard>
               </motion.div>
             ))}
           </div>
-        </motion.section>
+        </motion.div>
 
-        {/* Call to Action */}
-        <motion.section
+        {/* Team Section */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-12 text-white"
+          transition={{ delay: 0.8 }}
+          className="mb-16"
         >
-          <h2 className="text-3xl font-bold mb-4">Ready to Start Your Cosmic Journey?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of users who have discovered their cosmic potential with Daily Secrets.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-white text-violet-600 px-8 py-3 rounded-xl font-semibold hover:bg-slate-50 transition-colors flex items-center justify-center space-x-2"
-            >
-              <span>Get Started Free</span>
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-violet-600 transition-colors flex items-center justify-center space-x-2"
-            >
-              <span>Learn More</span>
-              <BookOpen className="w-5 h-5" />
-            </motion.button>
-          </div>
-        </motion.section>
-      </div>
+          <CosmicCard>
+            <div className="p-8">
+              <h2 className="text-3xl font-bold text-white text-center mb-8">
+                Our Team
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="w-24 h-24 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full mx-auto mb-4"></div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Astrology Experts</h3>
+                  <p className="text-violet-300">Certified astrologers with decades of experience</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full mx-auto mb-4"></div>
+                  <h3 className="text-xl font-semibold text-white mb-2">AI Engineers</h3>
+                  <p className="text-violet-300">Cutting-edge AI and machine learning specialists</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-24 h-24 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full mx-auto mb-4"></div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Cultural Advisors</h3>
+                  <p className="text-violet-300">Experts in diverse spiritual and cultural traditions</p>
+                </div>
+              </div>
+            </div>
+          </CosmicCard>
+        </motion.div>
 
-      <CosmicNavigation />
+        {/* Values Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0 }}
+        >
+          <CosmicCard>
+            <div className="p-8">
+              <h2 className="text-3xl font-bold text-white text-center mb-8">
+                Our Values
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4">Accuracy & Authenticity</h3>
+                  <p className="text-violet-300 mb-6">
+                    We use the most accurate astronomical data available, including Swiss Ephemeris 
+                    and NASA JPL data, to ensure our calculations are precise and reliable.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4">Cultural Respect</h3>
+                  <p className="text-violet-300 mb-6">
+                    We honor and support multiple astrological traditions, from Western to Vedic, 
+                    Sri Lankan to Chinese, ensuring everyone feels represented and respected.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4">Privacy & Security</h3>
+                  <p className="text-violet-300 mb-6">
+                    Your personal data and spiritual journey are sacred. We use enterprise-grade 
+                    encryption and never share your information with third parties.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4">Accessibility</h3>
+                  <p className="text-violet-300 mb-6">
+                    Spiritual guidance should be accessible to everyone. We offer free basic 
+                    features and affordable premium options to ensure no one is left behind.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CosmicCard>
+        </motion.div>
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default AboutUs;

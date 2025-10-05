@@ -15,13 +15,16 @@ export async function GET(request: NextRequest) {
       return session
     }
 
-    const userWithPermissions = await getUserWithPermissions(session.user.id)
+    const userWithPermissions = await getUserWithPermissions(request)
     
-    if (!userWithPermissions) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    if (userWithPermissions instanceof NextResponse) {
+      return userWithPermissions
     }
 
-    const profile = userWithPermissions.profiles[0]
+    // Get user profile from database
+    const profile = await prisma.profile.findFirst({
+      where: { userId: userWithPermissions.id }
+    })
     
     if (!profile) {
       return NextResponse.json({ 
@@ -30,19 +33,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user has permission for compatibility checks
-    if (!checkPermission(userWithPermissions.role as any, 'canAccessPremiumFeatures') && 
+    if (!checkPermission(userWithPermissions, 'compatibility-check') && 
         userWithPermissions.role !== 'admin') {
       
       // Free users get limited compatibility info
-      const basicCompatibility = getBasicCompatibility(profile.zodiacSign)
+      const basicCompatibility = getBasicCompatibility(profile.name)
       
       return NextResponse.json({
         success: true,
         data: {
           userProfile: {
-            name: profile.fullName,
-            zodiacSign: profile.zodiacSign,
-            system: profile.system
+            name: profile.name,
+            zodiacSign: profile.name, // Using name as zodiac sign for now
+            system: profile.systemPref
           },
           basicCompatibility,
           upgradeRequired: true,
@@ -70,11 +73,11 @@ export async function GET(request: NextRequest) {
       success: true,
       data: {
         userProfile: {
-          name: profile.fullName,
-          zodiacSign: profile.zodiacSign,
-          system: profile.system,
+          name: profile.name,
+          zodiacSign: profile.name, // Using name as zodiac sign for now
+          system: profile.systemPref,
           birthDate: profile.birthDate,
-          birthPlace: profile.birthPlace
+          birthPlace: profile.placeLabel
         },
         compatibility: compatibilityAnalysis,
         timestamp: new Date().toISOString()
@@ -195,7 +198,7 @@ function getBasicCompatibility(zodiacSign?: string) {
 }
 
 async function analyzeCompatibilityWithPartner(userProfile: any, partnerSign: string, analysisType: string) {
-  const userSign = userProfile.zodiacSign
+  const userSign = userProfile.name // Using name as zodiac sign for now
   
   if (!userSign) {
     throw new Error('User zodiac sign not found')
@@ -226,7 +229,7 @@ async function analyzeCompatibilityWithPartner(userProfile: any, partnerSign: st
 }
 
 async function getGeneralCompatibilityAnalysis(userProfile: any) {
-  const userSign = userProfile.zodiacSign
+  const userSign = userProfile.name // Using name as zodiac sign for now
   
   if (!userSign) {
     throw new Error('User zodiac sign not found')
@@ -338,11 +341,12 @@ function getRelationshipAdvice(sign1: string, sign2: string, analysisType: strin
 
 async function findPotentialMatches(userProfile: any) {
   // Mock potential matches - in production, this would query actual users
-  const compatibleSigns = getBasicCompatibility(userProfile.zodiacSign).mostCompatible
+  const basicCompatibility = getBasicCompatibility(userProfile.name)
+  const compatibleSigns = basicCompatibility.mostCompatible || []
   
   return compatibleSigns.map(sign => ({
     zodiacSign: sign,
-    compatibility: calculateCompatibilityScore(userProfile.zodiacSign, sign),
+    compatibility: calculateCompatibilityScore(userProfile.name, sign),
     matchType: 'High Compatibility'
   }))
 }

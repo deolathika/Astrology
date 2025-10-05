@@ -1,31 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getHealthStatus, getErrorStats } from '@/lib/monitoring'
+import { checkDatabaseHealth } from '@/lib/database-optimized'
 
 export async function GET(request: NextRequest) {
   try {
-    const health = getHealthStatus()
-    const errorStats = getErrorStats()
+    const dbHealth = await checkDatabaseHealth()
     
     return NextResponse.json({
-      ...health,
-      errors: errorStats,
-      timestamp: new Date().toISOString()
-    }, {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'X-API-Version': '1.0.0'
-      }
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      database: dbHealth,
+      environment: process.env.NODE_ENV,
+      version: '1.0.0'
     })
   } catch (error) {
     return NextResponse.json(
       { 
-        status: 'error',
-        message: 'Health check failed',
+        status: 'error', 
+        error: (error as Error).message,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
     )
   }
 }
-
-

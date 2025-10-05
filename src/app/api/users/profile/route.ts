@@ -91,33 +91,45 @@ export async function PUT(request: NextRequest) {
       }
     })
 
-    // Update or create profile
-    const profile = await prisma.profile.upsert({
-      where: { userId: session.user.id },
-      update: {
-        fullName: nameValidation.data,
-        birthDate: birthDate ? new Date(birthDate) : null,
-        birthTime: birthTime,
-        birthPlace: birthPlace,
-        latitude: parseFloat(latitude) || 0,
-        longitude: parseFloat(longitude) || 0,
-        timezone: timezone,
-        zodiacSign: zodiacSign,
-        system: system
-      },
-      create: {
-        userId: session.user.id,
-        fullName: nameValidation.data,
-        birthDate: birthDate ? new Date(birthDate) : null,
-        birthTime: birthTime,
-        birthPlace: birthPlace,
-        latitude: parseFloat(latitude) || 0,
-        longitude: parseFloat(longitude) || 0,
-        timezone: timezone,
-        zodiacSign: zodiacSign,
-        system: system
-      }
+    // Check if profile exists
+    const existingProfile = await prisma.profile.findFirst({
+      where: { userId: session.user.id }
     })
+
+    let profile
+    if (existingProfile) {
+      // Update existing profile
+      profile = await prisma.profile.update({
+        where: { id: existingProfile.id },
+        data: {
+          name: nameValidation.data,
+          birthDate: birthDate ? new Date(birthDate) : existingProfile.birthDate,
+          birthTime: birthTime,
+          placeLabel: birthPlace,
+          lat: parseFloat(latitude) || 0,
+          lng: parseFloat(longitude) || 0,
+          tzIana: timezone,
+          systemPref: system
+        }
+      })
+    } else {
+      // Create new profile
+      profile = await prisma.profile.create({
+        data: {
+          userId: session.user.id,
+          name: nameValidation.data,
+          birthDate: birthDate ? new Date(birthDate) : new Date(),
+          birthTime: birthTime,
+          placeLabel: birthPlace,
+          lat: parseFloat(latitude) || 0,
+          lng: parseFloat(longitude) || 0,
+          tzIana: timezone,
+          systemPref: system,
+          localePref: 'en-US',
+          privacy: '{}'
+        }
+      })
+    }
 
     return NextResponse.json({
       success: true,

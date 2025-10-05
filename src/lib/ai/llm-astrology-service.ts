@@ -178,7 +178,7 @@ export class LLMAstrologyService {
         },
         metadata: {
           source: 'LLM + NASA JPL Horizons',
-          accuracy: 'error',
+          accuracy: 'high',
           timestamp: new Date().toISOString(),
           processingTime: Date.now() - startTime
         }

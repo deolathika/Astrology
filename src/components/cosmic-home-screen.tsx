@@ -8,7 +8,7 @@ import {
   Heart, 
   Moon, 
   Settings,
-  Translate,
+  Languages,
   Sparkles,
   Zap,
   Calculator,
@@ -82,13 +82,13 @@ function CosmicHomeScreen({
           <CosmicHeader user={user} />
 
           {/* Today's Secret - Main Feature */}
-          <TodaysSecretCard user={user} />
+          <TodaysSecretCard user={user ? { name: user.fullName, zodiacSign: user.fullName } : null} />
 
           {/* Lucky Trio */}
-          <LuckyTrioCard user={user} />
+          <LuckyTrioCard user={user ? { name: user.fullName, zodiacSign: user.fullName } : null} />
 
           {/* Day Rules */}
-          <DayRulesCard user={user} />
+          <DayRulesCard user={user ? { name: user.fullName, zodiacSign: user.fullName } : null} />
 
           {/* Daily Guidance */}
           <DailyGuidance />

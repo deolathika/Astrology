@@ -1,6 +1,6 @@
 /** @type {import('next').Config} */
 const nextConfig = {
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     // Handle binary files for Transformers.js
     config.module.rules.push({
       test: /\.node$/,
@@ -34,6 +34,34 @@ const nextConfig = {
       process: false,
     }
 
+    // Phase 1: Build Optimization
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+            priority: 10,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            enforce: true,
+            priority: 5,
+          },
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            chunks: 'all',
+            priority: 20,
+          },
+        },
+      }
+    }
+
     return config
   },
   // PWA configuration removed for Next.js 14 compatibility
@@ -41,6 +69,7 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
     formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 60,
   },
   // Enable compression
   compress: true,
@@ -49,7 +78,33 @@ const nextConfig = {
   // Experimental features
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['@xenova/transformers'],
+    optimizePackageImports: ['@xenova/transformers', 'lucide-react', '@radix-ui/react-icons'],
+  },
+  // Phase 1: Performance Headers
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
+    ]
   },
 }
 

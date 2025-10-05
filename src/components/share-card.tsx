@@ -5,6 +5,7 @@
  * Generates beautiful shareable cards for social media
  */
 
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Share2, Download, Sun, Moon, Heart, Star, Sparkles } from 'lucide-react'
 interface ShareCardProps {

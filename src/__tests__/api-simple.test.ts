@@ -27,7 +27,7 @@ describe('API Tests', () => {
       expect(typeof profileRoute.PUT).toBe('function')
     } catch (error) {
       // If the route doesn't exist, that's also a valid test result
-      expect(error.message).toContain('Cannot find module')
+      expect((error as Error).message).toContain('Cannot find module')
     }
   })
 

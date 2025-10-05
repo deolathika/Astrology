@@ -1,37 +1,122 @@
+/**
+ * Next.js Middleware for User Flow Management
+ * Full-Stack Engineer + UX Flow Designer
+ * 
+ * Handles role-based routing and access control
+ */
+
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-export function middleware(request: NextRequest) {
-  // Create response
-  const response = NextResponse.next()
-
-  // Security Headers
-  response.headers.set('X-Frame-Options', 'DENY')
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
   
-  // Content Security Policy
-  const csp = [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
-    "font-src 'self'",
-    "connect-src 'self' https://api.openai.com https://maps.googleapis.com",
-    "frame-ancestors 'none'",
-    "base-uri 'self'",
-    "form-action 'self'"
-  ].join('; ')
+  // Get token for authentication
+  const token = await getToken({ 
+    req: request, 
+    secret: process.env.NEXTAUTH_SECRET 
+  })
   
-  response.headers.set('Content-Security-Policy', csp)
+  const userRole = token?.role || 'guest'
   
-  // HSTS (only in production)
-  if (process.env.NODE_ENV === 'production') {
-    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+  // Define route access rules
+  const routeAccess = {
+    // Public routes (no authentication required)
+    public: [
+      '/',
+      '/about',
+      '/terms',
+      '/privacy',
+      '/faq',
+      '/contact',
+      '/vision',
+      '/mission',
+      '/dmca',
+      '/auth/signin',
+      '/auth/signup',
+      '/auth/forgot-password',
+      '/auth/reset-password'
+    ],
+    
+    // Free user routes
+    free: [
+      '/dashboard',
+      '/profile',
+      '/numerology',
+      '/astrology',
+      '/compatibility',
+      '/community',
+      '/settings'
+    ],
+    
+    // Premium user routes
+    premium: [
+      '/premium',
+      '/dreams',
+      '/ai-chat',
+      '/premium/export',
+      '/premium/stories',
+      '/premium/analytics'
+    ],
+    
+    // Admin routes
+    admin: [
+      '/admin',
+      '/admin/users',
+      '/admin/content',
+      '/admin/settings',
+      '/admin/analytics',
+      '/admin/theme'
+    ]
   }
-
-  return response
+  
+  // Check if route requires authentication
+  const requiresAuth = !routeAccess.public.includes(pathname)
+  
+  if (requiresAuth && !token) {
+    // Redirect to sign in for protected routes
+    return NextResponse.redirect(new URL('/auth/signin', request.url))
+  }
+  
+  // Check role-based access
+  if (token) {
+    // Free users cannot access premium routes
+    if (userRole === 'user' && routeAccess.premium.includes(pathname)) {
+      return NextResponse.redirect(new URL('/subscription', request.url))
+    }
+    
+    // Free users cannot access admin routes
+    if (userRole === 'user' && routeAccess.admin.includes(pathname)) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+    
+    // Premium users cannot access admin routes
+    if (userRole === 'premium' && routeAccess.admin.includes(pathname)) {
+      return NextResponse.redirect(new URL('/premium', request.url))
+    }
+    
+    // Admin users can access all routes
+    if (userRole === 'admin') {
+      return NextResponse.next()
+    }
+  }
+  
+  // Redirect based on user role for root path
+  if (pathname === '/' && token) {
+    const redirectMap = {
+      'admin': '/admin',
+      'premium': '/premium',
+      'user': '/dashboard'
+    }
+    
+    const redirectPath = redirectMap[userRole as keyof typeof redirectMap]
+    if (redirectPath) {
+      return NextResponse.redirect(new URL(redirectPath, request.url))
+    }
+  }
+  
+  return NextResponse.next()
 }
 
 export const config = {

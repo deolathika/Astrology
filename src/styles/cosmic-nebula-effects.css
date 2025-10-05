@@ -1,0 +1,344 @@
+/**
+ * Cosmic Nebula Effects
+ * Real cosmic star feel with slow animated swirling patterns
+ * Inspired by nebula and supernova remnants
+ */
+
+:root {
+  /* Cosmic Nebula Colors */
+  --nebula-purple: #6B46C1;
+  --nebula-blue: #3B82F6;
+  --nebula-cyan: #06B6D4;
+  --nebula-pink: #EC4899;
+  --nebula-orange: #F59E0B;
+  --nebula-green: #10B981;
+  --nebula-gold: #F59E0B;
+  --nebula-white: #FFFFFF;
+  
+  /* Cosmic Nebula Gradients */
+  --nebula-gradient-primary: radial-gradient(ellipse at 30% 20%, rgba(107, 70, 193, 0.8) 0%, rgba(59, 130, 246, 0.6) 30%, rgba(6, 182, 212, 0.4) 60%, transparent 100%);
+  --nebula-gradient-secondary: radial-gradient(ellipse at 70% 80%, rgba(236, 72, 153, 0.7) 0%, rgba(245, 158, 11, 0.5) 40%, rgba(16, 185, 129, 0.3) 70%, transparent 100%);
+  --nebula-gradient-accent: radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.6) 0%, rgba(59, 130, 246, 0.4) 50%, rgba(107, 70, 193, 0.2) 80%, transparent 100%);
+  --nebula-gradient-gold: radial-gradient(ellipse at 20% 70%, rgba(245, 158, 11, 0.8) 0%, rgba(236, 72, 153, 0.4) 50%, transparent 100%);
+  
+  /* Cosmic Nebula Shadows */
+  --nebula-shadow-purple: 0 0 40px rgba(107, 70, 193, 0.6);
+  --nebula-shadow-blue: 0 0 50px rgba(59, 130, 246, 0.5);
+  --nebula-shadow-cyan: 0 0 60px rgba(6, 182, 212, 0.4);
+  --nebula-shadow-pink: 0 0 45px rgba(236, 72, 153, 0.5);
+  --nebula-shadow-gold: 0 0 55px rgba(245, 158, 11, 0.6);
+}
+
+/* Cosmic Nebula Background */
+.cosmic-nebula-bg {
+  position: relative;
+  background: #0a0a0f;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Main Nebula Swirl */
+.cosmic-nebula-swirl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--nebula-gradient-primary);
+  animation: nebulaSwirl 120s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+@keyframes nebulaSwirl {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1);
+    opacity: 0.6;
+  }
+  25% { 
+    transform: rotate(90deg) scale(1.1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: rotate(180deg) scale(1.2);
+    opacity: 1;
+  }
+  75% { 
+    transform: rotate(270deg) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Secondary Nebula Layer */
+.cosmic-nebula-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--nebula-gradient-secondary);
+  animation: nebulaLayer 150s ease-in-out infinite reverse;
+  opacity: 0.7;
+}
+
+@keyframes nebulaLayer {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1.2);
+    opacity: 0.5;
+  }
+  33% { 
+    transform: rotate(120deg) scale(1.3);
+    opacity: 0.7;
+  }
+  66% { 
+    transform: rotate(240deg) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+/* Accent Nebula Layer */
+.cosmic-nebula-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--nebula-gradient-accent);
+  animation: nebulaAccent 180s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+@keyframes nebulaAccent {
+  0%, 100% { 
+    transform: rotate(0deg) scale(0.8);
+    opacity: 0.4;
+  }
+  50% { 
+    transform: rotate(180deg) scale(1.4);
+    opacity: 0.8;
+  }
+}
+
+/* Gold Nebula Highlights */
+.cosmic-nebula-gold {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--nebula-gradient-gold);
+  animation: nebulaGold 200s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes nebulaGold {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: rotate(90deg) scale(1.2);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: rotate(180deg) scale(1.1);
+    opacity: 0.7;
+  }
+  75% { 
+    transform: rotate(270deg) scale(1.3);
+    opacity: 0.5;
+  }
+}
+
+/* Cosmic Filaments */
+.cosmic-filaments {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(45deg, transparent 40%, rgba(6, 182, 212, 0.3) 50%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, rgba(236, 72, 153, 0.2) 50%, transparent 60%),
+    linear-gradient(90deg, transparent 40%, rgba(59, 130, 246, 0.2) 50%, transparent 60%);
+  animation: nebulaFilaments 300s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+@keyframes nebulaFilaments {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1);
+    opacity: 0.2;
+  }
+  50% { 
+    transform: rotate(180deg) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+/* Cosmic Dust Particles */
+.cosmic-dust {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(6, 182, 212, 0.4), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(236, 72, 153, 0.3), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(245, 158, 11, 0.2), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: nebulaDust 400s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+@keyframes nebulaDust {
+  0%, 100% { 
+    transform: translateX(0px) translateY(0px);
+    opacity: 0.4;
+  }
+  25% { 
+    transform: translateX(50px) translateY(-30px);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translateX(-30px) translateY(40px);
+    opacity: 0.8;
+  }
+  75% { 
+    transform: translateX(40px) translateY(-20px);
+    opacity: 0.5;
+  }
+}
+
+/* Cosmic Energy Pulses */
+.cosmic-energy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(6, 182, 212, 0.4) 0%, transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.2) 0%, transparent 50%);
+  animation: nebulaEnergy 250s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes nebulaEnergy {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* Cosmic Title Styling */
+.cosmic-title {
+  position: relative;
+  z-index: 10;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 1.1;
+  text-align: center;
+  background: linear-gradient(135deg, #FFD700 0%, #00BFFF 25%, #9370DB 50%, #EC4899 75%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: cosmicTitleGlow 15s ease-in-out infinite;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  margin: 2rem 0;
+}
+
+@keyframes cosmicTitleGlow {
+  0%, 100% { 
+    filter: brightness(1) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+    transform: scale(1);
+  }
+  50% { 
+    filter: brightness(1.2) drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
+    transform: scale(1.02);
+  }
+}
+
+/* Cosmic Subtitle */
+.cosmic-subtitle {
+  position: relative;
+  z-index: 10;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  line-height: 1.4;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  animation: cosmicSubtitleFade 20s ease-in-out infinite;
+  margin: 1rem 0;
+}
+
+@keyframes cosmicSubtitleFade {
+  0%, 100% { 
+    opacity: 0.7;
+    transform: translateY(0px);
+  }
+  50% { 
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .cosmic-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin: 1.5rem 0;
+  }
+  
+  .cosmic-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    margin: 0.8rem 0;
+  }
+  
+  .cosmic-dust {
+    background-size: 150px 75px;
+  }
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  .cosmic-title {
+    color: #FFD700;
+    text-shadow: 0 0 10px #FFD700;
+  }
+  
+  .cosmic-subtitle {
+    color: #FFFFFF;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-nebula-swirl,
+  .cosmic-nebula-layer,
+  .cosmic-nebula-accent,
+  .cosmic-nebula-gold,
+  .cosmic-filaments,
+  .cosmic-dust,
+  .cosmic-energy,
+  .cosmic-title,
+  .cosmic-subtitle {
+    animation: none;
+  }
+  
+  .cosmic-nebula-swirl,
+  .cosmic-nebula-layer,
+  .cosmic-nebula-accent,
+  .cosmic-nebula-gold {
+    transform: none;
+    opacity: 0.6;
+  }
+}

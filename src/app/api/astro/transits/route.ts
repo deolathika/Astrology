@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { swissEphemeris } from '@/lib/astrology/swiss-ephemeris'
+import SwissEphemerisEngine from '@/lib/astrology/swiss-ephemeris'
 
 export async function GET(request: NextRequest) {
   try {
@@ -42,7 +42,17 @@ export async function GET(request: NextRequest) {
     const rahuKalam = calculateRahuKalam(transitDate, birthData.latitude, birthData.longitude)
     
     // Calculate transits
-    const transits = await swissEphemeris.calculateTransits(transitDate, birthData)
+    const transits = await SwissEphemerisEngine.calculatePlanetaryPositions(
+      transitDate,
+      transitDate,
+      {
+        latitude: birthData.latitude,
+        longitude: birthData.longitude,
+        altitude: 0,
+        timezone: 'UTC',
+        name: 'Transit Location'
+      }
+    )
 
     return NextResponse.json({
       success: true,
@@ -58,7 +68,7 @@ export async function GET(request: NextRequest) {
         },
         planetaryHours: planetaryHours,
         rahuKalam: rahuKalam,
-        hits: transits.map(transit => ({
+        hits: transits.map((transit: any) => ({
           planet: transit.name,
           aspect: 'conjunction',
           house: 1,

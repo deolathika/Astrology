@@ -1,163 +1,336 @@
 /**
- * Role-based Access Control Middleware
- * Ensures users only access data and features appropriate to their role
+ * Role-Based Access Control Middleware for Daily Secrets App
+ * Implements comprehensive RBAC for API endpoints
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth-config'
-import { prisma } from '@/lib/database'
+import { authOptions } from '../auth-config'
+import { prisma } from '../database'
 
-export type UserRole = 'user' | 'premium' | 'admin'
-
-export interface RolePermissions {
-  canViewAllUsers: boolean
-  canEditAllUsers: boolean
-  canAccessAdminPanel: boolean
-  canViewSystemMetrics: boolean
-  canModifySystemSettings: boolean
-  dailyInsightLimit: number
-  compatibilityChecksLimit: number
-  expertConsultationsLimit: number
-  canAccessPremiumFeatures: boolean
+export interface AuthenticatedUser {
+  id: string
+  email: string
+  name: string
+  role: 'user' | 'premium' | 'admin'
+  image?: string
 }
 
-export const rolePermissions: Record<UserRole, RolePermissions> = {
-  user: {
-    canViewAllUsers: false,
-    canEditAllUsers: false,
-    canAccessAdminPanel: false,
-    canViewSystemMetrics: false,
-    canModifySystemSettings: false,
-    dailyInsightLimit: 3,
-    compatibilityChecksLimit: 1,
-    expertConsultationsLimit: 0,
-    canAccessPremiumFeatures: false
-  },
-  premium: {
-    canViewAllUsers: false,
-    canEditAllUsers: false,
-    canAccessAdminPanel: false,
-    canViewSystemMetrics: false,
-    canModifySystemSettings: false,
-    dailyInsightLimit: -1, // Unlimited
-    compatibilityChecksLimit: -1, // Unlimited
-    expertConsultationsLimit: 5,
-    canAccessPremiumFeatures: true
-  },
-  admin: {
-    canViewAllUsers: true,
-    canEditAllUsers: true,
-    canAccessAdminPanel: true,
-    canViewSystemMetrics: true,
-    canModifySystemSettings: true,
-    dailyInsightLimit: -1, // Unlimited
-    compatibilityChecksLimit: -1, // Unlimited
-    expertConsultationsLimit: -1, // Unlimited
-    canAccessPremiumFeatures: true
-  }
-}
-
-export async function requireAuth(request: NextRequest) {
-  const session = await getServerSession(authOptions)
-  
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  return session
-}
-
-export async function requireRole(request: NextRequest, requiredRole: UserRole | UserRole[]) {
-  const session = await requireAuth(request)
-  
-  if (session instanceof NextResponse) {
-    return session // Return the error response
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true }
-  })
-
-  if (!user) {
-    return NextResponse.json({ error: 'User not found' }, { status: 404 })
-  }
-
-  const userRole = user.role as UserRole
-  const allowedRoles = Array.isArray(requiredRole) ? requiredRole : [requiredRole]
-
-  if (!allowedRoles.includes(userRole)) {
-    return NextResponse.json({ 
-      error: 'Insufficient permissions',
-      required: allowedRoles,
-      current: userRole
-    }, { status: 403 })
-  }
-
-  return { session, user: { ...session.user, role: userRole } }
-}
-
-export async function getUserWithPermissions(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: { profiles: true }
-  })
-
-  if (!user) {
+/**
+ * Get authenticated user from session
+ */
+export async function getAuthenticatedUser(request: NextRequest): Promise<AuthenticatedUser | null> {
+  try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user) {
+      return null
+    }
+    
+    return {
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.name,
+      role: session.user.role as 'user' | 'premium' | 'admin',
+      image: session.user.image
+    }
+  } catch (error) {
+    console.error('Authentication error:', error)
     return null
   }
-
-  const userRole = user.role as UserRole
-  const permissions = rolePermissions[userRole]
-
-  return {
-    ...user,
-    permissions
-  }
 }
 
-export function checkPermission(userRole: UserRole, permission: keyof RolePermissions): boolean {
-  return rolePermissions[userRole][permission] as boolean
-}
-
-export function getUsageLimit(userRole: UserRole, feature: 'dailyInsightLimit' | 'compatibilityChecksLimit' | 'expertConsultationsLimit'): number {
-  return rolePermissions[userRole][feature]
-}
-
-export async function validateUserAccess(sessionUserId: string, targetUserId: string, userRole: UserRole): Promise<boolean> {
-  // Admin can access any user
-  if (userRole === 'admin') {
-    return true
+/**
+ * Require authentication for endpoint
+ */
+export async function requireAuth(request: NextRequest): Promise<AuthenticatedUser | NextResponse> {
+  const user = await getAuthenticatedUser(request)
+  
+  if (!user) {
+    return NextResponse.json(
+      { error: 'Authentication required' },
+      { status: 401 }
+    )
   }
   
-  // Users can only access their own data
-  return sessionUserId === targetUserId
+  return user
 }
 
-export function filterUserDataByRole(userData: any, viewerRole: UserRole, isOwnData: boolean) {
-  // Admin sees everything
+/**
+ * Require specific role for endpoint
+ */
+export async function requireRole(
+  request: NextRequest,
+  requiredRole: 'user' | 'premium' | 'admin' | string[]
+): Promise<AuthenticatedUser | NextResponse> {
+  const user = await requireAuth(request)
+  
+  if (user instanceof NextResponse) {
+    return user
+  }
+  
+  const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole]
+  
+  if (!roles.includes(user.role)) {
+    return NextResponse.json(
+      { error: 'Insufficient permissions' },
+      { status: 403 }
+    )
+  }
+  
+  return user
+}
+
+/**
+ * Require premium access
+ */
+export async function requirePremium(request: NextRequest): Promise<AuthenticatedUser | NextResponse> {
+  return requireRole(request, ['premium', 'admin'])
+}
+
+/**
+ * Require admin access
+ */
+export async function requireAdmin(request: NextRequest): Promise<AuthenticatedUser | NextResponse> {
+  return requireRole(request, 'admin')
+}
+
+/**
+ * Check if user can access feature
+ */
+export function canAccessFeature(user: AuthenticatedUser, feature: string): boolean {
+  const featurePermissions = {
+    // Free user features
+    'daily-insights': ['user', 'premium', 'admin'],
+    'basic-numerology': ['user', 'premium', 'admin'],
+    'zodiac-info': ['user', 'premium', 'admin'],
+    'community-access': ['user', 'premium', 'admin'],
+    
+    // Premium user features
+    'advanced-numerology': ['premium', 'admin'],
+    'expert-consultations': ['premium', 'admin'],
+    'detailed-charts': ['premium', 'admin'],
+    'ai-insights': ['premium', 'admin'],
+    'dream-analysis': ['premium', 'admin'],
+    'compatibility-reports': ['premium', 'admin'],
+    'personalized-calendar': ['premium', 'admin'],
+    'unlimited-usage': ['premium', 'admin'],
+    
+    // Admin features
+    'user-management': ['admin'],
+    'system-analytics': ['admin'],
+    'content-management': ['admin'],
+    'system-configuration': ['admin'],
+    'qa-testing': ['admin'],
+    'accuracy-enhancement': ['admin']
+  }
+  
+  const allowedRoles = featurePermissions[feature as keyof typeof featurePermissions] || []
+  return allowedRoles.includes(user.role)
+}
+
+/**
+ * Middleware to check feature access
+ */
+export function requireFeatureAccess(feature: string) {
+  return async (request: NextRequest): Promise<AuthenticatedUser | NextResponse> => {
+    const user = await requireAuth(request)
+    
+    if (user instanceof NextResponse) {
+      return user
+    }
+    
+    if (!canAccessFeature(user, feature)) {
+      return NextResponse.json(
+        { error: `Access denied. Feature '${feature}' requires premium or admin access.` },
+        { status: 403 }
+      )
+    }
+    
+    return user
+  }
+}
+
+/**
+ * Filter user data based on role
+ */
+export function filterUserDataByRole(
+  userData: any,
+  viewerRole: string,
+  isOwnData: boolean = false
+): any {
+  // Admin can see all data
   if (viewerRole === 'admin') {
     return userData
   }
-
-  // Users can only see their own full data
+  
+  // Users can see their own data
   if (isOwnData) {
     return userData
   }
+  
+  // Filter sensitive data for other users
+  const filtered = { ...userData }
+  
+  // Remove sensitive fields
+  delete filtered.password
+  delete filtered.passwordHash
+  delete filtered.twoFactorSecret
+  delete filtered.refreshToken
+  delete filtered.accessToken
+  delete filtered.creditCard
+  delete filtered.ssn
+  delete filtered.bankAccount
+  
+  // Mask email for non-admin users
+  if (filtered.email && viewerRole !== 'admin') {
+    const [local, domain] = filtered.email.split('@')
+    if (local && domain) {
+      filtered.email = `${local[0]}${'*'.repeat(local.length - 2)}${local[local.length - 1]}@${domain}`
+    }
+  }
+  
+  return filtered
+}
 
-  // For other users' data, show limited public info
-  return {
-    id: userData.id,
-    name: userData.name,
-    zodiacSign: userData.profiles?.[0]?.zodiacSign,
-    system: userData.profiles?.[0]?.system,
-    // Hide sensitive information
-    email: undefined,
-    birthDate: undefined,
-    birthTime: undefined,
-    birthPlace: undefined,
-    latitude: undefined,
-    longitude: undefined
+/**
+ * Get user permissions
+ */
+export function getUserPermissions(user: AuthenticatedUser): string[] {
+  const permissions = []
+  
+  // Base permissions for all users
+  permissions.push('daily-insights', 'basic-numerology', 'zodiac-info', 'community-access')
+  
+  // Premium user permissions
+  if (user.role === 'premium' || user.role === 'admin') {
+    permissions.push(
+      'advanced-numerology',
+      'expert-consultations',
+      'detailed-charts',
+      'ai-insights',
+      'dream-analysis',
+      'compatibility-reports',
+      'personalized-calendar',
+      'unlimited-usage'
+    )
+  }
+  
+  // Admin permissions
+  if (user.role === 'admin') {
+    permissions.push(
+      'user-management',
+      'system-analytics',
+      'content-management',
+      'system-configuration',
+      'qa-testing',
+      'accuracy-enhancement'
+    )
+  }
+  
+  return permissions
+}
+
+/**
+ * Check if user has permission
+ */
+export function hasPermission(user: AuthenticatedUser, permission: string): boolean {
+  const permissions = getUserPermissions(user)
+  return permissions.includes(permission)
+}
+
+/**
+ * Get user with permissions
+ */
+export async function getUserWithPermissions(request: NextRequest): Promise<AuthenticatedUser | NextResponse> {
+  const user = await requireAuth(request)
+  
+  if (user instanceof NextResponse) {
+    return user
+  }
+  
+  return user
+}
+
+export function checkPermission(user: AuthenticatedUser, feature: string): boolean {
+  const featurePermissions = {
+    'daily-insights': ['user', 'premium', 'admin'],
+    'basic-numerology': ['user', 'premium', 'admin'],
+    'zodiac-info': ['user', 'premium', 'admin'],
+    'community-access': ['user', 'premium', 'admin'],
+    'advanced-numerology': ['premium', 'admin'],
+    'expert-consultations': ['premium', 'admin'],
+    'detailed-charts': ['premium', 'admin'],
+    'ai-insights': ['premium', 'admin'],
+    'compatibility-check': ['premium', 'admin'],
+    'dream-analysis': ['premium', 'admin'],
+    'transit-alerts': ['premium', 'admin'],
+    'personalized-guidance': ['premium', 'admin'],
+    'data-export': ['premium', 'admin'],
+    'priority-support': ['premium', 'admin'],
+    'system-configuration': ['admin'],
+    'qa-testing': ['admin'],
+    'accuracy-enhancement': ['admin']
+  }
+  
+  const allowedRoles = featurePermissions[feature as keyof typeof featurePermissions] || []
+  return allowedRoles.includes(user.role)
+}
+
+/**
+ * Get user subscription status
+ */
+export async function getUserSubscriptionStatus(userId: string): Promise<{
+  isActive: boolean
+  plan: string
+  expiresAt?: Date
+}> {
+  try {
+    const subscription = await prisma.subscription.findFirst({
+      where: {
+        userId,
+        status: 'active'
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+    
+    if (!subscription) {
+      return { isActive: false, plan: 'free' }
+    }
+    
+    return {
+      isActive: true,
+      plan: subscription.plan,
+      expiresAt: subscription.endDate || undefined
+    }
+  } catch (error) {
+    console.error('Error checking subscription status:', error)
+    return { isActive: false, plan: 'free' }
+  }
+}
+
+/**
+ * Middleware to check subscription status
+ */
+export function requireActiveSubscription() {
+  return async (request: NextRequest): Promise<AuthenticatedUser | NextResponse> => {
+    const user = await requireAuth(request)
+    
+    if (user instanceof NextResponse) {
+      return user
+    }
+    
+    const subscription = await getUserSubscriptionStatus(user.id)
+    
+    if (!subscription.isActive && user.role === 'user') {
+      return NextResponse.json(
+        { error: 'Active subscription required for this feature' },
+        { status: 403 }
+      )
+    }
+    
+    return user
   }
 }
