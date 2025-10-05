@@ -56,20 +56,20 @@ export default function SettingsPage() {
       <main className="lg:pl-64">
         <div className="p-6">
           {/* Header */}
-          <div className="mb-8">
+        <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">
               Settings ⚙️
-            </h1>
+          </h1>
             <p className="text-muted-foreground">
               Manage your account, preferences, and privacy settings.
             </p>
-          </div>
+        </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
               <div className="bg-card border border-border rounded-lg p-4">
-                <nav className="space-y-2">
+              <nav className="space-y-2">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
@@ -84,12 +84,12 @@ export default function SettingsPage() {
                       {tab.label}
                     </button>
                   ))}
-                </nav>
-              </div>
+              </nav>
             </div>
+          </div>
 
-            {/* Content */}
-            <div className="lg:col-span-3">
+          {/* Content */}
+          <div className="lg:col-span-3">
               <div className="bg-card border border-border rounded-lg p-6">
                 {activeTab === 'profile' && (
                   <ProfileTab 
@@ -114,7 +114,7 @@ export default function SettingsPage() {
                     onUpdate={updateSettings.mutate}
                   />
                 )}
-                
+
                 {activeTab === 'privacy' && (
                   <PrivacyTab 
                     settings={settings} 
@@ -129,10 +129,10 @@ export default function SettingsPage() {
                     loading={isLoading}
                   />
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
       </main>
     </div>
   )
@@ -153,8 +153,8 @@ function ProfileTab({ user, profile, loading }: any) {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
+                      <div className="space-y-6">
+                        <div>
         <h3 className="text-xl font-semibold mb-4">Profile Information</h3>
         <p className="text-muted-foreground mb-6">
           Update your personal information and cosmic preferences.
@@ -200,19 +200,19 @@ function ProfileTab({ user, profile, loading }: any) {
 
         <div>
           <label className="block text-sm font-medium text-foreground mb-2">
-            Astrology System
-          </label>
-          <select
+                            Astrology System
+                          </label>
+                          <select
             value={formData.systemPref}
             onChange={(e) => setFormData({ ...formData, systemPref: e.target.value })}
             className="w-full p-2 border border-input rounded-md bg-background"
-          >
-            <option value="western">Western Astrology</option>
-            <option value="vedic">Vedic Astrology</option>
-            <option value="chinese">Chinese Astrology</option>
-            <option value="hybrid">Hybrid System</option>
-          </select>
-        </div>
+                          >
+                            <option value="western">Western Astrology</option>
+                            <option value="vedic">Vedic Astrology</option>
+                            <option value="chinese">Chinese Astrology</option>
+                            <option value="hybrid">Hybrid System</option>
+                          </select>
+                        </div>
       </div>
 
       <div className="flex gap-4">
@@ -277,11 +277,11 @@ function PreferencesTab({ settings, loading, onUpdate }: any) {
           </select>
         </div>
 
-        <div>
+                        <div>
           <label className="block text-sm font-medium text-foreground mb-2">
             Timezone
-          </label>
-          <select
+                          </label>
+                          <select
             value={preferences.timezone}
             onChange={(e) => setPreferences({ ...preferences, timezone: e.target.value })}
             className="w-full p-2 border border-input rounded-md bg-background"
@@ -290,14 +290,14 @@ function PreferencesTab({ settings, loading, onUpdate }: any) {
             <option value="America/New_York">Eastern Time</option>
             <option value="America/Los_Angeles">Pacific Time</option>
             <option value="Europe/London">London</option>
-          </select>
-        </div>
+                          </select>
+                        </div>
 
-        <div>
+                        <div>
           <label className="block text-sm font-medium text-foreground mb-2">
             Date Format
-          </label>
-          <select
+                          </label>
+                          <select
             value={preferences.dateFormat}
             onChange={(e) => setPreferences({ ...preferences, dateFormat: e.target.value })}
             className="w-full p-2 border border-input rounded-md bg-background"
@@ -305,15 +305,15 @@ function PreferencesTab({ settings, loading, onUpdate }: any) {
             <option value="MM/DD/YYYY">MM/DD/YYYY</option>
             <option value="DD/MM/YYYY">DD/MM/YYYY</option>
             <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-          </select>
-        </div>
-      </div>
+                          </select>
+                        </div>
+                      </div>
 
       <div className="flex gap-4">
         <Button onClick={() => onUpdate(preferences)}>Save Preferences</Button>
         <Button variant="outline">Reset to Default</Button>
-      </div>
-    </div>
+                    </div>
+                  </div>
   )
 }
 
@@ -462,23 +462,23 @@ function PrivacyTab({ settings, loading, onUpdate }: any) {
   }
 
   return (
-    <div className="space-y-6">
+                  <div className="space-y-6">
       <div>
         <h3 className="text-xl font-semibold mb-4">Privacy Settings</h3>
         <p className="text-muted-foreground mb-6">
           Control your privacy and data sharing preferences.
         </p>
       </div>
-
-      <div className="space-y-6">
+                      
+                      <div className="space-y-6">
         <div>
           <h4 className="font-medium mb-4">Profile Visibility</h4>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div>
+                          <div>
                 <h5 className="font-medium">Profile Privacy</h5>
                 <p className="text-sm text-muted-foreground">Who can see your profile</p>
-              </div>
+                          </div>
               <select
                 value={privacy.profile}
                 onChange={(e) => setPrivacy({ ...privacy, profile: e.target.value })}
@@ -572,13 +572,13 @@ function AccountTab({ user, loading }: any) {
         <p className="text-muted-foreground mb-6">
           Manage your account security and data.
         </p>
-      </div>
+                        </div>
 
       <div className="space-y-6">
         <div className="bg-card border border-border rounded-lg p-6">
           <h4 className="font-semibold mb-4">Account Information</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+                          <div>
               <label className="block text-sm font-medium text-foreground mb-2">
                 Email Address
               </label>
@@ -586,7 +586,7 @@ function AccountTab({ user, loading }: any) {
                 <Input value={user?.email} disabled />
                 <Button variant="outline" size="sm">Change</Button>
               </div>
-            </div>
+                          </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
                 Account Status
@@ -596,10 +596,10 @@ function AccountTab({ user, loading }: any) {
                 <span className="text-sm text-muted-foreground">
                   Member since {new Date(user?.createdAt).toLocaleDateString()}
                 </span>
-              </div>
-            </div>
-          </div>
-        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
           <h4 className="font-semibold mb-4">Security</h4>
@@ -657,12 +657,12 @@ function AccountTab({ user, loading }: any) {
             <div className="flex gap-4">
               <Button variant="destructive">Yes, Delete</Button>
               <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
-                Cancel
+                    Cancel
               </Button>
             </div>
           </div>
-        </div>
-      )}
+                </div>
+          )}
     </div>
   )
 }

@@ -122,7 +122,7 @@ class PythagoreanNumerologyService {
     const month = birthDate.getMonth() + 1;
     const year = birthDate.getFullYear();
 
-    let sum = this.reduceToSingleDigit(day) + this.reduceToSingleDigit(month) + this.reduceToSingleDigit(year);
+    const sum = this.reduceToSingleDigit(day) + this.reduceToSingleDigit(month) + this.reduceToSingleDigit(year);
     return this.reduceToSingleDigit(sum);
   }
 
@@ -437,3 +437,4 @@ class PythagoreanNumerologyService {
 // Export singleton instance
 export const pythagoreanNumerologyService = new PythagoreanNumerologyService();
 export default pythagoreanNumerologyService;
+

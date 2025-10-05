@@ -41,3 +41,4 @@ const Announcer: React.FC<AnnouncerProps> = ({
 };
 
 export default Announcer;
+

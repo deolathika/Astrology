@@ -22,3 +22,4 @@ export const config = {
   // Match only internationalized pathnames
   matcher: ['/', '/(si-LK|ta-IN|hi-IN|zh-CN|en)/:path*']
 };
+

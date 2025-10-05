@@ -441,3 +441,4 @@ function checkPasswordRequirements(password) {
 
 // Run security audit
 performSecurityAudit()
+

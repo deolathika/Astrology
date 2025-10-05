@@ -412,3 +412,4 @@ async function testSettingsPage() {
 
 // Run test
 testSettingsPage()
+

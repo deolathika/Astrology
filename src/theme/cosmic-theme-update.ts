@@ -417,3 +417,4 @@ export const cosmicThemeConfig = {
 }
 
 export default cosmicThemeConfig
+

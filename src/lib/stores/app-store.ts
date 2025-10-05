@@ -175,3 +175,4 @@ export const useUIActions = () => useAppStore((state) => ({
   setSidebarOpen: state.setSidebarOpen,
   setLoading: state.setLoading
 }))
+

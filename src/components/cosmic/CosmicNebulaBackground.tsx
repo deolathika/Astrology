@@ -41,3 +41,4 @@ const CosmicNebulaBackground: React.FC<CosmicNebulaBackgroundProps> = ({
 }
 
 export default CosmicNebulaBackground
+

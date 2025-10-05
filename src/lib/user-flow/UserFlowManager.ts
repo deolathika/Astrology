@@ -8,28 +8,11 @@
 
 export interface UserFlowConfig {
   guest: GuestFlow
-  free: FreeUserFlow
   premium: PremiumUserFlow
   admin: AdminUserFlow
 }
 
 export interface GuestFlow {
-  allowedRoutes: string[]
-  features: {
-    dailyAstrology: boolean
-    dailyNumerology: boolean
-    dailyQuote: boolean
-    limitedCompatibility: boolean
-    profileEdit: boolean
-  }
-  restrictions: {
-    contentLength: number
-    dailyInsights: number
-    premiumContent: 'blurred' | 'truncated' | 'hidden'
-  }
-}
-
-export interface FreeUserFlow {
   allowedRoutes: string[]
   features: {
     dailyAstrology: boolean
@@ -93,31 +76,6 @@ export class UserFlowManager {
   constructor() {
     this.config = {
       guest: {
-        allowedRoutes: [
-          '/',
-          '/about',
-          '/terms',
-          '/privacy',
-          '/faq',
-          '/contact',
-          '/vision',
-          '/mission',
-          '/dmca'
-        ],
-        features: {
-          dailyAstrology: true,
-          dailyNumerology: true,
-          dailyQuote: true,
-          limitedCompatibility: true,
-          profileEdit: true
-        },
-        restrictions: {
-          contentLength: 200,
-          dailyInsights: 3,
-          premiumContent: 'blurred'
-        }
-      },
-      free: {
         allowedRoutes: [
           '/',
           '/dashboard',
@@ -242,14 +200,15 @@ export class UserFlowManager {
   /**
    * Get user flow configuration based on role
    */
-  getUserFlow(role: string): GuestFlow | FreeUserFlow | PremiumUserFlow | AdminUserFlow {
+  getUserFlow(role: string): GuestFlow | PremiumUserFlow | AdminUserFlow {
     switch (role) {
       case 'admin':
         return this.config.admin
       case 'premium':
         return this.config.premium
-      case 'user':
-        return this.config.free
+      case 'guest':
+      case 'user': // Legacy support for existing 'user' role
+        return this.config.guest
       default:
         return this.config.guest
     }
@@ -318,7 +277,7 @@ export class UserFlowManager {
         return '/admin'
       case 'premium':
         return '/premium'
-      case 'user':
+      case 'guest':
         return '/dashboard'
       default:
         return '/'

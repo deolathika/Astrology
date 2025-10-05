@@ -1,414 +1,312 @@
+/**
+ * Community Page
+ * Social features and user interactions
+ */
+
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Users, Heart, MessageCircle, Shield, Smile, Search, Filter, Plus, Send, ThumbsUp, Share2 } from 'lucide-react'
-import { toast } from 'react-hot-toast'
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  TrendingUp, 
+  Users, 
+  MessageCircle,
+  Star,
+  Heart,
+  Sparkles
+} from 'lucide-react'
+import AppShell from '@/components/layout/AppShell'
+import PostCard from '@/components/community/PostCard'
+import CosmicButton from '@/components/cosmic/CosmicButton'
 
-interface CommunityUser {
+interface Post {
   id: string
-  name: string
-  zodiacSign: string
-  lifePathNumber: number
-  avatar: string
-  isOnline: boolean
-  lastSeen: string
-  compatibilityScore: number
+  author: {
+    id: string
+    name: string
+    avatar?: string
+    zodiacSign?: string
+    isVerified?: boolean
+  }
+  content: string
+  images?: string[]
+  likes: number
+  comments: number
+  shares: number
+  isLiked: boolean
+  isBookmarked: boolean
+  createdAt: string
+  tags?: string[]
+  type: 'insight' | 'question' | 'experience' | 'discussion'
 }
-
-interface ChatMessage {
-  id: string
-  fromId: string
-  fromName: string
-  emoji: string
-  timestamp: string
-  isModerated: boolean
-}
-
-const emojiOptions = [
-  '✨', '🌟', '💫', '🌙', '☀️', '🌺', '🌸', '🌼', '🌻', '🌷',
-  '💖', '💕', '💗', '💝', '💎', '🔮', '🎭', '🎨', '🎪', '🎯',
-  '🌈', '☁️', '🌊', '🔥', '🌍', '🌎', '🌏', '🌌', '⭐', '🌟'
-]
 
 export default function CommunityPage() {
-  const [users, setUsers] = useState<CommunityUser[]>([])
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [selectedUser, setSelectedUser] = useState<CommunityUser | null>(null)
-  const [newMessage, setNewMessage] = useState('')
-  const [hasConsented, setHasConsented] = useState(false)
-  const [showConsentModal, setShowConsentModal] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isOnline, setIsOnline] = useState(true)
+  const [posts, setPosts] = useState<Post[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterType, setFilterType] = useState<string>('all')
+  const [isLoading, setIsLoading] = useState(true)
 
+  // Mock data - in real app, this would come from API
   useEffect(() => {
-    loadCommunityData()
-    checkConsent()
+    const mockPosts: Post[] = [
+      {
+        id: '1',
+        author: {
+          id: 'user1',
+          name: 'Sarah Chen',
+          zodiacSign: 'Pisces',
+          isVerified: true
+        },
+        content: 'Just had the most incredible dream about flying over the ocean. The water was so clear I could see the stars reflected in it. Anyone else have dreams like this? 🌊✨',
+        likes: 24,
+        comments: 8,
+        shares: 3,
+        isLiked: false,
+        isBookmarked: false,
+        createdAt: '2024-01-15T10:30:00Z',
+        tags: ['dreams', 'water', 'flying'],
+        type: 'experience'
+      },
+      {
+        id: '2',
+        author: {
+          id: 'user2',
+          name: 'Marcus Johnson',
+          zodiacSign: 'Leo'
+        },
+        content: 'My numerology reading said I\'m a life path 7, and honestly it explains SO much about my introspective nature and love for spiritual exploration. Anyone else a 7?',
+        likes: 18,
+        comments: 12,
+        shares: 5,
+        isLiked: true,
+        isBookmarked: true,
+        createdAt: '2024-01-15T08:15:00Z',
+        tags: ['numerology', 'life-path-7', 'spiritual'],
+        type: 'insight'
+      },
+      {
+        id: '3',
+        author: {
+          id: 'user3',
+          name: 'Elena Rodriguez',
+          zodiacSign: 'Scorpio',
+          isVerified: true
+        },
+        content: 'Question for the community: How do you handle Mercury retrograde? I feel like everything is going wrong this week! 😅',
+        likes: 31,
+        comments: 25,
+        shares: 7,
+        isLiked: false,
+        isBookmarked: false,
+        createdAt: '2024-01-14T16:45:00Z',
+        tags: ['mercury-retrograde', 'help', 'astrology'],
+        type: 'question'
+      }
+    ]
+
+    setTimeout(() => {
+      setPosts(mockPosts)
+      setIsLoading(false)
+    }, 1000)
   }, [])
 
-  const loadCommunityData = async () => {
-    try {
-      // Load discovered users
-      const response = await fetch('/api/community/chat?action=discover_connections&userZodiac=Leo&limit=10')
-      if (response.ok) {
-        const data = await response.json()
-        setUsers(data.connections || [])
-      }
-
-      // Load recent messages
-      const messagesResponse = await fetch('/api/community/chat?action=getRecentMessages&limit=20')
-      if (messagesResponse.ok) {
-        const messagesData = await messagesResponse.json()
-        setMessages(messagesData.messages || [])
-      }
-    } catch (error) {
-      // Mock data for development
-      setUsers([
-        {
-          id: '1',
-          name: 'Alex Johnson',
-          zodiacSign: 'Gemini',
-          lifePathNumber: 7,
-          avatar: 'AJ',
-          isOnline: true,
-          lastSeen: 'now',
-          compatibilityScore: 85
-        },
-        {
-          id: '2',
-          name: 'Sarah Chen',
-          zodiacSign: 'Sagittarius',
-          lifePathNumber: 3,
-          avatar: 'SC',
-          isOnline: false,
-          lastSeen: '2 hours ago',
-          compatibilityScore: 92
-        },
-        {
-          id: '3',
-          name: 'Maya Patel',
-          zodiacSign: 'Cancer',
-          lifePathNumber: 9,
-          avatar: 'MP',
-          isOnline: true,
-          lastSeen: 'now',
-          compatibilityScore: 78
-        }
-      ])
-
-      setMessages([
-        {
-          id: '1',
-          fromId: '1',
-          fromName: 'Alex Johnson',
-          emoji: '✨',
-          timestamp: new Date().toISOString(),
-          isModerated: false
-        },
-        {
-          id: '2',
-          fromId: '2',
-          fromName: 'Sarah Chen',
-          emoji: '🌟',
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          isModerated: false
-        }
-      ])
-    }
-  }
-
-  const checkConsent = () => {
-    const consent = localStorage.getItem('communityConsent')
-    setHasConsented(consent === 'true')
-    if (!consent) {
-      setShowConsentModal(true)
-    }
-  }
-
-  const handleConsent = (consent: boolean) => {
-    setHasConsented(consent)
-    localStorage.setItem('communityConsent', consent.toString())
-    setShowConsentModal(false)
-    
-    if (consent) {
-      toast.success('Welcome to the community!')
-    } else {
-      toast('You can join the community anytime in settings')
-    }
-  }
-
-  const sendMessage = async (emoji: string) => {
-    if (!hasConsented) {
-      toast.error('Please consent to community participation first')
-      return
-    }
-
-    try {
-      const response = await fetch('/api/community/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'sendMessage',
-          payload: {
-            senderId: 'current_user',
-            senderName: 'You',
-            emoji: emoji
+  const handleLike = (postId: string) => {
+    setPosts(prev => prev.map(post => 
+      post.id === postId 
+        ? { 
+            ...post, 
+            isLiked: !post.isLiked, 
+            likes: post.isLiked ? post.likes - 1 : post.likes + 1 
           }
-        })
-      })
-
-      if (response.ok) {
-        const newMsg: ChatMessage = {
-          id: Date.now().toString(),
-          fromId: 'current_user',
-          fromName: 'You',
-          emoji: emoji,
-          timestamp: new Date().toISOString(),
-          isModerated: false
-        }
-        setMessages(prev => [newMsg, ...prev])
-        toast.success('Message sent!')
-      }
-    } catch (error) {
-      toast.error('Failed to send message')
-    }
+        : post
+    ))
   }
 
-  const getCompatibilityColor = (score: number) => {
-    if (score >= 90) return 'text-green-600'
-    if (score >= 80) return 'text-blue-600'
-    if (score >= 70) return 'text-yellow-600'
-    return 'text-gray-600'
+  const handleBookmark = (postId: string) => {
+    setPosts(prev => prev.map(post => 
+      post.id === postId 
+        ? { ...post, isBookmarked: !post.isBookmarked }
+        : post
+    ))
   }
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.zodiacSign.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         post.author.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         post.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    
+    const matchesFilter = filterType === 'all' || post.type === filterType
+    
+    return matchesSearch && matchesFilter
+  })
+
+  const filterTypes = [
+    { id: 'all', label: 'All Posts', icon: MessageCircle },
+    { id: 'insight', label: 'Insights', icon: Sparkles },
+    { id: 'question', label: 'Questions', icon: TrendingUp },
+    { id: 'experience', label: 'Experiences', icon: Heart },
+    { id: 'discussion', label: 'Discussions', icon: Users }
+  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-gray-800 p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-6xl mx-auto py-8"
-      >
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-gradient-primary flex items-center">
-              <Users className="w-8 h-8 mr-3" />
-              Community
-            </h1>
-            <p className="text-gray-600 mt-2">Connect with like-minded cosmic souls</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-              />
+    <AppShell>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6 mb-8"
+        >
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Cosmic Community
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Connect with fellow cosmic explorers and share your journey
+              </p>
             </div>
-            <button className="btn btn-secondary flex items-center">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </button>
+            
+            <CosmicButton
+              variant="premium"
+              size="lg"
+              icon={<Plus className="w-5 h-5" />}
+            >
+              Share Your Story
+            </CosmicButton>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Discover Users */}
-          <div className="lg:col-span-1">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Discover Connections</h2>
-            <div className="space-y-4">
-              {filteredUsers.map((user) => (
-                <motion.div
-                  key={user.id}
-                  whileHover={{ scale: 1.02 }}
-                  className="card p-4 cursor-pointer hover:shadow-lg transition-all"
-                  onClick={() => setSelectedUser(user)}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-full bg-violet-500 text-white flex items-center justify-center font-semibold">
-                      {user.avatar}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                      <p className="text-sm text-gray-600">{user.zodiacSign} • Life Path {user.lifePathNumber}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <div className={`w-2 h-2 rounded-full ${user.isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
-                        <span className="text-xs text-gray-500">
-                          {user.isOnline ? 'Online' : user.lastSeen}
-                        </span>
-                        <span className={`text-xs font-medium ${getCompatibilityColor(user.compatibilityScore)}`}>
-                          {user.compatibilityScore}% match
-                        </span>
-                      </div>
-                    </div>
-                    <Heart className="w-5 h-5 text-pink-500" />
-                  </div>
-                </motion.div>
-              ))}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="lg:col-span-1 space-y-6"
+          >
+            {/* Search */}
+            <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Search Posts</h3>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search community..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Chat Messages */}
-          <div className="lg:col-span-2">
-            <div className="card p-6 h-96 flex flex-col">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  Community Chat
-                </h2>
-                <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
-                  <span className="text-sm text-gray-500">
-                    {isOnline ? 'Online' : 'Offline'}
-                  </span>
+            {/* Filters */}
+            <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Filter by Type</h3>
+              <div className="space-y-2">
+                {filterTypes.map((filter) => (
+                  <button
+                    key={filter.id}
+                    onClick={() => setFilterType(filter.id)}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                      filterType === filter.id
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'hover:bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    <filter.icon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{filter.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Community Stats */}
+            <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Community Stats</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Active Members</span>
+                  <span className="font-semibold text-purple-600">2,847</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Posts Today</span>
+                  <span className="font-semibold text-purple-600">156</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Discussions</span>
+                  <span className="font-semibold text-purple-600">89</span>
                 </div>
               </div>
+            </div>
+          </motion.div>
 
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-                {messages.length === 0 ? (
-                  <div className="text-center py-8">
+          {/* Main Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="lg:col-span-3"
+          >
+            {isLoading ? (
+              <div className="space-y-6">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6 animate-pulse">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
+                      <div className="space-y-2">
+                        <div className="h-4 bg-gray-300 rounded w-24"></div>
+                        <div className="h-3 bg-gray-300 rounded w-32"></div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-300 rounded w-full"></div>
+                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {filteredPosts.length === 0 ? (
+                  <div className="text-center py-12">
                     <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No messages yet</h3>
-                    <p className="text-gray-500">Be the first to share a cosmic emoji!</p>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No posts found</h3>
+                    <p className="text-gray-600 mb-6">
+                      {searchQuery ? 'Try adjusting your search terms' : 'Be the first to share something with the community!'}
+                    </p>
+                    <CosmicButton variant="primary" size="lg">
+                      Create First Post
+                    </CosmicButton>
                   </div>
                 ) : (
-                  messages.map((message) => (
+                  filteredPosts.map((post, index) => (
                     <motion.div
-                      key={message.id}
+                      key={post.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`flex items-center space-x-3 ${
-                        message.fromId === 'current_user' ? 'justify-end' : 'justify-start'
-                      }`}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
-                      {message.fromId !== 'current_user' && (
-                        <div className="w-8 h-8 rounded-full bg-violet-500 text-white flex items-center justify-center text-sm font-semibold">
-                          {message.fromName.charAt(0)}
-                        </div>
-                      )}
-                      <div className={`flex items-center space-x-2 ${
-                        message.fromId === 'current_user' ? 'flex-row-reverse' : ''
-                      }`}>
-                        <div className="text-2xl">{message.emoji}</div>
-                        <div className="text-xs text-gray-500">
-                          {new Date(message.timestamp).toLocaleTimeString()}
-                        </div>
-                      </div>
-                      {message.fromId === 'current_user' && (
-                        <div className="w-8 h-8 rounded-full bg-violet-500 text-white flex items-center justify-center text-sm font-semibold">
-                          Y
-                        </div>
-                      )}
+                      <PostCard
+                        post={post}
+                        onLike={handleLike}
+                        onBookmark={handleBookmark}
+                        onComment={(postId) => console.log('Comment on post:', postId)}
+                        onShare={(postId) => console.log('Share post:', postId)}
+                        onReport={(postId) => console.log('Report post:', postId)}
+                      />
                     </motion.div>
                   ))
                 )}
               </div>
-
-              {/* Emoji Picker */}
-              {hasConsented ? (
-                <div className="border-t pt-4">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {emojiOptions.map((emoji) => (
-                      <button
-                        key={emoji}
-                        onClick={() => sendMessage(emoji)}
-                        className="w-10 h-10 text-2xl hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center"
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-500 text-center">
-                    Click an emoji to send it to the community
-                  </p>
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <Shield className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-500 text-sm">Consent required to participate</p>
-                </div>
-              )}
-            </div>
-          </div>
+            )}
+          </motion.div>
         </div>
-
-        {/* Consent Modal */}
-        <AnimatePresence>
-          {showConsentModal && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="card p-6 max-w-md w-full mx-4"
-              >
-                <div className="text-center mb-6">
-                  <Shield className="w-16 h-16 text-violet-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Join the Community
-                  </h3>
-                  <p className="text-gray-600">
-                    Connect with other cosmic souls through emoji-only chat. Your privacy is protected.
-                  </p>
-                </div>
-
-                <div className="space-y-4 mb-6">
-                  <div className="flex items-start space-x-3">
-                    <Smile className="w-5 h-5 text-green-500 mt-1" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">Safe Communication</h4>
-                      <p className="text-sm text-gray-600">Only emojis allowed - no text messages</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Shield className="w-5 h-5 text-blue-500 mt-1" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">Privacy Protected</h4>
-                      <p className="text-sm text-gray-600">Your personal data stays private</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Heart className="w-5 h-5 text-pink-500 mt-1" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">Cosmic Connections</h4>
-                      <p className="text-sm text-gray-600">Find your astrological soulmates</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => handleConsent(false)}
-                    className="btn btn-secondary flex-1"
-                  >
-                    Maybe Later
-                  </button>
-                  <button
-                    onClick={() => handleConsent(true)}
-                    className="btn btn-primary flex-1"
-                  >
-                    Join Community
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </div>
+      </div>
+    </AppShell>
   )
 }

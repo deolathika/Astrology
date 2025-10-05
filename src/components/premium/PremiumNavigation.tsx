@@ -72,3 +72,4 @@ export default function PremiumNavigation({ user, currentPage = 'dashboard' }: P
     </div>
   )
 }
+

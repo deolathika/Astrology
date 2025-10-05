@@ -130,3 +130,4 @@ const SearchBox: React.FC<SearchBoxProps> = ({
 
 export { SearchBox }
 export type { SearchBoxProps }
+

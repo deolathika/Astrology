@@ -629,3 +629,4 @@ export default function ComprehensiveAstrologySystem({ user }: ComprehensiveAstr
     </div>
   )
 }
+

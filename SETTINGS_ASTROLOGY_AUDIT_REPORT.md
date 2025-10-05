@@ -239,3 +239,4 @@ showModalities Boolean @default(true)
 **Status**: 🎊 **ALL ASTROLOGY SYSTEMS 100% ACCURATE AND PRODUCTION READY** 🚀
 
 The settings page provides users with complete control over their cosmic experience with all astrology systems working perfectly at the frontend, backend, and database levels!
+

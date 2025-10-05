@@ -14,13 +14,13 @@ const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  role: z.enum(['user', 'premium', 'admin']).optional().default('user')
+  role: z.enum(['guest', 'premium', 'admin']).optional().default('guest')
 })
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, email, password, role = 'user' } = signupSchema.parse(body)
+    const { name, email, password, role = 'guest' } = signupSchema.parse(body)
     
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({

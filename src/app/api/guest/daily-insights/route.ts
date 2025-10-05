@@ -129,3 +129,4 @@ function calculateLifePath(day: number, month: number, year: number): number {
   
   return sum
 }
+

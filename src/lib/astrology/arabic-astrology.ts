@@ -472,3 +472,4 @@ export class ArabicAstrologyService {
     return interpretation
   }
 }
+

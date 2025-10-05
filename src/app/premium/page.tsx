@@ -1,395 +1,218 @@
 /**
- * Premium User Dashboard
- * Full-Stack Engineer + UX Flow Designer
- * 
- * Full-featured dashboard for premium users with all unlocked features
+ * Premium Subscription Page
+ * Displays pricing plans and subscription options
  */
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { CosmicLayout, CosmicCard, CosmicButton } from '@/components/cosmic'
-import { UserFlowRouter } from '@/components/user-flow/UserFlowRouter'
-import { 
-  Star, 
-  Sparkles, 
-  Moon, 
-  Heart, 
-  Users, 
-  Crown, 
-  Zap, 
-  ArrowRight,
-  Calendar,
-  TrendingUp,
-  MessageCircle,
-  Download,
-  Share2,
-  BarChart3,
-  Settings,
-  FileText,
-  Image
-} from 'lucide-react'
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Crown, Star, Zap, Shield, Sparkles } from 'lucide-react'
+import AppShell from '@/components/layout/AppShell'
+import PricingCard from '@/components/pricing/PricingCard'
+import { PRICING_PLANS } from '@/lib/stripe/config'
 
-export default function PremiumDashboard() {
-  const { data: session } = useSession()
-  const router = useRouter()
-  const [premiumInsights, setPremiumInsights] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
+export default function PremiumPage() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (session?.user) {
-      loadPremiumInsights()
+  const handleSelectPlan = async (planId: string) => {
+    if (planId === 'free') {
+      // Redirect to free features
+      window.location.href = '/zodiac'
+      return
     }
-  }, [session])
 
-  const loadPremiumInsights = async () => {
+    setIsLoading(true)
+    setSelectedPlan(planId)
+
     try {
-      setLoading(true)
-      const response = await fetch('/api/premium/insights')
-      const data = await response.json()
-      setPremiumInsights(data)
+      const response = await fetch('/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: PRICING_PLANS.find(p => p.id === planId)?.stripePriceId,
+          successUrl: `${window.location.origin}/profile?success=true`,
+          cancelUrl: `${window.location.origin}/premium?canceled=true`,
+        }),
+      })
+
+      const { url } = await response.json()
+      
+      if (url) {
+        window.location.href = url
+      } else {
+        throw new Error('No checkout URL received')
+      }
     } catch (error) {
-      console.error('Error loading premium insights:', error)
+      console.error('Error creating checkout session:', error)
+      alert('Failed to start checkout. Please try again.')
     } finally {
-      setLoading(false)
+      setIsLoading(false)
+      setSelectedPlan(null)
     }
-  }
-
-  const handleFeatureClick = (feature: string) => {
-    router.push(`/${feature}`)
-  }
-
-  const handleExportPDF = () => {
-    // Handle PDF export
-    router.push('/premium/export')
-  }
-
-  const handleCreateStory = () => {
-    // Handle social story creation
-    router.push('/premium/stories')
   }
 
   return (
-    <UserFlowRouter>
-      <CosmicLayout variant="nebula" size="lg" background="nebula">
-        <div className="cosmic-container max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <Crown className="w-8 h-8 text-cosmic-gold mr-3" />
-              <h1 className="text-4xl font-bold cosmic-text-gradient">
-                Premium Dashboard
-              </h1>
-            </div>
-            <p className="text-cosmic-text-secondary">
-              Welcome to your cosmic command center, {session?.user?.name || 'Cosmic Soul'}!
+    <AppShell>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center py-16 px-4"
+        >
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6"
+            >
+              <Crown className="w-8 h-8 text-white" />
+            </motion.div>
+            
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
+              Unlock Your Cosmic Potential
+            </h1>
+            
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              Join thousands of users discovering their destiny with personalized astrology, 
+              numerology, and AI-powered insights.
             </p>
           </div>
+        </motion.div>
 
-          {/* Premium Insights */}
-          <CosmicCard variant="premium" size="lg" className="mb-8">
-            <h2 className="text-2xl font-semibold text-cosmic-gold mb-6">
-              Your Premium Cosmic Insights
+        {/* Pricing Plans */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="max-w-6xl mx-auto px-4 pb-16"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {PRICING_PLANS.map((plan, index) => (
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <PricingCard
+                  plan={plan}
+                  onSelectPlan={handleSelectPlan}
+                  isLoading={isLoading && selectedPlan === plan.id}
+                />
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Features Comparison */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl mx-4 mb-16 p-8"
+        >
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+            Compare Features
+          </h2>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-4 px-6 font-semibold text-gray-900">Features</th>
+                  <th className="text-center py-4 px-6 font-semibold text-gray-900">Free</th>
+                  <th className="text-center py-4 px-6 font-semibold text-gray-900">Premium</th>
+                  <th className="text-center py-4 px-6 font-semibold text-gray-900">Annual</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="py-4 px-6 font-medium text-gray-900">Daily Insights</td>
+                  <td className="text-center py-4 px-6">3 per day</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Unlimited</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Unlimited</td>
+                </tr>
+                <tr>
+                  <td className="py-4 px-6 font-medium text-gray-900">Numerology</td>
+                  <td className="text-center py-4 px-6">Basic</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Full Suite</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Full Suite</td>
+                </tr>
+                <tr>
+                  <td className="py-4 px-6 font-medium text-gray-900">Astrology Charts</td>
+                  <td className="text-center py-4 px-6">Simple</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Advanced</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Advanced</td>
+                </tr>
+                <tr>
+                  <td className="py-4 px-6 font-medium text-gray-900">Dream Analysis</td>
+                  <td className="text-center py-4 px-6">-</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">AI Powered</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">AI Powered</td>
+                </tr>
+                <tr>
+                  <td className="py-4 px-6 font-medium text-gray-900">Support</td>
+                  <td className="text-center py-4 px-6">Community</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Priority</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Priority</td>
+                </tr>
+                <tr>
+                  <td className="py-4 px-6 font-medium text-gray-900">Ads</td>
+                  <td className="text-center py-4 px-6">Yes</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">No</td>
+                  <td className="text-center py-4 px-6 text-green-600 font-semibold">No</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+
+        {/* Trust Indicators */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="text-center py-16 px-4"
+        >
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">
+              Trusted by Thousands of Users
             </h2>
             
-            {loading ? (
-              <div className="text-center py-8">
-                <div className="w-8 h-8 border-4 border-cosmic-gold/30 border-t-cosmic-gold rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-cosmic-text-secondary">Loading your premium insights...</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Star className="w-8 h-8 text-cosmic-gold" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
-                    Advanced Astrology
-                  </h3>
-                  <p className="text-sm text-cosmic-text-secondary">
-                    {premiumInsights?.astrology || 'Detailed astrological analysis with transits and aspects.'}
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Sparkles className="w-8 h-8 text-cosmic-blue" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-cosmic-blue mb-2">
-                    Master Numerology
-                  </h3>
-                  <p className="text-sm text-cosmic-text-secondary">
-                    {premiumInsights?.numerology || 'Complete numerology profile with master numbers and pinnacles.'}
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Moon className="w-8 h-8 text-cosmic-silver" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-cosmic-silver mb-2">
-                    Dream Analysis
-                  </h3>
-                  <p className="text-sm text-cosmic-text-secondary">
-                    {premiumInsights?.dreams || 'AI-powered dream interpretation and symbolism analysis.'}
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Heart className="w-8 h-8 text-cosmic-gold" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
-                    Full Compatibility
-                  </h3>
-                  <p className="text-sm text-cosmic-text-secondary">
-                    {premiumInsights?.compatibility || 'Detailed relationship compatibility reports.'}
-                  </p>
-                </div>
-              </div>
-            )}
-          </CosmicCard>
-
-          {/* Premium Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {/* Core Features */}
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
-              <div className="text-center" onClick={() => handleFeatureClick('numerology')}>
-                <div className="w-12 h-12 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-6 h-6 text-cosmic-gold" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
-                  Advanced Numerology
-                </h3>
-                <p className="text-sm text-cosmic-text-secondary mb-4">
-                  Master numbers, pinnacles, and challenges
-                </p>
-                <CosmicButton variant="ghost" size="sm">
-                  Explore
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
-              <div className="text-center" onClick={() => handleFeatureClick('astrology')}>
-                <div className="w-12 h-12 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-6 h-6 text-cosmic-blue" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-blue mb-2">
-                  Complete Astrology
-                </h3>
-                <p className="text-sm text-cosmic-text-secondary mb-4">
-                  Birth charts, transits, and progressions
-                </p>
-                <CosmicButton variant="ghost" size="sm">
-                  Explore
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
-              <div className="text-center" onClick={() => handleFeatureClick('dreams')}>
-                <div className="w-12 h-12 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Moon className="w-6 h-6 text-cosmic-silver" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-silver mb-2">
-                  Dream Analysis
-                </h3>
-                <p className="text-sm text-cosmic-text-secondary mb-4">
-                  AI-powered dream interpretation
-                </p>
-                <CosmicButton variant="ghost" size="sm">
-                  Explore
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
-              <div className="text-center" onClick={() => handleFeatureClick('ai-chat')}>
-                <div className="w-12 h-12 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="w-6 h-6 text-cosmic-gold" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
-                  AI Cosmic Chat
-                </h3>
-                <p className="text-sm text-cosmic-text-secondary mb-4">
-                  Unlimited cosmic guidance
-                </p>
-                <CosmicButton variant="ghost" size="sm">
-                  Explore
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
-              <div className="text-center" onClick={() => handleFeatureClick('compatibility')}>
-                <div className="w-12 h-12 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Heart className="w-6 h-6 text-cosmic-blue" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-blue mb-2">
-                  Full Compatibility
-                </h3>
-                <p className="text-sm text-cosmic-text-secondary mb-4">
-                  Detailed relationship insights
-                </p>
-                <CosmicButton variant="ghost" size="sm">
-                  Explore
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
-              <div className="text-center" onClick={() => handleFeatureClick('community')}>
-                <div className="w-12 h-12 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-cosmic-silver" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-silver mb-2">
-                  Cosmic Community
-                </h3>
-                <p className="text-sm text-cosmic-text-secondary mb-4">
-                  Connect with like-minded souls
-                </p>
-                <CosmicButton variant="ghost" size="sm">
-                  Explore
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-          </div>
-
-          {/* Premium Tools */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <CosmicCard variant="premium" size="lg">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-8 h-8 text-cosmic-gold" />
-                </div>
-                <h3 className="text-xl font-semibold text-cosmic-gold mb-2">
-                  Personal Report Generator
-                </h3>
-                <p className="text-cosmic-text-secondary mb-6">
-                  Generate comprehensive PDF reports of your cosmic profile
-                </p>
-                <CosmicButton
-                  variant="premium"
-                  size="lg"
-                  onClick={handleExportPDF}
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Export PDF Report
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-
-            <CosmicCard variant="premium" size="lg">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Image className="w-8 h-8 text-cosmic-blue" />
-                </div>
-                <h3 className="text-xl font-semibold text-cosmic-blue mb-2">
-                  Social Story Creator
-                </h3>
-                <p className="text-cosmic-text-secondary mb-6">
-                  Create beautiful cosmic stories for social media
-                </p>
-                <CosmicButton
-                  variant="premium"
-                  size="lg"
-                  onClick={handleCreateStory}
-                >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Create Story
-                </CosmicButton>
-              </div>
-            </CosmicCard>
-          </div>
-
-          {/* Analytics Dashboard */}
-          <CosmicCard variant="glass" size="lg" className="mb-8">
-            <h2 className="text-2xl font-semibold text-cosmic-gold mb-6">
-              Your Cosmic Analytics
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-6 h-6 text-cosmic-gold" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-gold mb-2">
-                  Daily Insights
-                </h3>
-                <p className="text-2xl font-bold text-cosmic-text-primary">
-                  {premiumInsights?.dailyInsights || '0'}
-                </p>
-                <p className="text-sm text-cosmic-text-secondary">
-                  This month
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="flex flex-col items-center">
+                <Shield className="w-12 h-12 text-green-500 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Secure Payments</h3>
+                <p className="text-gray-600 text-center">
+                  Your payment information is encrypted and secure with Stripe
                 </p>
               </div>
               
-              <div className="text-center">
-                <div className="w-12 h-12 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-6 h-6 text-cosmic-blue" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-blue mb-2">
-                  Accuracy Rate
-                </h3>
-                <p className="text-2xl font-bold text-cosmic-text-primary">
-                  {premiumInsights?.accuracy || '95'}%
-                </p>
-                <p className="text-sm text-cosmic-text-secondary">
-                  Prediction accuracy
+              <div className="flex flex-col items-center">
+                <Zap className="w-12 h-12 text-yellow-500 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Instant Access</h3>
+                <p className="text-gray-600 text-center">
+                  Get immediate access to all premium features after payment
                 </p>
               </div>
               
-              <div className="text-center">
-                <div className="w-12 h-12 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 className="w-6 h-6 text-cosmic-silver" />
-                </div>
-                <h3 className="text-lg font-semibold text-cosmic-silver mb-2">
-                  Cosmic Score
-                </h3>
-                <p className="text-2xl font-bold text-cosmic-text-primary">
-                  {premiumInsights?.cosmicScore || '8.7'}
-                </p>
-                <p className="text-sm text-cosmic-text-secondary">
-                  Overall alignment
+              <div className="flex flex-col items-center">
+                <Sparkles className="w-12 h-12 text-purple-500 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Cancel Anytime</h3>
+                <p className="text-gray-600 text-center">
+                  No long-term commitments. Cancel your subscription anytime
                 </p>
               </div>
             </div>
-          </CosmicCard>
-
-          {/* Settings */}
-          <CosmicCard variant="default" size="lg" className="text-center">
-            <h2 className="text-2xl font-semibold text-cosmic-gold mb-4">
-              Premium Settings
-            </h2>
-            <p className="text-cosmic-text-secondary mb-6">
-              Customize your premium experience
-            </p>
-            
-            <div className="flex flex-wrap justify-center gap-4">
-              <CosmicButton
-                variant="secondary"
-                size="md"
-                onClick={() => handleFeatureClick('settings')}
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Account Settings
-              </CosmicButton>
-              
-              <CosmicButton
-                variant="secondary"
-                size="md"
-                onClick={() => handleFeatureClick('subscription')}
-              >
-                <Crown className="w-4 h-4 mr-2" />
-                Manage Subscription
-              </CosmicButton>
-            </div>
-          </CosmicCard>
-        </div>
-      </CosmicLayout>
-    </UserFlowRouter>
+          </div>
+        </motion.div>
+      </div>
+    </AppShell>
   )
 }

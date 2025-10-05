@@ -128,3 +128,4 @@ export function MobileMenu({ isOpen, onClose, className }: MobileMenuProps) {
     </div>
   )
 }
+

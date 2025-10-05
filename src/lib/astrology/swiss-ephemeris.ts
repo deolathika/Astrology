@@ -283,7 +283,7 @@ class SwissEphemerisService {
   ): Promise<HouseCusps> {
     // Simulate house cusp calculation
     const cusps = Array.from({ length: 12 }, (_, i) => i * 30 + Math.random() * 5);
-    
+
     return {
       cusps,
       system: houseSystem,

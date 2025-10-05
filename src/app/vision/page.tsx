@@ -233,3 +233,4 @@ const VisionPage: React.FC = () => {
 };
 
 export default VisionPage;
+

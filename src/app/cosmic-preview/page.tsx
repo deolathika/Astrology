@@ -12,3 +12,4 @@ import CosmicPreview from '@/components/cosmic/CosmicPreview'
 export default function CosmicPreviewPage() {
   return <CosmicPreview />
 }
+

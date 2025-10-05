@@ -305,3 +305,4 @@ export default function PremiumAstrologyDashboard({ user, profileId }: PremiumAs
     </div>
   )
 }
+

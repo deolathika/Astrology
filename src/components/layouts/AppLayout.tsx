@@ -324,3 +324,4 @@ export function AppLayout({ children, user }: AppLayoutProps) {
     </div>
   )
 }
+

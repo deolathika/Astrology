@@ -1,20 +1,11 @@
-/**
- * NextAuth.js Configuration for Daily Secrets App
- * Provides secure authentication with multiple providers
- */
-
 import { NextAuthOptions } from 'next-auth'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
-import EmailProvider from 'next-auth/providers/email'
-import { prisma } from './database/prisma'
 import bcrypt from 'bcryptjs'
+import { prisma } from './prisma'
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
-    // Email/Password Authentication
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -31,99 +22,85 @@ export const authOptions: NextAuthOptions = {
             where: { email: credentials.email }
           })
 
-          if (!user) {
+          if (!user || !user.password) {
             return null
           }
 
-          // In a real implementation, you would hash passwords
-          // For now, we'll do a simple comparison
-          const isValid = await bcrypt.compare(credentials.password, user.password || '')
-          
-          if (!isValid) {
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          )
+
+          if (!isPasswordValid) {
             return null
           }
 
           return {
             id: user.id,
             email: user.email,
-            name: user.name || '',
+            name: user.name,
             role: user.role,
-            image: user.image || undefined
+            image: user.image
           }
         } catch (error) {
+          console.error('Auth error:', error)
           return null
         }
       }
     }),
-
-    // Google OAuth
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    }),
-
-    // Email Magic Link
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
-      from: process.env.EMAIL_FROM,
-    }),
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+    })
   ],
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === 'google') {
+        try {
+          // Check if user exists
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! }
+          })
+
+          if (!existingUser) {
+            // Create new user
+            await prisma.user.create({
+              data: {
+                email: user.email!,
+                name: user.name!,
+                image: user.image,
+                role: 'guest',
+                emailVerified: true
+              }
+            })
+          }
+        } catch (error) {
+          console.error('Google sign-in error:', error)
+          return false
+        }
+      }
+      return true
+    },
+    async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.email = user.email
-        token.name = user.name
+        token.role = user.role
       }
       return token
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string
-        session.user.email = token.email as string
-        session.user.name = token.name as string
+        session.user.id = token.sub!
+        session.user.role = token.role as string
       }
       return session
-    },
-    async signIn({ user, account, profile }) {
-      // Custom sign-in logic
-      if (account?.provider === 'google') {
-        // Handle Google OAuth sign-in
-        return true
-      }
-      if (account?.provider === 'email') {
-        // Handle email magic link sign-in
-        return true
-      }
-      return true
-    },
+    }
   },
   pages: {
     signIn: '/auth/signin',
-    error: '/auth/error',
-    verifyRequest: '/auth/verify-request',
+    signUp: '/auth/signup'
   },
-  events: {
-    async signIn({ user, account, profile, isNewUser }) {
-      },
-    async signOut({ session, token }) {
-      },
+  session: {
+    strategy: 'jwt'
   },
-  debug: process.env.NODE_ENV === 'development',
+  secret: process.env.NEXTAUTH_SECRET
 }
-
-export default authOptions

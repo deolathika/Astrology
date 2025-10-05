@@ -1,438 +1,289 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import AppShell from '@/components/layout/AppShell'
+import UserFlowRouter from '@/components/user-flow/UserFlowRouter'
 import { 
-  User, Calendar, Clock, MapPin, Star, Edit3, Settings, 
-  Globe, Mail, Phone, Shield, Bell, Moon, Smartphone,
-  ArrowLeft, CheckCircle, AlertTriangle
+  User, 
+  Settings, 
+  Bell, 
+  Shield, 
+  Crown,
+  Calendar,
+  Target,
+  Download,
+  Info,
+  Save,
+  Check,
+  X,
+  Lock,
+  Sparkles
 } from 'lucide-react'
+import { CosmicCard, CosmicButton } from '@/components/cosmic'
+import LoadingState from '@/components/ui/LoadingState'
+import EmptyState from '@/components/ui/EmptyState'
+import ErrorState from '@/components/ui/ErrorState'
+import PersonalInfoForm from '@/components/profile/PersonalInfoForm'
+import PremiumModal from '@/components/gating/PremiumModal'
 
-interface ProfileData {
+interface UserProfile {
   id: string
-  fullName: string
+  name: string
   email: string
-  phone?: string
-  birthDate: string
-  birthTime: string
-  birthPlace: {
-    country: string
-    city: string
-    coordinates: {
-      latitude: number
-      longitude: number
-    }
-    timezone: string
-  }
-  zodiacSign: string
-  system: string
-  preferences: {
-    language: string
-    notifications: boolean
-    darkMode: boolean
-    hapticFeedback: boolean
-  }
-  createdAt: string
-  updatedAt: string
+  role: string
+  image?: string
+  birthDate?: string
+  birthTime?: string
+  birthPlace?: string
+  astrologySystem?: string
+  numerologySystem?: string
+  language?: string
+  theme?: string
+  timezone?: string
 }
 
 export default function ProfilePage() {
+  const { data: session } = useSession()
   const router = useRouter()
-  const [profileData, setProfileData] = useState<ProfileData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('profile')
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showPremiumModal, setShowPremiumModal] = useState(false)
+
+  const tabs = [
+    { id: 'profile', label: 'Profile', icon: User, description: 'Personal information and preferences' },
+    { id: 'settings', label: 'Settings', icon: Settings, description: 'App preferences and notifications' },
+    { id: 'subscription', label: 'Subscription', icon: Crown, description: 'Manage your subscription' },
+    { id: 'legal', label: 'Legal', icon: Shield, description: 'Terms, privacy, and legal information' }
+  ]
 
   useEffect(() => {
-    loadProfileData()
+    loadProfile()
   }, [])
 
-  const loadProfileData = async () => {
+  const loadProfile = async () => {
+    setLoading(true)
     try {
-      // Simulate loading profile data
-      const mockProfile: ProfileData = {
-        id: 'user123',
-        fullName: 'John Doe',
-        email: 'john@example.com',
-        phone: '+1234567890',
-        birthDate: '1990-01-15',
-        birthTime: '14:30',
-        birthPlace: {
-          country: 'US',
-          city: 'New York',
-          coordinates: { latitude: 40.7128, longitude: -74.0060 },
-          timezone: 'America/New_York'
-        },
-        zodiacSign: 'Capricorn',
-        system: 'western',
-        preferences: {
-          language: 'en',
-          notifications: true,
-          darkMode: false,
-          hapticFeedback: true
-        },
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-15T10:30:00Z'
+      if (session?.user) {
+        // Load from backend for authenticated users
+        const response = await fetch('/api/user/profile')
+        if (response.ok) {
+          const data = await response.json()
+          setProfile(data)
+        }
+      } else {
+        // Load from localStorage for guest users
+        const guestProfile = localStorage.getItem('guestProfile')
+        if (guestProfile) {
+          setProfile(JSON.parse(guestProfile))
+        } else {
+          // Create default guest profile
+          setProfile({
+            id: 'guest',
+            name: '',
+            email: '',
+            role: 'guest'
+          })
+        }
       }
-      
-      setProfileData(mockProfile)
-    } catch (error) {
-      console.error('Error loading profile:', error)
-      setError('Failed to load profile data')
+    } catch (err) {
+      setError('Failed to load profile')
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  const getLanguageName = (code: string) => {
-    const languages: { [key: string]: string } = {
-      'en': 'English',
-      'si': 'Sinhala',
-      'ta': 'Tamil',
-      'hi': 'Hindi',
-      'zh': 'Chinese'
+  const handleUpdateProfile = async (data: any) => {
+    setLoading(true)
+    try {
+      if (session?.user) {
+        // Save to backend for authenticated users
+        const response = await fetch('/api/user/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        })
+        if (response.ok) {
+          setProfile(data)
+        }
+      } else {
+        // Save to localStorage for guest users
+        localStorage.setItem('guestProfile', JSON.stringify(data))
+        setProfile(data)
+      }
+    } catch (err) {
+      setError('Failed to save profile')
+    } finally {
+      setLoading(false)
     }
-    return languages[code] || code
   }
 
-  const getSystemName = (system: string) => {
-    const systems: { [key: string]: string } = {
-      'western': 'Western Astrology',
-      'vedic': 'Vedic Astrology',
-      'chinese': 'Chinese Astrology',
-      'sri-lankan': 'Sri Lankan Astrology'
-    }
-    return systems[system] || system
-  }
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
-          <p className="text-slate-600">Loading profile...</p>
-        </div>
-      </div>
+      <AppShell>
+        <LoadingState message="Loading profile..." />
+      </AppShell>
     )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <AlertTriangle className="w-16 h-16 mx-auto mb-4 text-red-500" />
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">Error Loading Profile</h2>
-          <p className="text-slate-600 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  if (!profileData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <User className="w-16 h-16 mx-auto mb-4 text-slate-400" />
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">No Profile Found</h2>
-          <p className="text-slate-600 mb-4">Please complete your profile setup</p>
-          <button
-            onClick={() => router.push('/onboarding')}
-            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
-          >
-            Complete Profile
-          </button>
-        </div>
-      </div>
+      <AppShell>
+        <ErrorState
+          title="Failed to load profile"
+          description="We couldn't load your profile information. Please try again."
+          error={error}
+          onRetry={loadProfile}
+        />
+      </AppShell>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.back()}
-                className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
-                  <User className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">Profile</h1>
-                  <p className="text-sm text-slate-600">Your personal information</p>
-                </div>
-              </div>
+    <AppShell>
+      <UserFlowRouter>
+        <div className="min-h-screen cosmic-bg">
+          {/* Header */}
+          <motion.header 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="container mx-auto px-4 py-6"
+          >
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-white mb-4">Profile & Settings</h1>
+              <p className="text-violet-300">Manage your personal information and preferences</p>
             </div>
-            
-            <button
-              onClick={() => router.push('/profile/edit')}
-              className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors flex items-center space-x-2"
-            >
-              <Edit3 className="w-4 h-4" />
-              <span>Edit Profile</span>
-            </button>
-          </div>
-        </div>
-      </div>
+          </motion.header>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Profile Overview */}
+          {/* Tab Navigation */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl shadow-sm p-6 border border-slate-200 mb-8"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="container mx-auto px-4 mb-8"
           >
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
-                <User className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">{profileData.fullName}</h2>
-                <p className="text-slate-600">{profileData.email}</p>
-                {profileData.phone && (
-                  <p className="text-sm text-slate-500">{profileData.phone}</p>
-                )}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span className="text-slate-600">Profile Complete</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-blue-500" />
-                <span className="text-slate-600">Joined {new Date(profileData.createdAt).toLocaleDateString()}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-purple-500" />
-                <span className="text-slate-600">Last updated {new Date(profileData.updatedAt).toLocaleDateString()}</span>
-              </div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {tabs.map((tab) => (
+                <motion.button
+                  key={tab.id}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-300 ${
+                    activeTab === tab.id
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                      : 'bg-white/10 text-violet-300 hover:bg-white/20'
+                  }`}
+                >
+                  <tab.icon className="w-5 h-5" />
+                  <span className="font-medium">{tab.label}</span>
+                </motion.button>
+              ))}
             </div>
           </motion.div>
 
-          {/* Profile Details */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Personal Information */}
-            <motion.div
+          {/* Profile Tab */}
+          {activeTab === 'profile' && (
+            <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+              transition={{ duration: 0.6 }}
+              className="container mx-auto px-4 space-y-6"
             >
-              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
-                <User className="w-5 h-5 text-violet-600" />
-                <span>Personal Information</span>
-              </h3>
+              <PersonalInfoForm 
+                user={profile}
+                onSave={handleUpdateProfile}
+                isGuest={!session?.user}
+              />
               
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <Mail className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Email</p>
-                    <p className="font-medium text-slate-900">{profileData.email}</p>
+              {/* Guest user premium upgrade prompt */}
+              {!session?.user && (
+                <div className="bg-gradient-to-r from-violet-900/50 to-purple-900/50 rounded-xl p-6 border border-white/10">
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold text-white mb-2">Unlock Full Personalization</h3>
+                    <p className="text-violet-300 mb-4">Save your data across devices and access premium features</p>
+                    <CosmicButton
+                      onClick={() => setShowPremiumModal(true)}
+                      className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Upgrade to Premium
+                    </CosmicButton>
                   </div>
                 </div>
-                
-                {profileData.phone && (
-                  <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                    <Phone className="w-5 h-5 text-slate-600" />
-                    <div>
-                      <p className="text-sm text-slate-600">Phone</p>
-                      <p className="font-medium text-slate-900">{profileData.phone}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
+              )}
+            </motion.section>
+          )}
 
-            {/* Birth Information */}
-            <motion.div
+          {/* Settings Tab */}
+          {activeTab === 'settings' && (
+            <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+              transition={{ duration: 0.6 }}
+              className="container mx-auto px-4 space-y-6"
             >
-              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
-                <Calendar className="w-5 h-5 text-blue-600" />
-                <span>Birth Information</span>
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <Calendar className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Birth Date</p>
-                    <p className="font-medium text-slate-900">{new Date(profileData.birthDate).toLocaleDateString()}</p>
+              <CosmicCard variant="glass" className="p-6">
+                <h2 className="text-2xl font-semibold text-white mb-6">Settings</h2>
+                <div className="space-y-4">
+                  <div className="text-center text-violet-300">
+                    Settings panel coming soon...
                   </div>
                 </div>
-                
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <Clock className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Birth Time</p>
-                    <p className="font-medium text-slate-900">{profileData.birthTime}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <MapPin className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Birth Place</p>
-                    <p className="font-medium text-slate-900">{profileData.birthPlace.city}, {profileData.birthPlace.country}</p>
-                    <p className="text-xs text-slate-500">
-                      {profileData.birthPlace.coordinates.latitude.toFixed(4)}°, {profileData.birthPlace.coordinates.longitude.toFixed(4)}°
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <Globe className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Timezone</p>
-                    <p className="font-medium text-slate-900">{profileData.birthPlace.timezone}</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              </CosmicCard>
+            </motion.section>
+          )}
 
-            {/* Astrology Information */}
-            <motion.div
+          {/* Subscription Tab */}
+          {activeTab === 'subscription' && (
+            <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+              transition={{ duration: 0.6 }}
+              className="container mx-auto px-4 space-y-6"
             >
-              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
-                <Star className="w-5 h-5 text-purple-600" />
-                <span>Astrology Information</span>
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <Star className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Zodiac Sign</p>
-                    <p className="font-medium text-slate-900">{profileData.zodiacSign}</p>
-                  </div>
+              <CosmicCard variant="glass" className="p-6">
+                <h2 className="text-2xl font-semibold text-white mb-6">Subscription</h2>
+                <div className="text-center text-violet-300">
+                  Subscription management coming soon...
                 </div>
-                
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <Settings className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Astrology System</p>
-                    <p className="font-medium text-slate-900">{getSystemName(profileData.system)}</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              </CosmicCard>
+            </motion.section>
+          )}
 
-            {/* Preferences */}
-            <motion.div
+          {/* Legal Tab */}
+          {activeTab === 'legal' && (
+            <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-slate-200"
+              transition={{ duration: 0.6 }}
+              className="container mx-auto px-4 space-y-6"
             >
-              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center space-x-2">
-                <Settings className="w-5 h-5 text-green-600" />
-                <span>Preferences</span>
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <Globe className="w-5 h-5 text-slate-600" />
-                  <div>
-                    <p className="text-sm text-slate-600">Language</p>
-                    <p className="font-medium text-slate-900">{getLanguageName(profileData.preferences.language)}</p>
-                  </div>
+              <CosmicCard variant="glass" className="p-6">
+                <h2 className="text-2xl font-semibold text-white mb-6">Legal Information</h2>
+                <div className="text-center text-violet-300">
+                  Legal information coming soon...
                 </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <Bell className="w-5 h-5 text-slate-600" />
-                      <span className="text-slate-700">Notifications</span>
-                    </div>
-                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      profileData.preferences.notifications 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {profileData.preferences.notifications ? 'Enabled' : 'Disabled'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <Moon className="w-5 h-5 text-slate-600" />
-                      <span className="text-slate-700">Dark Mode</span>
-                    </div>
-                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      profileData.preferences.darkMode 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {profileData.preferences.darkMode ? 'Enabled' : 'Disabled'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <Smartphone className="w-5 h-5 text-slate-600" />
-                      <span className="text-slate-700">Haptic Feedback</span>
-                    </div>
-                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      profileData.preferences.hapticFeedback 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {profileData.preferences.hapticFeedback ? 'Enabled' : 'Disabled'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Action Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-8 flex flex-col sm:flex-row gap-4 justify-end"
-          >
-            <button
-              onClick={() => router.push('/profile/edit')}
-              className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors flex items-center justify-center space-x-2"
-            >
-              <Edit3 className="w-5 h-5" />
-              <span>Edit Profile</span>
-            </button>
-            
-            <button
-              onClick={() => router.push('/settings')}
-              className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors flex items-center justify-center space-x-2"
-            >
-              <Settings className="w-5 h-5" />
-              <span>Settings</span>
-            </button>
-          </motion.div>
+              </CosmicCard>
+            </motion.section>
+          )}
         </div>
-      </div>
-    </div>
+        
+        {/* Premium Modal */}
+        <PremiumModal
+          isOpen={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          onUpgrade={() => {
+            // Handle upgrade logic
+            console.log('Upgrade to Premium')
+          }}
+        />
+      </UserFlowRouter>
+    </AppShell>
   )
 }

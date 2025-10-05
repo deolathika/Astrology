@@ -1,41 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { prisma } from '@/lib/database'
-import { validateAndSanitize, emailSchema, passwordSchema, nameSchema } from '@/lib/input-validation'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { name, email, password, birthDate, birthTime, birthPlace, latitude, longitude, timezone, zodiacSign, system } = body
+    const { name, email, password } = await request.json()
 
     // Validate input
-    const emailValidation = validateAndSanitize(emailSchema, email)
-    if (!emailValidation.success) {
+    if (!name || !email || !password) {
       return NextResponse.json(
-        { error: 'Invalid email format' },
+        { error: 'Name, email, and password are required' },
         { status: 400 }
       )
     }
 
-    const passwordValidation = validateAndSanitize(passwordSchema, password)
-    if (!passwordValidation.success) {
+    if (password.length < 6) {
       return NextResponse.json(
-        { error: 'Password must be at least 8 characters' },
-        { status: 400 }
-      )
-    }
-
-    const nameValidation = validateAndSanitize(nameSchema, name)
-    if (!nameValidation.success) {
-      return NextResponse.json(
-        { error: 'Name must be at least 2 characters' },
+        { error: 'Password must be at least 6 characters long' },
         { status: 400 }
       )
     }
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email: emailValidation.data }
+      where: { email }
     })
 
     if (existingUser) {
@@ -46,53 +34,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(passwordValidation.data, 12)
+    const hashedPassword = await bcrypt.hash(password, 12)
 
     // Create user
     const user = await prisma.user.create({
       data: {
-        name: nameValidation.data,
-        email: emailValidation.data,
+        name,
+        email,
         password: hashedPassword,
-        role: 'user'
+        role: 'guest', // Default role
+        emailVerified: false
       }
     })
 
-    // Create user profile
-    const profile = await prisma.profile.create({
-      data: {
-        userId: user.id,
-        name: nameValidation.data,
-        birthDate: new Date(birthDate),
-        birthTime: birthTime,
-        placeLabel: birthPlace,
-        lat: parseFloat(latitude) || 0,
-        lng: parseFloat(longitude) || 0,
-        tzIana: timezone || 'UTC',
-        systemPref: system || 'western',
-        localePref: 'en-US',
-        privacy: '{}'
-      }
-    })
+    // Return user without password
+    const { password: _, ...userWithoutPassword } = user
 
     return NextResponse.json({
-      success: true,
       message: 'User created successfully',
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
+      user: userWithoutPassword
     })
 
   } catch (error) {
     console.error('Registration error:', error)
     return NextResponse.json(
-      { error: 'Failed to create user account' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
 }
-
-

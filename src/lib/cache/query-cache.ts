@@ -15,7 +15,7 @@ const CACHE_CONFIG = {
 const queryCache = new Map<string, CacheEntry>()
 
 // Cache statistics
-let cacheStats = {
+const cacheStats = {
   hits: 0,
   misses: 0,
   sets: 0,

@@ -15,7 +15,7 @@ const userUpdateSchema = z.object({
   id: z.string(),
   name: z.string().optional(),
   email: z.string().email().optional(),
-  role: z.enum(['user', 'premium', 'admin']).optional()
+  role: z.enum(['guest', 'premium', 'admin']).optional()
 })
 
 export async function GET(request: NextRequest) {

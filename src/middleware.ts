@@ -36,7 +36,10 @@ export async function middleware(request: NextRequest) {
       '/auth/signin',
       '/auth/signup',
       '/auth/forgot-password',
-      '/auth/reset-password'
+      '/auth/reset-password',
+      '/public-test',
+      '/dev-dashboard',
+      '/test-auth'
     ],
     
     // Free user routes
@@ -74,47 +77,50 @@ export async function middleware(request: NextRequest) {
   // Check if route requires authentication
   const requiresAuth = !routeAccess.public.includes(pathname)
   
-  if (requiresAuth && !token) {
-    // Redirect to sign in for protected routes
-    return NextResponse.redirect(new URL('/auth/signin', request.url))
-  }
+  // TEMPORARILY DISABLED FOR DEVELOPMENT
+  // if (requiresAuth && !token) {
+  //   // Redirect to sign in for protected routes
+  //   return NextResponse.redirect(new URL('/auth/signin', request.url))
+  // }
   
   // Check role-based access
-  if (token) {
-    // Free users cannot access premium routes
-    if (userRole === 'user' && routeAccess.premium.includes(pathname)) {
-      return NextResponse.redirect(new URL('/subscription', request.url))
-    }
+  // TEMPORARILY DISABLED FOR DEVELOPMENT
+  // if (token) {
+  //   // Free users cannot access premium routes
+  //   if (userRole === 'user' && routeAccess.premium.includes(pathname)) {
+  //     return NextResponse.redirect(new URL('/subscription', request.url))
+  //   }
     
-    // Free users cannot access admin routes
-    if (userRole === 'user' && routeAccess.admin.includes(pathname)) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
+  //   // Free users cannot access admin routes
+  //   if (userRole === 'user' && routeAccess.admin.includes(pathname)) {
+  //     return NextResponse.redirect(new URL('/dashboard', request.url))
+  //   }
     
-    // Premium users cannot access admin routes
-    if (userRole === 'premium' && routeAccess.admin.includes(pathname)) {
-      return NextResponse.redirect(new URL('/premium', request.url))
-    }
+  //   // Premium users cannot access admin routes
+  //   if (userRole === 'premium' && routeAccess.admin.includes(pathname)) {
+  //     return NextResponse.redirect(new URL('/premium', request.url))
+  //   }
     
-    // Admin users can access all routes
-    if (userRole === 'admin') {
-      return NextResponse.next()
-    }
-  }
+  //   // Admin users can access all routes
+  //   if (userRole === 'admin') {
+  //     return NextResponse.next()
+  //   }
+  // }
   
   // Redirect based on user role for root path
-  if (pathname === '/' && token) {
-    const redirectMap = {
-      'admin': '/admin',
-      'premium': '/premium',
-      'user': '/dashboard'
-    }
+  // TEMPORARILY DISABLED FOR DEVELOPMENT
+  // if (pathname === '/' && token) {
+  //   const redirectMap = {
+  //     'admin': '/admin',
+  //     'premium': '/premium',
+  //     'user': '/dashboard'
+  //   }
     
-    const redirectPath = redirectMap[userRole as keyof typeof redirectMap]
-    if (redirectPath) {
-      return NextResponse.redirect(new URL(redirectPath, request.url))
-    }
-  }
+  //   const redirectPath = redirectMap[userRole as keyof typeof redirectMap]
+  //   if (redirectPath) {
+  //     return NextResponse.redirect(new URL(redirectPath, request.url))
+  //   }
+  // }
   
   return NextResponse.next()
 }

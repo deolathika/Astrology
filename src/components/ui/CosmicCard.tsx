@@ -81,3 +81,4 @@ const CosmicCard: React.FC<CosmicCardProps> = ({
 };
 
 export default CosmicCard;
+

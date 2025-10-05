@@ -1,293 +1,440 @@
-/**
- * Astrology Page
- * Comprehensive astrology features with natal chart, transits, and daily insights
- */
-
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useAppStore } from '@/lib/stores/app-store'
-import { useNatalChart, useTransits, useAstrologyReadings } from '@/lib/hooks/use-api'
-import { Button } from '@/components/atoms/Button'
-import { Badge } from '@/components/atoms/Badge'
-import { Navigation } from '@/components/organisms/Navigation'
-import { trackFeatureUsage } from '@/lib/monitoring/analytics'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { 
+  Star, 
+  Moon, 
+  Sun, 
+  Sparkles, 
+  Heart, 
+  Shield, 
+  Crown,
+  ArrowRight,
+  Calendar,
+  MapPin,
+  Clock,
+  Zap,
+  Target,
+  TrendingUp,
+  BarChart3,
+  Download,
+  Share2,
+  RefreshCw,
+  Settings,
+  Info,
+  CheckCircle
+} from 'lucide-react'
+import { CosmicCard, CosmicButton, CosmicInput } from '@/components/cosmic'
+import { UserFlowRouter } from '@/components/user-flow/UserFlowRouter'
+import { FeatureGate } from '@/components/user-flow/FeatureGate'
+
+interface BirthData {
+  name: string
+  birthDate: string
+  birthTime: string
+  birthPlace: string
+  latitude: number
+  longitude: number
+  timezone: string
+}
+
+interface AstrologyResult {
+  system: string
+  sunSign: string
+  moonSign: string
+  risingSign: string
+  planets: Array<{
+    name: string
+    sign: string
+    degree: number
+    house: number
+  }>
+  houses: Array<{
+    number: number
+    sign: string
+    degree: number
+  }>
+  aspects: Array<{
+    planet1: string
+    planet2: string
+    aspect: string
+    orb: number
+  }>
+}
 
 export default function AstrologyPage() {
-  const [activeTab, setActiveTab] = useState('natal')
-  const user = useAppStore((state) => state.user)
-  const profile = useAppStore((state) => state.profile)
-  
-  const { data: natalChart, isLoading: natalLoading } = useNatalChart(user?.id || '')
-  const { data: transits, isLoading: transitsLoading } = useTransits(user?.id || '')
-  const { data: readings, isLoading: readingsLoading } = useAstrologyReadings(user?.id || '')
+  const { data: session } = useSession()
+  const router = useRouter()
+  const [activeSystem, setActiveSystem] = useState('western')
+  const [birthData, setBirthData] = useState<BirthData>({
+    name: '',
+    birthDate: '',
+    birthTime: '',
+    birthPlace: '',
+    latitude: 0,
+    longitude: 0,
+    timezone: 'UTC'
+  })
+  const [results, setResults] = useState<AstrologyResult[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (user) {
-      trackFeatureUsage('astrology_page_view', user.id)
+  const zodiacSystems = [
+    {
+      id: 'western',
+      name: 'Western Astrology',
+      description: 'Traditional Western zodiac system',
+      icon: Star,
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      id: 'vedic',
+      name: 'Vedic Astrology',
+      description: 'Ancient Indian astrological system',
+      icon: Moon,
+      color: 'from-purple-500 to-pink-500'
+    },
+    {
+      id: 'chinese',
+      name: 'Chinese Astrology',
+      description: '12-year animal cycle system',
+      icon: Sun,
+      color: 'from-red-500 to-orange-500'
+    },
+    {
+      id: 'sri_lankan',
+      name: 'Sri Lankan',
+      description: 'Traditional Sri Lankan system',
+      icon: Sparkles,
+      color: 'from-green-500 to-emerald-500'
+    },
+    {
+      id: 'hybrid',
+      name: 'Hybrid System',
+      description: 'Combined approach for accuracy',
+      icon: Target,
+      color: 'from-violet-500 to-purple-500'
     }
-  }, [user])
-
-  const tabs = [
-    { id: 'natal', label: 'Natal Chart', icon: '🌟' },
-    { id: 'transits', label: 'Transits', icon: '🔄' },
-    { id: 'daily', label: 'Daily Insights', icon: '📅' },
-    { id: 'compatibility', label: 'Compatibility', icon: '💕' }
   ]
 
-  if (!user) {
+  const handleCalculate = async () => {
+    if (!birthData.name || !birthData.birthDate || !birthData.birthTime) {
+      setError('Please fill in all required fields')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/astro/complete-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...birthData,
+          systems: zodiacSystems.map(s => s.id)
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to calculate astrology data')
+      }
+
+      const data = await response.json()
+      setResults(data.results || [])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleExport = () => {
+    // Handle PDF export
+    console.log('Exporting astrology data...')
+  }
+
+  const handleShare = () => {
+    // Handle sharing
+    console.log('Sharing astrology data...')
+  }
+
+  if (!session?.user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen cosmic-bg flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Please sign in to access astrology features</h1>
-          <Button onClick={() => window.location.href = '/auth/signin'}>
+          <h1 className="text-2xl font-bold text-white mb-4">Please sign in to access astrology features</h1>
+          <button
+            onClick={() => router.push('/auth/signin')}
+            className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-violet-700 hover:to-purple-700 transition-all"
+          >
             Sign In
-          </Button>
+          </button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="lg:pl-64">
-        <div className="p-6">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              Astrology Center 🌟
-            </h1>
-            <p className="text-muted-foreground">
-              Explore your cosmic blueprint and discover the secrets of the stars.
-            </p>
-          </div>
-
-          {/* Profile Summary */}
-          {profile && (
-            <div className="bg-card border border-border rounded-lg p-6 mb-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">{profile.name}</h3>
-                  <p className="text-muted-foreground">
-                    Born {new Date(profile.birthDate).toLocaleDateString()} at {profile.birthTime} in {profile.placeLabel}
-                  </p>
-                  <Badge variant="default" className="mt-2">
-                    {profile.systemPref} System
-                  </Badge>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-primary">♈</div>
-                  <div className="text-sm text-muted-foreground">Aries</div>
-                </div>
-              </div>
+    <UserFlowRouter>
+      <div className="min-h-screen cosmic-bg">
+        {/* Header */}
+        <motion.header 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="container mx-auto px-4 py-6"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold cosmic-text-gradient">Astrology Systems</h1>
+              <p className="text-violet-300">Explore multiple astrological traditions</p>
             </div>
-          )}
-
-          {/* Tabs */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {tabs.map((tab) => (
-              <Button
-                key={tab.id}
-                variant={activeTab === tab.id ? 'primary' : 'outline'}
-                onClick={() => setActiveTab(tab.id)}
-                className="flex items-center gap-2"
+            <div className="flex items-center space-x-4">
+              <CosmicButton
+                variant="ghost"
+                onClick={handleExport}
+                icon={<Download className="w-4 h-4" />}
               >
-                <span>{tab.icon}</span>
-                {tab.label}
-              </Button>
-            ))}
-          </div>
-
-          {/* Tab Content */}
-          <div className="space-y-6">
-            {activeTab === 'natal' && (
-              <NatalChartTab 
-                data={natalChart} 
-                loading={natalLoading} 
-                profile={profile}
-              />
-            )}
-            
-            {activeTab === 'transits' && (
-              <TransitsTab 
-                data={transits} 
-                loading={transitsLoading} 
-                profile={profile}
-              />
-            )}
-            
-            {activeTab === 'daily' && (
-              <DailyInsightsTab 
-                data={readings} 
-                loading={readingsLoading} 
-                profile={profile}
-              />
-            )}
-            
-            {activeTab === 'compatibility' && (
-              <CompatibilityTab profile={profile} />
-            )}
-          </div>
-        </div>
-      </main>
-    </div>
-  )
-}
-
-function NatalChartTab({ data, loading, profile }: any) {
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="skeleton h-96 rounded-lg" />
-        <div className="skeleton h-96 rounded-lg" />
-      </div>
-    )
-  }
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Chart Visualization */}
-      <div className="bg-card border border-border rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-4">Your Natal Chart</h3>
-        <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🌌</div>
-            <p className="text-muted-foreground">Interactive natal chart will be displayed here</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Chart Data */}
-      <div className="bg-card border border-border rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-4">Planetary Positions</h3>
-        <div className="space-y-4">
-          {[
-            { planet: 'Sun', sign: 'Aries', degree: '15° 23\'' },
-            { planet: 'Moon', sign: 'Cancer', degree: '8° 45\'' },
-            { planet: 'Mercury', sign: 'Pisces', degree: '22° 10\'' },
-            { planet: 'Venus', sign: 'Taurus', degree: '3° 55\'' },
-            { planet: 'Mars', sign: 'Leo', degree: '18° 30\'' },
-            { planet: 'Jupiter', sign: 'Sagittarius', degree: '12° 15\'' },
-            { planet: 'Saturn', sign: 'Capricorn', degree: '25° 40\'' }
-          ].map((planet) => (
-            <div key={planet.planet} className="flex justify-between items-center py-2 border-b border-border last:border-b-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-semibold">
-                  {planet.planet[0]}
-                </div>
-                <span className="font-medium">{planet.planet}</span>
-              </div>
-              <div className="text-right">
-                <div className="font-medium">{planet.sign}</div>
-                <div className="text-sm text-muted-foreground">{planet.degree}</div>
-              </div>
+                Export
+              </CosmicButton>
+              <CosmicButton
+                variant="ghost"
+                onClick={handleShare}
+                icon={<Share2 className="w-4 h-4" />}
+              >
+                Share
+              </CosmicButton>
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function TransitsTab({ data, loading, profile }: any) {
-  if (loading) {
-    return <div className="skeleton h-64 rounded-lg" />
-  }
-
-  return (
-    <div className="bg-card border border-border rounded-lg p-6">
-      <h3 className="text-xl font-semibold mb-4">Current Transits</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[
-          { planet: 'Jupiter', aspect: 'Trine', influence: 'Positive growth and expansion' },
-          { planet: 'Saturn', aspect: 'Square', influence: 'Challenges and lessons' },
-          { planet: 'Mars', aspect: 'Conjunction', influence: 'Energy and motivation' }
-        ].map((transit) => (
-          <div key={transit.planet} className="border border-border rounded-lg p-4">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-semibold">{transit.planet}</h4>
-              <Badge variant={transit.aspect === 'Trine' ? 'success' : 'warning'}>
-                {transit.aspect}
-              </Badge>
-            </div>
-            <p className="text-sm text-muted-foreground">{transit.influence}</p>
           </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+        </motion.header>
 
-function DailyInsightsTab({ data, loading, profile }: any) {
-  if (loading) {
-    return <div className="skeleton h-64 rounded-lg" />
-  }
-
-  return (
-    <div className="space-y-6">
-      <div className="bg-card border border-border rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-4">Today's Horoscope</h3>
-        <div className="prose max-w-none">
-          <p className="text-muted-foreground">
-            Today brings opportunities for growth and self-discovery. The stars align in your favor, 
-            offering a chance to connect with your inner wisdom and make meaningful progress toward your goals.
-          </p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-card border border-border rounded-lg p-6">
-          <h4 className="font-semibold mb-3">Lucky Numbers</h4>
-          <div className="flex gap-2">
-            {[7, 14, 21, 28, 35].map((num) => (
-              <div key={num} className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold">
-                {num}
+        <div className="container mx-auto px-4 pb-16">
+          {/* Birth Data Form */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-8"
+          >
+            <CosmicCard variant="glass" className="p-6">
+              <h2 className="text-2xl font-semibold text-white mb-6">Birth Information</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CosmicInput
+                  label="Full Name"
+                  value={birthData.name}
+                  onChange={(e) => setBirthData({ ...birthData, name: e.target.value })}
+                  placeholder="Enter your full name"
+                  icon={<Star className="w-4 h-4" />}
+                />
+                
+                <CosmicInput
+                  label="Birth Date"
+                  type="date"
+                  value={birthData.birthDate}
+                  onChange={(e) => setBirthData({ ...birthData, birthDate: e.target.value })}
+                  icon={<Calendar className="w-4 h-4" />}
+                />
+                
+                <CosmicInput
+                  label="Birth Time"
+                  type="time"
+                  value={birthData.birthTime}
+                  onChange={(e) => setBirthData({ ...birthData, birthTime: e.target.value })}
+                  icon={<Clock className="w-4 h-4" />}
+                />
+                
+                <CosmicInput
+                  label="Birth Place"
+                  value={birthData.birthPlace}
+                  onChange={(e) => setBirthData({ ...birthData, birthPlace: e.target.value })}
+                  placeholder="City, Country"
+                  icon={<MapPin className="w-4 h-4" />}
+                />
               </div>
-            ))}
-          </div>
-        </div>
 
-        <div className="bg-card border border-border rounded-lg p-6">
-          <h4 className="font-semibold mb-3">Lucky Colors</h4>
-          <div className="flex gap-2">
-            {['Red', 'Gold', 'Orange'].map((color) => (
-              <Badge key={color} variant="outline">{color}</Badge>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300"
+                >
+                  {error}
+                </motion.div>
+              )}
 
-function CompatibilityTab({ profile }: any) {
-  return (
-    <div className="space-y-6">
-      <div className="bg-card border border-border rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-4">Find Your Cosmic Match</h3>
-        <p className="text-muted-foreground mb-6">
-          Discover compatibility with other users based on astrological analysis.
-        </p>
-        <Button>Find Matches</Button>
-      </div>
+              <div className="mt-6 flex justify-end">
+                <CosmicButton
+                  onClick={handleCalculate}
+                  loading={loading}
+                  disabled={loading}
+                  icon={loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                >
+                  {loading ? 'Calculating...' : 'Calculate Chart'}
+                </CosmicButton>
+              </div>
+            </CosmicCard>
+          </motion.section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[
-          { name: 'Sarah', compatibility: 95, sign: 'Leo' },
-          { name: 'Michael', compatibility: 87, sign: 'Gemini' },
-          { name: 'Emma', compatibility: 82, sign: 'Libra' }
-        ].map((match) => (
-          <div key={match.name} className="bg-card border border-border rounded-lg p-4">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-semibold">{match.name}</h4>
-              <Badge variant="success">{match.compatibility}%</Badge>
+          {/* Zodiac Systems */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-8"
+          >
+            <h2 className="text-2xl font-semibold text-white mb-6">Choose Astrological Systems</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {zodiacSystems.map((system) => (
+                <motion.div
+                  key={system.id}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setActiveSystem(system.id)}
+                  className={`cursor-pointer transition-all ${
+                    activeSystem === system.id 
+                      ? 'ring-2 ring-gold-400 shadow-cosmic-glow' 
+                      : 'hover:ring-1 hover:ring-violet-400'
+                  }`}
+                >
+                  <CosmicCard variant="glass" className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className={`w-10 h-10 bg-gradient-to-r ${system.color} rounded-lg flex items-center justify-center`}>
+                        <system.icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-white">{system.name}</h3>
+                        <p className="text-sm text-violet-300">{system.description}</p>
+                      </div>
+                    </div>
+                    
+                    {activeSystem === system.id && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex items-center text-gold-400 text-sm"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Selected
+                      </motion.div>
+                    )}
+                  </CosmicCard>
+                </motion.div>
+              ))}
             </div>
-            <p className="text-sm text-muted-foreground">{match.sign}</p>
-          </div>
-        ))}
+          </motion.section>
+
+          {/* Results */}
+          <AnimatePresence>
+            {results.length > 0 && (
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.6 }}
+                className="space-y-6"
+              >
+                <h2 className="text-2xl font-semibold text-white">Your Astrological Profile</h2>
+                
+                {results.map((result, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <CosmicCard variant="glass" className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-semibold text-white capitalize">
+                          {result.system} Astrology
+                        </h3>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-violet-300">Sun: {result.sunSign}</span>
+                          <span className="text-sm text-violet-300">Moon: {result.moonSign}</span>
+                          <span className="text-sm text-violet-300">Rising: {result.risingSign}</span>
+                        </div>
+                      </div>
+
+                      {/* Planetary Positions */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                          <h4 className="font-semibold text-gold-400 mb-2">Planetary Positions</h4>
+                          <div className="space-y-2">
+                            {result.planets.map((planet, planetIndex) => (
+                              <div key={planetIndex} className="flex justify-between text-sm">
+                                <span className="text-violet-300">{planet.name}</span>
+                                <span className="text-white">{planet.sign} {planet.degree.toFixed(1)}°</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-gold-400 mb-2">Houses</h4>
+                          <div className="space-y-2">
+                            {result.houses.slice(0, 6).map((house, houseIndex) => (
+                              <div key={houseIndex} className="flex justify-between text-sm">
+                                <span className="text-violet-300">House {house.number}</span>
+                                <span className="text-white">{house.sign} {house.degree.toFixed(1)}°</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Aspects */}
+                      {result.aspects.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gold-400 mb-2">Key Aspects</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {result.aspects.slice(0, 6).map((aspect, aspectIndex) => (
+                              <div key={aspectIndex} className="flex justify-between text-sm bg-violet-800/20 p-2 rounded">
+                                <span className="text-violet-300">{aspect.planet1} - {aspect.planet2}</span>
+                                <span className="text-white">{aspect.aspect} ({aspect.orb.toFixed(1)}°)</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </CosmicCard>
+                  </motion.div>
+                ))}
+              </motion.section>
+            )}
+          </AnimatePresence>
+
+          {/* Premium Features Gate */}
+          <FeatureGate feature="advancedAstrology">
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mt-8"
+            >
+              <CosmicCard variant="glass" className="p-6 text-center">
+                <Crown className="w-12 h-12 text-gold-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Unlock Advanced Astrology</h3>
+                <p className="text-violet-300 mb-4">
+                  Get detailed transit analysis, progression charts, and personalized cosmic guidance
+                </p>
+                <CosmicButton
+                  variant="premium"
+                  onClick={() => router.push('/premium')}
+                  icon={<Crown className="w-4 h-4" />}
+                >
+                  Upgrade to Premium
+                </CosmicButton>
+              </CosmicCard>
+            </motion.section>
+          </FeatureGate>
+        </div>
       </div>
-    </div>
+    </UserFlowRouter>
   )
 }

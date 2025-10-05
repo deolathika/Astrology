@@ -90,3 +90,4 @@ function getOptimizationSuggestions(): string[] {
 
   return suggestions
 }
+

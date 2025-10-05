@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "daily-secrets-app",
   "builds": [
     {
       "src": "package.json",
@@ -18,10 +17,15 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_APP_ENV": "production",
-    "NEXT_PUBLIC_APP_NAME": "Daily Secrets",
-    "NEXT_PUBLIC_APP_VERSION": "1.0.0"
+    "NEXTAUTH_URL": "https://daily-secrets.vercel.app",
+    "NEXTAUTH_SECRET": "@nextauth-secret",
+    "STRIPE_SECRET_KEY": "@stripe-secret-key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret",
+    "STRIPE_PREMIUM_PRICE_ID": "@stripe-premium-price-id",
+    "STRIPE_ANNUAL_PRICE_ID": "@stripe-annual-price-id",
+    "DATABASE_URL": "@database-url",
+    "SENTRY_DSN": "@sentry-dsn",
+    "GOOGLE_ANALYTICS_ID": "@google-analytics-id"
   },
   "functions": {
     "src/app/api/**/*.ts": {
@@ -30,11 +34,36 @@
   },
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
+    {
       "source": "/api/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "*"
+          "value": "https://daily-secrets.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",
@@ -52,6 +81,21 @@
       "source": "/home",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/profile",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
     }
   ]
 }

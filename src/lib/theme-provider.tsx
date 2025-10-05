@@ -142,3 +142,4 @@ export function getHeadingClasses(theme: 'user' | 'premium' | 'admin') {
       return `${baseClasses} text-3xl text-indigo-600`
   }
 }
+

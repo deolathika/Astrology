@@ -8,21 +8,12 @@ import { Inter } from 'next/font/google'
 import { QueryProvider } from '@/lib/providers/query-provider'
 import { AuthProvider } from '@/lib/contexts/auth-context'
 import { ThemeProvider } from '@/lib/theme-provider'
+import { SessionProviderWrapper } from '@/components/providers/SessionProviderWrapper'
 import { Analytics } from '@/lib/monitoring/analytics'
 import { initSentry } from '@/lib/monitoring/sentry'
 import './globals.css'
 import '../styles/cosmic-theme.css'
 import '../styles/cosmic-luxury.css'
-import '../styles/cosmic-space.css'
-import '../styles/cosmic-minimalist.css'
-import '../styles/cosmic-destiny-effects.css'
-import '../styles/cosmic-star-rotations.css'
-import '../styles/cosmic-nebula-effects.css'
-import '../styles/cosmic-minimalist-modern.css'
-import '../styles/role-based-themes.css'
-import '../styles/mobile-responsive.css'
-import '../styles/ultimate-responsive.css'
-import '../styles/fonts.css'
 
 // Initialize Sentry
 initSentry()
@@ -95,15 +86,17 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Daily Secrets" />
       </head>
           <body className={`${inter.className} h-full cosmic-bg text-foreground antialiased`}>
-            <QueryProvider>
-              <AuthProvider>
-                <ThemeProvider>
-                  <div className="min-h-full flex flex-col">
-                    {children}
-                  </div>
-                </ThemeProvider>
-              </AuthProvider>
-            </QueryProvider>
+            <SessionProviderWrapper>
+              <QueryProvider>
+                <AuthProvider>
+                  <ThemeProvider>
+                    <div className="min-h-full flex flex-col">
+                      {children}
+                    </div>
+                  </ThemeProvider>
+                </AuthProvider>
+              </QueryProvider>
+            </SessionProviderWrapper>
             <Analytics />
           </body>
     </html>

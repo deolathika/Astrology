@@ -123,3 +123,5 @@ const CosmicButton = React.forwardRef<HTMLButtonElement, CosmicButtonProps>(
 CosmicButton.displayName = 'CosmicButton'
 
 export default CosmicButton
+export { CosmicButton }
+

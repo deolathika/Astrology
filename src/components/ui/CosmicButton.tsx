@@ -82,3 +82,4 @@ const CosmicButton: React.FC<CosmicButtonProps> = ({
 };
 
 export default CosmicButton;
+

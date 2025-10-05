@@ -335,3 +335,4 @@ The astrology section is now complete and working. Users can:
 12. **Track** their subscription status
 
 **Status**: 🎊 **ASTROLOGY SECTION COMPLETE** 🚀
+

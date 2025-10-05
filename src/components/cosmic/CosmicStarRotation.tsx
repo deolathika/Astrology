@@ -81,3 +81,4 @@ const CosmicStarRotation: React.FC<CosmicStarRotationProps> = ({
 }
 
 export default CosmicStarRotation
+
