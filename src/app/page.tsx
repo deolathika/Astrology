@@ -273,12 +273,12 @@ export default function HomePage() {
                     </Card>
                   </Link>
 
-                  <Link href="/compatibility-calculator">
+                  <Link href="/compatibility">
                     <Card className="p-6 hover:scale-105 cosmic-glow cursor-pointer">
                       <div className="text-center">
                         <div className="text-4xl mb-4">💕</div>
-                        <h3 className="text-xl font-semibold mb-3">Compatibility Calculator</h3>
-                        <p className="text-gray-300 mb-4 text-sm">Advanced relationship analysis with cosmic alignment</p>
+                        <h3 className="text-xl font-semibold mb-3">Advanced Compatibility</h3>
+                        <p className="text-gray-300 mb-4 text-sm">Regional compatibility analysis with Sri Lankan astrology</p>
                         <Button variant="primary" size="sm" className="w-full">
                           Calculate Compatibility
                         </Button>

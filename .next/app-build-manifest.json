@@ -21,11 +21,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/compatibility/page.js"
     ],
-    "/compatibility-calculator/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/compatibility-calculator/page.js"
-    ],
     "/numerology/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
