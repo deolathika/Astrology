@@ -13,6 +13,7 @@ export default function Navigation() {
     { name: 'Home', href: '/' },
     { name: 'Insights', href: '/insights' },
     { name: 'Astrology', href: '/astrology' },
+    { name: 'Sri Lankan', href: '/sri-lankan-astrology' },
     { name: 'Numerology', href: '/numerology' },
     { name: 'Compatibility', href: '/compatibility' },
     { name: 'Dreams', href: '/dreams' },
