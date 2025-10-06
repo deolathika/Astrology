@@ -59,6 +59,14 @@ export default function NumerologyPage() {
   const [useGoogleMaps, setUseGoogleMaps] = useState(false)
   const [googleMapsLocation, setGoogleMapsLocation] = useState<any>(null)
   const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false)
+  
+  // Additional fields for comprehensive analysis
+  const [businessName, setBusinessName] = useState('')
+  const [address, setAddress] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [partnerName, setPartnerName] = useState('')
+  const [partnerBirthDate, setPartnerBirthDate] = useState('')
+  const [showCompatibility, setShowCompatibility] = useState(false)
 
   const numerologySystems = [
     {
@@ -80,6 +88,24 @@ export default function NumerologyPage() {
       icon: '🏛️'
     },
     {
+      id: 'vedic',
+      name: 'Indian Vedic Numerology',
+      description: 'Ancient Indian system based on Vedic scriptures and Sanskrit numerology.',
+      accuracy: '98%',
+      features: ['Rashi Numbers', 'Nakshatra Numbers', 'Karma Analysis', 'Dharma Path'],
+      bestUse: 'Spiritual evolution, karma analysis, dharma fulfillment.',
+      icon: '🕉️'
+    },
+    {
+      id: 'tamil',
+      name: 'Tamil South Indian System',
+      description: 'Traditional Tamil numerology system with unique calculations and interpretations.',
+      accuracy: '97%',
+      features: ['Tamil Letters', 'Regional Influence', 'Cultural Numerology', 'Ancestral Karma'],
+      bestUse: 'Cultural identity, ancestral connections, regional guidance.',
+      icon: '🌺'
+    },
+    {
       id: 'kabbalistic',
       name: 'Kabbalistic Numerology',
       description: 'Hebrew-based system focusing on spiritual and mystical aspects of numbers.',
@@ -96,6 +122,24 @@ export default function NumerologyPage() {
       features: ['Five Elements', 'Yin Yang Balance', 'Lucky Numbers', 'Feng Shui Numbers'],
       bestUse: 'Harmony, balance, luck, and prosperity guidance.',
       icon: '🐉'
+    },
+    {
+      id: 'arabic',
+      name: 'Arabic Numerology',
+      description: 'Islamic numerology system based on Arabic letters and Quranic principles.',
+      accuracy: '95%',
+      features: ['Abjad System', 'Quranic Numbers', 'Islamic Calendar', 'Spiritual Guidance'],
+      bestUse: 'Islamic guidance, spiritual development, religious numerology.',
+      icon: '☪️'
+    },
+    {
+      id: 'western',
+      name: 'Western Numerology',
+      description: 'Modern Western system combining multiple traditions for comprehensive analysis.',
+      accuracy: '93%',
+      features: ['Expression Number', 'Soul Urge', 'Personality', 'Compatibility'],
+      bestUse: 'Modern life guidance, relationship analysis, career planning.',
+      icon: '🌍'
     }
   ]
 
@@ -111,6 +155,34 @@ export default function NumerologyPage() {
     'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 8, 'G': 3, 'H': 5, 'I': 1,
     'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 7, 'P': 8, 'Q': 1, 'R': 2,
     'S': 3, 'T': 4, 'U': 6, 'V': 6, 'W': 6, 'X': 5, 'Y': 1, 'Z': 7
+  }
+
+  // Vedic Sanskrit letter-to-number mapping
+  const vedicMap: { [key: string]: number } = {
+    'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9,
+    'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
+    'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8
+  }
+
+  // Tamil letter-to-number mapping
+  const tamilMap: { [key: string]: number } = {
+    'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9,
+    'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
+    'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8
+  }
+
+  // Arabic Abjad letter-to-number mapping
+  const arabicMap: { [key: string]: number } = {
+    'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9,
+    'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
+    'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8
+  }
+
+  // Western modern letter-to-number mapping
+  const westernMap: { [key: string]: number } = {
+    'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9,
+    'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
+    'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8
   }
 
   const reduceToSingleDigit = (num: number): number => {
@@ -130,8 +202,20 @@ export default function NumerologyPage() {
     return reduceToSingleDigit(sum)
   }
 
+  const getNumberMap = (system: string) => {
+    switch (system) {
+      case 'pythagorean': return pythagoreanMap
+      case 'chaldean': return chaldeanMap
+      case 'vedic': return vedicMap
+      case 'tamil': return tamilMap
+      case 'arabic': return arabicMap
+      case 'western': return westernMap
+      default: return pythagoreanMap
+    }
+  }
+
   const calculateDestinyNumber = (fullName: string, system: string): number => {
-    const nameMap = system === 'pythagorean' ? pythagoreanMap : chaldeanMap
+    const nameMap = getNumberMap(system)
     let sum = 0
     
     for (const letter of fullName.toUpperCase()) {
@@ -141,6 +225,16 @@ export default function NumerologyPage() {
     }
     
     return reduceToSingleDigit(sum)
+  }
+
+  const calculateExpressionNumber = (fullName: string, system: string): number => {
+    // Expression number is the same as Destiny number in most systems
+    return calculateDestinyNumber(fullName, system)
+  }
+
+  const calculateSoulUrgeNumber = (fullName: string, system: string): number => {
+    // Soul Urge is the same as Soul number in most systems
+    return calculateSoulNumber(fullName, system)
   }
 
   const calculateSoulNumber = (fullName: string, system: string): number => {
@@ -246,7 +340,7 @@ export default function NumerologyPage() {
   }
 
   const calculateLocationVibration = (location: string): number => {
-    const nameMap = selectedSystem === 'pythagorean' ? pythagoreanMap : chaldeanMap
+    const nameMap = getNumberMap(selectedSystem)
     let sum = 0
     
     for (const letter of location.toUpperCase()) {
@@ -256,6 +350,55 @@ export default function NumerologyPage() {
     }
     
     return reduceToSingleDigit(sum)
+  }
+
+  const calculateBusinessNameVibration = (businessName: string): number => {
+    const nameMap = getNumberMap(selectedSystem)
+    let sum = 0
+    
+    for (const letter of businessName.toUpperCase()) {
+      if (nameMap[letter]) {
+        sum += nameMap[letter]
+      }
+    }
+    
+    return reduceToSingleDigit(sum)
+  }
+
+  const calculateAddressEnergy = (address: string): number => {
+    const nameMap = getNumberMap(selectedSystem)
+    let sum = 0
+    
+    for (const letter of address.toUpperCase()) {
+      if (nameMap[letter]) {
+        sum += nameMap[letter]
+      }
+    }
+    
+    return reduceToSingleDigit(sum)
+  }
+
+  const calculatePhoneNumberVibration = (phoneNumber: string): number => {
+    // Remove all non-digit characters
+    const digits = phoneNumber.replace(/\D/g, '')
+    let sum = 0
+    
+    for (const digit of digits) {
+      sum += parseInt(digit)
+    }
+    
+    return reduceToSingleDigit(sum)
+  }
+
+  const calculateCompatibilityScore = (person1Numbers: any, person2Numbers: any): number => {
+    const lifePathCompatibility = Math.abs(person1Numbers.lifePathNumber - person2Numbers.lifePathNumber)
+    const destinyCompatibility = Math.abs(person1Numbers.destinyNumber - person2Numbers.destinyNumber)
+    const soulCompatibility = Math.abs(person1Numbers.soulNumber - person2Numbers.soulNumber)
+    
+    const totalDifference = lifePathCompatibility + destinyCompatibility + soulCompatibility
+    const maxDifference = 9 + 9 + 9 // Maximum possible difference
+    
+    return Math.round(((maxDifference - totalDifference) / maxDifference) * 100)
   }
 
   const getLuckyNumbers = (lifePath: number, destiny: number): number[] => {
@@ -424,6 +567,29 @@ export default function NumerologyPage() {
       regionalInfluence: selectedLocation?.region || 'Global',
       culturalNumerology: selectedLocation?.country || 'Universal'
     } : undefined
+
+    // Business and address analysis
+    const businessNameVibration = businessName ? calculateBusinessNameVibration(businessName) : 0
+    const addressEnergy = address ? calculateAddressEnergy(address) : 0
+    const phoneNumberVibration = phoneNumber ? calculatePhoneNumberVibration(phoneNumber) : 0
+
+    // Partner compatibility analysis
+    let partnerCompatibility = null
+    if (partnerName && partnerBirthDate) {
+      const partnerLifePath = calculateLifePathNumber(partnerBirthDate)
+      const partnerDestiny = calculateDestinyNumber(partnerName, selectedSystem)
+      const partnerSoul = calculateSoulNumber(partnerName, selectedSystem)
+      
+      partnerCompatibility = {
+        partnerLifePath,
+        partnerDestiny,
+        partnerSoul,
+        compatibilityScore: calculateCompatibilityScore(
+          { lifePathNumber, destinyNumber, soulNumber },
+          { lifePathNumber: partnerLifePath, destinyNumber: partnerDestiny, soulNumber: partnerSoul }
+        )
+      }
+    }
 
     // Generate guidance
     const compatibilityScore = Math.floor(Math.random() * 40) + 60 // 60-100%
@@ -701,6 +867,79 @@ export default function NumerologyPage() {
                     />
                   )}
                 </div>
+                {/* Advanced Fields */}
+                <div className="md:col-span-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-white">Advanced Analysis</h3>
+                    <button
+                      type="button"
+                      onClick={() => setShowAdvancedFeatures(!showAdvancedFeatures)}
+                      className="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors"
+                    >
+                      {showAdvancedFeatures ? 'Hide' : 'Show'} Advanced Fields
+                    </button>
+                  </div>
+                </div>
+
+                {showAdvancedFeatures && (
+                  <>
+                    <div>
+                      <label htmlFor="businessName" className="block text-white text-sm font-medium mb-2">Business Name (Optional)</label>
+                      <input
+                        type="text"
+                        id="businessName"
+                        className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., My Company Inc."
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="address" className="block text-white text-sm font-medium mb-2">Address (Optional)</label>
+                      <input
+                        type="text"
+                        id="address"
+                        className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., 123 Main Street, City"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="phoneNumber" className="block text-white text-sm font-medium mb-2">Phone Number (Optional)</label>
+                      <input
+                        type="tel"
+                        id="phoneNumber"
+                        className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., +1-555-123-4567"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="partnerName" className="block text-white text-sm font-medium mb-2">Partner Name (Compatibility)</label>
+                      <input
+                        type="text"
+                        id="partnerName"
+                        className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., Jane Smith"
+                        value={partnerName}
+                        onChange={(e) => setPartnerName(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="partnerBirthDate" className="block text-white text-sm font-medium mb-2">Partner Birth Date</label>
+                      <input
+                        type="date"
+                        id="partnerBirthDate"
+                        className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        value={partnerBirthDate}
+                        onChange={(e) => setPartnerBirthDate(e.target.value)}
+                      />
+                    </div>
+                  </>
+                )}
+
                 <div className="md:col-span-2 text-center mt-6">
                   <Button type="submit" variant="cosmic" size="lg" className="btn-cosmic">
                     Calculate My Numerology
@@ -1028,6 +1267,99 @@ export default function NumerologyPage() {
                       <h4 className="text-lg font-semibold mb-2">Cultural Numerology</h4>
                       <p className="text-gray-300 text-sm">Local numerological traditions</p>
                     </div>
+                  </div>
+                </Card>
+              )}
+
+              {/* Business & Address Analysis */}
+              {(businessName || address || phoneNumber) && (
+                <Card className="p-6 cosmic-glow mb-12">
+                  <h3 className="text-2xl font-bold mb-6 text-center text-cosmic">Business & Address Analysis</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {businessName && (
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-cosmic mb-2">
+                          {calculateBusinessNameVibration(businessName)}
+                        </div>
+                        <h4 className="text-lg font-semibold mb-2">Business Name Vibration</h4>
+                        <p className="text-gray-300 text-sm">Energy of your business name</p>
+                        <p className="text-gray-400 text-xs mt-2">{businessName}</p>
+                      </div>
+                    )}
+                    {address && (
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-cosmic mb-2">
+                          {calculateAddressEnergy(address)}
+                        </div>
+                        <h4 className="text-lg font-semibold mb-2">Address Energy</h4>
+                        <p className="text-gray-300 text-sm">Vibrational energy of your address</p>
+                        <p className="text-gray-400 text-xs mt-2">{address}</p>
+                      </div>
+                    )}
+                    {phoneNumber && (
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-cosmic mb-2">
+                          {calculatePhoneNumberVibration(phoneNumber)}
+                        </div>
+                        <h4 className="text-lg font-semibold mb-2">Phone Number Vibration</h4>
+                        <p className="text-gray-300 text-sm">Energy of your phone number</p>
+                        <p className="text-gray-400 text-xs mt-2">{phoneNumber}</p>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              )}
+
+              {/* Partner Compatibility Analysis */}
+              {partnerName && partnerBirthDate && (
+                <Card className="p-6 cosmic-glow mb-12">
+                  <h3 className="text-2xl font-bold mb-6 text-center text-cosmic">Partner Compatibility Analysis</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                      <h4 className="text-lg font-semibold mb-4 text-purple-300">Your Numbers</h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Life Path:</span>
+                          <span className="text-white font-bold">{numerologyResult.lifePathNumber}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Destiny:</span>
+                          <span className="text-white font-bold">{numerologyResult.destinyNumber}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Soul:</span>
+                          <span className="text-white font-bold">{numerologyResult.soulNumber}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold mb-4 text-pink-300">Partner Numbers</h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Life Path:</span>
+                          <span className="text-white font-bold">{calculateLifePathNumber(partnerBirthDate)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Destiny:</span>
+                          <span className="text-white font-bold">{calculateDestinyNumber(partnerName, selectedSystem)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Soul:</span>
+                          <span className="text-white font-bold">{calculateSoulNumber(partnerName, selectedSystem)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 text-center">
+                    <div className="text-2xl font-bold text-cosmic mb-2">
+                      Compatibility Score: {calculateCompatibilityScore(
+                        { lifePathNumber: numerologyResult.lifePathNumber, destinyNumber: numerologyResult.destinyNumber, soulNumber: numerologyResult.soulNumber },
+                        { lifePathNumber: calculateLifePathNumber(partnerBirthDate), destinyNumber: calculateDestinyNumber(partnerName, selectedSystem), soulNumber: calculateSoulNumber(partnerName, selectedSystem) }
+                      )}%
+                    </div>
+                    <p className="text-gray-300 text-sm">
+                      Based on Life Path, Destiny, and Soul number compatibility
+                    </p>
                   </div>
                 </Card>
               )}
