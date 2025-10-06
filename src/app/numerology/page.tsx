@@ -706,8 +706,16 @@ export default function NumerologyPage() {
   const currentSystem = numerologySystems.find(sys => sys.id === selectedSystem)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen relative">
+      {/* Starfield Background */}
+      <StarfieldBackground />
+      
+      {/* Navigation */}
+      <Navigation />
+
+      {/* Main Content */}
+      <main className="relative z-10 pt-16">
+        <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -1438,7 +1446,8 @@ export default function NumerologyPage() {
             ))}
           </div>
         </motion.div>
-      </div>
+        </div>
+      </main>
     </div>
   )
 }
