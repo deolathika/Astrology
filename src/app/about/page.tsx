@@ -1,189 +1,152 @@
-import React from 'react';
-import { Metadata } from 'next';
-import CosmicCard from '@/components/ui/CosmicCard';
-import SkipLink from '@/components/accessibility/SkipLink';
+'use client'
 
-export const metadata: Metadata = {
-  title: 'About Us - Daily Secrets',
-  description: 'Learn about Daily Secrets, the premier multi-system astrology and numerology platform providing accurate cosmic guidance.',
-  keywords: 'about, astrology, numerology, cosmic guidance, spiritual wisdom',
-};
+import React from 'react'
+import { motion } from 'framer-motion'
+import { Heart, Shield, Globe, Sparkles, Users, Star, Moon, Sun } from 'lucide-react'
+import Navigation from '@/components/readdy/Navigation'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
+import Card from '@/components/readdy/Card'
+import Button from '@/components/readdy/Button'
 
-const AboutPage: React.FC = () => {
+export default function AboutPage() {
   return (
-    <>
-      <SkipLink href="#main-content">Skip to main content</SkipLink>
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-gold-400 to-silver-400 bg-clip-text text-transparent">
-              About Daily Secrets
-            </h1>
-            <p className="text-xl text-violet-300">
-              Your Gateway to Cosmic Wisdom and Spiritual Enlightenment
-            </p>
+    <div className="min-h-screen relative main-content">
+      <StarfieldBackground />
+      <Navigation />
+
+      <main className="relative z-10 pt-16">
+        {/* Hero Section */}
+        <section className="py-20 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent"
+            >
+              Our Mission
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-300 mb-8"
+            >
+              Daily Secrets is more than an app - it's a movement towards inner peace, 
+              self-discovery, and spiritual growth. We believe everyone deserves to feel 
+              connected to their true self and manifest their dreams.
+            </motion.p>
           </div>
+        </section>
 
-          {/* Mission Statement */}
-          <CosmicCard className="mb-8" variant="glass" glow>
-            <h2 className="text-2xl font-semibold mb-4 text-gold-400">Our Mission</h2>
-            <p className="text-violet-200 mb-4">
-              Daily Secrets is dedicated to providing accurate, culturally-sensitive astrological and numerological guidance 
-              through cutting-edge technology and traditional wisdom. We bridge the gap between ancient cosmic knowledge 
-              and modern digital accessibility.
-            </p>
-            <p className="text-violet-200">
-              Our platform combines Swiss Ephemeris precision with NASA/JPL validation to deliver the most accurate 
-              astronomical calculations available, while respecting and honoring diverse cultural traditions and belief systems.
-            </p>
-          </CosmicCard>
+        {/* Vision Section */}
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <Card className="p-8 cosmic-glow">
+                <div className="text-center">
+                  <Heart className="w-16 h-16 text-pink-400 mx-auto mb-6" />
+                  <h3 className="text-2xl font-bold mb-4 text-cosmic">Our Vision</h3>
+                  <p className="text-gray-300 text-lg leading-relaxed">
+                    To create a spiritual sanctuary where people can find peace, clarity, and hope. 
+                    We believe in empowering individuals to trust their intuition, manifest their dreams, 
+                    and connect with their true selves through the wisdom of the cosmos.
+                  </p>
+                </div>
+              </Card>
 
-          {/* What We Do */}
-          <CosmicCard className="mb-8" variant="neon">
-            <h2 className="text-2xl font-semibold mb-4 text-gold-400">What We Do</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Astrological Services</h3>
-                <ul className="list-disc list-inside text-violet-200 space-y-2">
-                  <li>Western Astrology (Tropical Zodiac)</li>
-                  <li>Vedic Astrology (Sidereal Zodiac)</li>
-                  <li>Chinese Astrology (12-Year Animal Cycle)</li>
-                  <li>Sri Lankan Traditional Astrology</li>
-                  <li>Birth Chart Analysis</li>
-                  <li>Transit Interpretations</li>
-                  <li>Compatibility Analysis</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Numerological Services</h3>
-                <ul className="list-disc list-inside text-violet-200 space-y-2">
-                  <li>Pythagorean Numerology</li>
-                  <li>Chaldean Numerology</li>
-                  <li>Chinese Numerology</li>
-                  <li>Life Path Analysis</li>
-                  <li>Destiny Number Calculations</li>
-                  <li>Soul Urge Interpretations</li>
-                  <li>Compatibility Numerology</li>
-                </ul>
-              </div>
+              <Card className="p-8 cosmic-glow">
+                <div className="text-center">
+                  <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-6" />
+                  <h3 className="text-2xl font-bold mb-4 text-cosmic">Our Purpose</h3>
+                  <p className="text-gray-300 text-lg leading-relaxed">
+                    To provide free, accessible spiritual guidance that helps people navigate life's 
+                    challenges with wisdom, hope, and inner strength. We focus on making people happy 
+                    and giving hope for their hard life, not making money.
+                  </p>
+                </div>
+              </Card>
             </div>
-          </CosmicCard>
+          </div>
+        </section>
 
-          {/* Technology */}
-          <CosmicCard className="mb-8" variant="gradient">
-            <h2 className="text-2xl font-semibold mb-4 text-gold-400">Our Technology</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Astronomical Accuracy</h3>
-                <p className="text-violet-200">
-                  Swiss Ephemeris integration with ±0.1° tolerance and NASA/JPL real-time validation 
-                  ensures the highest accuracy in all calculations.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">AI Integration</h3>
-                <p className="text-violet-200">
-                  Local AI processing with WebLLM and Transformers.js for personalized insights, 
-                  dream analysis, and cosmic guidance.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Cultural Sensitivity</h3>
-                <p className="text-violet-200">
-                  Multi-language support and region-aware interpretations that respect 
-                  diverse cultural traditions and belief systems.
-                </p>
-              </div>
+        {/* Values Section */}
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Our Values</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="p-6 text-center">
+                <Shield className="w-12 h-12 text-green-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-3">Privacy First</h3>
+                <p className="text-gray-300">Your spiritual journey is private. We protect your personal information and never share your data.</p>
+              </Card>
+              
+              <Card className="p-6 text-center">
+                <Globe className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-3">Global Wisdom</h3>
+                <p className="text-gray-300">We integrate multiple astrological systems and global sources to provide comprehensive guidance.</p>
+              </Card>
+              
+              <Card className="p-6 text-center">
+                <Heart className="w-12 h-12 text-pink-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-3">Free Access</h3>
+                <p className="text-gray-300">Most features are free because everyone deserves access to spiritual guidance and self-discovery tools.</p>
+              </Card>
             </div>
-          </CosmicCard>
+          </div>
+        </section>
 
-          {/* Team */}
-          <CosmicCard className="mb-8" variant="glass">
-            <h2 className="text-2xl font-semibold mb-4 text-gold-400">Our Team</h2>
-            <p className="text-violet-200 mb-4">
-              Daily Secrets is built by a diverse team of astrologers, numerologists, software engineers, 
-              and cultural experts who share a passion for making cosmic wisdom accessible to everyone.
-            </p>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Astrological Experts</h3>
-                <p className="text-violet-200">
-                  Certified astrologers with decades of experience in Western, Vedic, Chinese, 
-                  and Sri Lankan astrological traditions.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Technology Team</h3>
-                <p className="text-violet-200">
-                  Full-stack developers and AI specialists focused on creating intuitive, 
-                  accessible, and accurate cosmic guidance tools.
-                </p>
-              </div>
+        {/* Features Section */}
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">What We Offer</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="p-6 text-center">
+                <Star className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Astrology</h3>
+                <p className="text-gray-300 text-sm">Multiple astrological systems including Western, Vedic, Chinese, and Sri Lankan traditions.</p>
+              </Card>
+              
+              <Card className="p-6 text-center">
+                <Moon className="w-12 h-12 text-purple-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Dream Analysis</h3>
+                <p className="text-gray-300 text-sm">Comprehensive dream interpretation using multiple analysis methods and LLM integration.</p>
+              </Card>
+              
+              <Card className="p-6 text-center">
+                <Sun className="w-12 h-12 text-orange-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Numerology</h3>
+                <p className="text-gray-300 text-sm">Advanced numerology systems including Pythagorean, Chaldean, and Vedic calculations.</p>
+              </Card>
+              
+              <Card className="p-6 text-center">
+                <Users className="w-12 h-12 text-pink-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Community</h3>
+                <p className="text-gray-300 text-sm">Connect with like-minded individuals on their spiritual journey.</p>
+              </Card>
             </div>
-          </CosmicCard>
+          </div>
+        </section>
 
-          {/* Values */}
-          <CosmicCard className="mb-8" variant="neon">
-            <h2 className="text-2xl font-semibold mb-4 text-gold-400">Our Values</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Accuracy</h3>
-                <p className="text-violet-200">
-                  We prioritize scientific accuracy in all astronomical calculations while 
-                  maintaining respect for traditional wisdom and cultural interpretations.
-                </p>
+        {/* Call to Action */}
+        <section className="py-12 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <Card className="p-8 cosmic-glow">
+              <h2 className="text-3xl font-bold mb-6 text-cosmic">Begin Your Spiritual Journey</h2>
+              <p className="text-xl text-gray-300 mb-8">
+                Join thousands of people who have found peace, clarity, and hope through Daily Secrets.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button variant="cosmic" size="lg">
+                  Start Your Journey
+                </Button>
+                <Button variant="secondary" size="lg">
+                  Learn More
+                </Button>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Accessibility</h3>
-                <p className="text-violet-200">
-                  Our platform is designed to be accessible to users of all abilities, 
-                  with comprehensive internationalization and cultural adaptation.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Privacy</h3>
-                <p className="text-violet-200">
-                  We respect your privacy and provide complete data control, including 
-                  export and deletion options for all personal information.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-400">Cultural Respect</h3>
-                <p className="text-violet-200">
-                  We honor and preserve the integrity of diverse astrological and 
-                  numerological traditions from around the world.
-                </p>
-              </div>
-            </div>
-          </CosmicCard>
-
-          {/* Contact */}
-          <CosmicCard variant="gradient">
-            <h2 className="text-2xl font-semibold mb-4 text-gold-400">Get in Touch</h2>
-            <p className="text-violet-200 mb-4">
-              Have questions about Daily Secrets? We'd love to hear from you.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a 
-                href="/contact" 
-                className="btn bg-gold-400 text-violet-900 hover:bg-gold-500 transition-colors"
-              >
-                Contact Us
-              </a>
-              <a 
-                href="/faq" 
-                className="btn bg-violet-800/50 text-violet-200 hover:bg-violet-700/50 transition-colors"
-              >
-                FAQ
-              </a>
-            </div>
-          </CosmicCard>
-        </div>
-      </div>
-    </>
-  );
-};
-
-export default AboutPage;
+            </Card>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}

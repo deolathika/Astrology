@@ -26,7 +26,7 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, var(--cosmic-bg-start) 0%, var(--cosmic-bg-mid) 50%, var(--cosmic-bg-end) 100%);
+  background: transparent;
   min-height: 100vh;
   color: white;
   overflow-x: hidden;
@@ -131,6 +131,12 @@ body {
   height: 100%;
   z-index: -1;
   opacity: 0.6;
+}
+
+/* Main content background */
+.main-content {
+  background: linear-gradient(135deg, var(--cosmic-bg-start) 0%, var(--cosmic-bg-mid) 50%, var(--cosmic-bg-end) 100%);
+  min-height: 100vh;
 }
 
 .star {

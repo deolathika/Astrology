@@ -39,7 +39,7 @@ export default function AdminPage() {
   ]
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative main-content">
       {/* Starfield Background */}
       <StarfieldBackground />
       

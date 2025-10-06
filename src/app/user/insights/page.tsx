@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import CosmicNebulaBackground from '@/components/cosmic/CosmicNebulaBackground'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import { useQuery } from '@tanstack/react-query'
 
 export default function UserInsightsPage() {
@@ -113,7 +113,7 @@ export default function UserInsightsPage() {
 
   return (
     <div className="min-h-screen cosmic-minimalist-modern-bg relative overflow-hidden">
-      <CosmicNebulaBackground />
+      <StarfieldBackground />
 
       {/* Navigation */}
       <nav className="cosmic-nav-minimalist-modern fixed top-0 left-0 right-0 z-50">

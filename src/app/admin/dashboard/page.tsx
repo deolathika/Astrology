@@ -28,7 +28,7 @@ import {
   Search
 } from 'lucide-react'
 import AppShell from '@/components/layout/AppShell'
-import CosmicButton from '@/components/cosmic/CosmicButton'
+import Button from '@/components/readdy/Button'
 
 interface DashboardStats {
   totalUsers: number
@@ -187,13 +187,13 @@ export default function AdminDashboard() {
                 </span>
               </div>
               
-              <CosmicButton
+              <Button
                 variant="premium"
                 size="lg"
                 icon={<Settings className="w-5 h-5" />}
               >
                 Settings
-              </CosmicButton>
+              </Button>
             </div>
           </div>
         </motion.div>
@@ -273,9 +273,9 @@ export default function AdminDashboard() {
             <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">Recent Activity</h2>
-                <CosmicButton variant="ghost" size="sm">
+                <Button variant="ghost" size="sm">
                   View All
-                </CosmicButton>
+                </Button>
               </div>
               
               <div className="space-y-4">
@@ -313,18 +313,18 @@ export default function AdminDashboard() {
             <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <CosmicButton variant="primary" size="lg" className="w-full justify-start" icon={<Users className="w-4 h-4" />}>
+                <Button variant="primary" size="lg" className="w-full justify-start" icon={<Users className="w-4 h-4" />}>
                   Manage Users
-                </CosmicButton>
-                <CosmicButton variant="secondary" size="lg" className="w-full justify-start" icon={<MessageSquare className="w-4 h-4" />}>
+                </Button>
+                <Button variant="secondary" size="lg" className="w-full justify-start" icon={<MessageSquare className="w-4 h-4" />}>
                   Moderate Content
-                </CosmicButton>
-                <CosmicButton variant="secondary" size="lg" className="w-full justify-start" icon={<BarChart3 className="w-4 h-4" />}>
+                </Button>
+                <Button variant="secondary" size="lg" className="w-full justify-start" icon={<BarChart3 className="w-4 h-4" />}>
                   View Analytics
-                </CosmicButton>
-                <CosmicButton variant="secondary" size="lg" className="w-full justify-start" icon={<Settings className="w-4 h-4" />}>
+                </Button>
+                <Button variant="secondary" size="lg" className="w-full justify-start" icon={<Settings className="w-4 h-4" />}>
                   System Settings
-                </CosmicButton>
+                </Button>
               </div>
             </div>
 

@@ -8,7 +8,8 @@
 import React, { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { userFlowManager } from '@/lib/user-flow/UserFlowManager'
-import { CosmicButton, CosmicCard } from '@/components/cosmic'
+import Button from '@/components/readdy/Button'
+import Card from '@/components/readdy/Card'
 
 interface FeatureGateProps {
   feature: string
@@ -49,7 +50,7 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
             
             {/* Upgrade prompt overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-              <CosmicCard variant="premium" size="md" className="max-w-md mx-4">
+              <Card variant="premium" size="md" className="max-w-md mx-4">
                 <div className="text-center">
                   <h3 className="text-xl font-bold text-cosmic-gold mb-2">
                     {teaser.title}
@@ -68,23 +69,23 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
                   </div>
                   
                   <div className="flex gap-3">
-                    <CosmicButton
+                    <Button
                       variant="premium"
                       size="md"
                       onClick={() => setShowModal(true)}
                     >
                       {teaser.cta}
-                    </CosmicButton>
-                    <CosmicButton
+                    </Button>
+                    <Button
                       variant="ghost"
                       size="md"
                       onClick={() => setShowModal(false)}
                     >
                       Maybe Later
-                    </CosmicButton>
+                    </Button>
                   </div>
                 </div>
-              </CosmicCard>
+              </Card>
             </div>
           </div>
         )}
@@ -92,7 +93,7 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
         {/* Upgrade Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <CosmicCard variant="premium" size="lg" className="max-w-2xl">
+            <Card variant="premium" size="lg" className="max-w-2xl">
               <div className="text-center">
                 <h2 className="text-3xl font-bold text-cosmic-gold mb-4">
                   Upgrade to Premium
@@ -136,7 +137,7 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
                 </div>
                 
                 <div className="flex gap-3 justify-center">
-                  <CosmicButton
+                  <Button
                     variant="premium"
                     size="lg"
                     onClick={() => {
@@ -145,17 +146,17 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
                     }}
                   >
                     Upgrade Now
-                  </CosmicButton>
-                  <CosmicButton
+                  </Button>
+                  <Button
                     variant="ghost"
                     size="lg"
                     onClick={() => setShowModal(false)}
                   >
                     Cancel
-                  </CosmicButton>
+                  </Button>
                 </div>
               </div>
-            </CosmicCard>
+            </Card>
           </div>
         )}
       </>

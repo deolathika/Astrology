@@ -9,16 +9,19 @@ export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Astrology', href: '/astrology' },
-    { name: 'Numerology', href: '/numerology' },
-    { name: 'Compatibility', href: '/compatibility' },
-    { name: 'Dreams', href: '/dreams' },
-    { name: 'Community', href: '/community' },
-    { name: 'Profile', href: '/profile' },
-    { name: 'Admin', href: '/admin' },
-  ];
+const navItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Welcome', href: '/welcome' },
+  { name: 'About', href: '/about' },
+  { name: 'Insights', href: '/insights' },
+  { name: 'Astrology', href: '/astrology' },
+  { name: 'Numerology', href: '/numerology' },
+  { name: 'Compatibility', href: '/compatibility' },
+  { name: 'Dreams', href: '/dreams' },
+  { name: 'Community', href: '/community' },
+  { name: 'Profile', href: '/profile' },
+  { name: 'Admin', href: '/admin' },
+];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-white/10">

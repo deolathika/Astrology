@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/zodiac/page": [
+    "/astrology/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/zodiac/page.js"
+      "static/chunks/app/astrology/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,40 +11,25 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/about/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/about/page.js"
+    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/numerology/page": [
+    "/welcome/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/numerology/page.js"
+      "static/chunks/app/welcome/page.js"
     ],
-    "/astrology/page": [
+    "/personal-info/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/astrology/page.js"
-    ],
-    "/admin/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin/page.js"
-    ],
-    "/profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/profile/page.js"
-    ],
-    "/dreams/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dreams/page.js"
-    ],
-    "/compatibility/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/compatibility/page.js"
+      "static/chunks/app/personal-info/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",

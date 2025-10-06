@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { userFlowManager } from '@/lib/user-flow/UserFlowManager'
-import { CosmicLayout } from '@/components/cosmic'
+// Removed cosmic layout import
 
 interface UserFlowRouterProps {
   children: React.ReactNode
@@ -51,21 +51,21 @@ export const UserFlowRouter: React.FC<UserFlowRouterProps> = ({
   // Show loading state
   if (status === 'loading' || isAuthorized === null) {
     return (
-      <CosmicLayout variant="nebula" size="lg">
+      <div variant="nebula" size="lg">
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-cosmic-gold/30 border-t-cosmic-gold rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-cosmic-text-secondary">Loading your cosmic journey...</p>
           </div>
         </div>
-      </CosmicLayout>
+      </div>
     )
   }
 
   // Show unauthorized access
   if (!isAuthorized) {
     return (
-      <CosmicLayout variant="nebula" size="lg">
+      <div variant="nebula" size="lg">
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-cosmic-gold mb-4">Access Restricted</h1>
@@ -80,7 +80,7 @@ export const UserFlowRouter: React.FC<UserFlowRouterProps> = ({
             </button>
           </div>
         </div>
-      </CosmicLayout>
+      </div>
     )
   }
 

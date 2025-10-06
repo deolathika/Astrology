@@ -1,18 +1,18 @@
 'use client'
 
 import React from 'react'
+import DailyInsightsDashboard from '@/components/features/DailyInsightsDashboard'
 import Navigation from '@/components/readdy/Navigation'
 import StarfieldBackground from '@/components/readdy/StarfieldBackground'
-import AdvancedAstrologySystem from '@/components/astrology/AdvancedAstrologySystem'
 
-export default function AstrologyPage() {
+export default function InsightsPage() {
   return (
     <div className="min-h-screen relative main-content">
       <StarfieldBackground />
       <Navigation />
-
+      
       <main className="relative z-10 pt-16">
-        <AdvancedAstrologySystem />
+        <DailyInsightsDashboard />
       </main>
     </div>
   )

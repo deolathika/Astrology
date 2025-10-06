@@ -10,7 +10,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { CosmicLayout, CosmicCard, CosmicButton } from '@/components/cosmic'
+import Card from '@/components/readdy/Card'
+import Button from '@/components/readdy/Button'
 import { FeatureGate } from '@/components/user-flow/FeatureGate'
 import { UserFlowRouter } from '@/components/user-flow/UserFlowRouter'
 import { 
@@ -66,7 +67,7 @@ export default function FreeUserDashboard() {
 
   return (
     <UserFlowRouter>
-      <CosmicLayout variant="nebula" size="lg" background="nebula">
+      <div variant="nebula" size="lg" background="nebula">
         <div className="cosmic-container max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
@@ -79,7 +80,7 @@ export default function FreeUserDashboard() {
           </div>
 
           {/* Daily Insights */}
-          <CosmicCard variant="glass" size="lg" className="mb-8">
+          <Card variant="glass" size="lg" className="mb-8">
             <h2 className="text-2xl font-semibold text-cosmic-gold mb-6">
               Today's Cosmic Insights
             </h2>
@@ -128,12 +129,12 @@ export default function FreeUserDashboard() {
                 </div>
               </div>
             )}
-          </CosmicCard>
+          </Card>
 
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Basic Features */}
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+            <Card variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
               <div className="text-center" onClick={() => handleFeatureClick('numerology')}>
                 <div className="w-12 h-12 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-6 h-6 text-cosmic-gold" />
@@ -144,13 +145,13 @@ export default function FreeUserDashboard() {
                 <p className="text-sm text-cosmic-text-secondary mb-4">
                   Discover your life path and destiny numbers
                 </p>
-                <CosmicButton variant="ghost" size="sm">
+                <Button variant="ghost" size="sm">
                   Explore
-                </CosmicButton>
+                </Button>
               </div>
-            </CosmicCard>
+            </Card>
 
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+            <Card variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
               <div className="text-center" onClick={() => handleFeatureClick('astrology')}>
                 <div className="w-12 h-12 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Star className="w-6 h-6 text-cosmic-blue" />
@@ -161,13 +162,13 @@ export default function FreeUserDashboard() {
                 <p className="text-sm text-cosmic-text-secondary mb-4">
                   Your personalized birth chart and insights
                 </p>
-                <CosmicButton variant="ghost" size="sm">
+                <Button variant="ghost" size="sm">
                   Explore
-                </CosmicButton>
+                </Button>
               </div>
-            </CosmicCard>
+            </Card>
 
-            <CosmicCard variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+            <Card variant="default" size="md" className="cursor-pointer hover:scale-105 transition-transform">
               <div className="text-center" onClick={() => handleFeatureClick('compatibility')}>
                 <div className="w-12 h-12 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-6 h-6 text-cosmic-silver" />
@@ -178,15 +179,15 @@ export default function FreeUserDashboard() {
                 <p className="text-sm text-cosmic-text-secondary mb-4">
                   Basic relationship compatibility check
                 </p>
-                <CosmicButton variant="ghost" size="sm">
+                <Button variant="ghost" size="sm">
                   Explore
-                </CosmicButton>
+                </Button>
               </div>
-            </CosmicCard>
+            </Card>
 
             {/* Premium Features with Gates */}
             <FeatureGate feature="dreamAnalysis">
-              <CosmicCard variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+              <Card variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-cosmic-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Moon className="w-6 h-6 text-cosmic-gold" />
@@ -197,15 +198,15 @@ export default function FreeUserDashboard() {
                   <p className="text-sm text-cosmic-text-secondary mb-4">
                     AI-powered dream interpretation
                   </p>
-                  <CosmicButton variant="premium" size="sm">
+                  <Button variant="premium" size="sm">
                     Unlock
-                  </CosmicButton>
+                  </Button>
                 </div>
-              </CosmicCard>
+              </Card>
             </FeatureGate>
 
             <FeatureGate feature="aiChat">
-              <CosmicCard variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+              <Card variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-cosmic-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <MessageCircle className="w-6 h-6 text-cosmic-blue" />
@@ -216,15 +217,15 @@ export default function FreeUserDashboard() {
                   <p className="text-sm text-cosmic-text-secondary mb-4">
                     Unlimited cosmic guidance
                   </p>
-                  <CosmicButton variant="premium" size="sm">
+                  <Button variant="premium" size="sm">
                     Unlock
-                  </CosmicButton>
+                  </Button>
                 </div>
-              </CosmicCard>
+              </Card>
             </FeatureGate>
 
             <FeatureGate feature="premiumDashboard">
-              <CosmicCard variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
+              <Card variant="premium" size="md" className="cursor-pointer hover:scale-105 transition-transform">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-cosmic-silver/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Crown className="w-6 h-6 text-cosmic-silver" />
@@ -235,16 +236,16 @@ export default function FreeUserDashboard() {
                   <p className="text-sm text-cosmic-text-secondary mb-4">
                     Advanced insights and reports
                   </p>
-                  <CosmicButton variant="premium" size="sm">
+                  <Button variant="premium" size="sm">
                     Unlock
-                  </CosmicButton>
+                  </Button>
                 </div>
-              </CosmicCard>
+              </Card>
             </FeatureGate>
           </div>
 
           {/* Upgrade Prompt */}
-          <CosmicCard variant="premium" size="lg" className="text-center">
+          <Card variant="premium" size="lg" className="text-center">
             <h2 className="text-2xl font-bold text-cosmic-gold mb-4">
               Ready to Unlock Your Full Cosmic Potential?
             </h2>
@@ -271,16 +272,16 @@ export default function FreeUserDashboard() {
               </div>
             </div>
             
-            <CosmicButton
+            <Button
               variant="premium"
               size="lg"
               onClick={handleUpgrade}
             >
               Upgrade to Premium
-            </CosmicButton>
-          </CosmicCard>
+            </Button>
+          </Card>
         </div>
-      </CosmicLayout>
+      </div>
     </UserFlowRouter>
   )
 }

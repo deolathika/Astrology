@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import CosmicNebulaBackground from '@/components/cosmic/CosmicNebulaBackground'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import UserFeaturesDashboard from '@/components/user/UserFeaturesDashboard'
 
 export default function UserDashboard() {
@@ -33,7 +33,7 @@ export default function UserDashboard() {
 
   return (
     <div className="min-h-screen cosmic-minimalist-modern-bg relative overflow-hidden">
-      <CosmicNebulaBackground />
+      <StarfieldBackground />
 
       {/* Navigation */}
       <nav className="cosmic-nav-minimalist-modern fixed top-0 left-0 right-0 z-50">
