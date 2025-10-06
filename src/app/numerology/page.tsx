@@ -524,8 +524,7 @@ export default function NumerologyPage() {
     }
   }
 
-  const handleCalculateNumerology = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleCalculateNumerology = () => {
     if (!fullName || !birthDate) return
 
     const lifePathNumber = calculateLifePathNumber(birthDate)
@@ -1412,6 +1411,7 @@ export default function NumerologyPage() {
                   </div>
                 </div>
               </Card>
+            </Card>
             </motion.div>
           )}
         </AnimatePresence>
