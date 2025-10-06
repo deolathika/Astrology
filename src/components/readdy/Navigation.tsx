@@ -11,10 +11,13 @@ export default function Navigation() {
 
   const navItems = [
     { name: 'Home', href: '/' },
+    { name: 'Insights', href: '/insights' },
     { name: 'Astrology', href: '/astrology' },
     { name: 'Numerology', href: '/numerology' },
     { name: 'Compatibility', href: '/compatibility' },
+    { name: 'Compatibility Calculator', href: '/compatibility-calculator' },
     { name: 'Dreams', href: '/dreams' },
+    { name: 'Dream Analysis', href: '/dream-analysis' },
     { name: 'Community', href: '/community' },
     { name: 'Profile', href: '/profile' },
     { name: 'Admin', href: '/admin' },

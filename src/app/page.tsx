@@ -254,32 +254,80 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Cosmic Guidance Section */}
-        <section className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Cosmic Guidance</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cosmicGuidance.map((guidance, index) => (
-                <Card key={index} className="p-6 hover:scale-105 cosmic-glow">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">{guidance.icon}</div>
-                    <h3 className="text-xl font-semibold mb-3">{guidance.title}</h3>
-                    <p className="text-gray-300 mb-4 text-sm">{guidance.preview}</p>
-                    
-                    <div className="mb-4">
-                      <p className="text-gray-300 text-sm">{guidance.detail}</p>
-                    </div>
-                    
-                    <Button variant="primary" size="sm" className="w-full">
-                      Read More
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
+            {/* Enhanced Features Section */}
+            <section className="py-12 px-4">
+              <div className="max-w-7xl mx-auto">
+                <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Enhanced Features</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <Link href="/insights">
+                    <Card className="p-6 hover:scale-105 cosmic-glow cursor-pointer">
+                      <div className="text-center">
+                        <div className="text-4xl mb-4">🌟</div>
+                        <h3 className="text-xl font-semibold mb-3">Daily Insights</h3>
+                        <p className="text-gray-300 mb-4 text-sm">Personalized cosmic guidance with real-time energy tracking</p>
+                        <Button variant="primary" size="sm" className="w-full">
+                          Explore Insights
+                        </Button>
+                      </div>
+                    </Card>
+                  </Link>
+
+                  <Link href="/compatibility-calculator">
+                    <Card className="p-6 hover:scale-105 cosmic-glow cursor-pointer">
+                      <div className="text-center">
+                        <div className="text-4xl mb-4">💕</div>
+                        <h3 className="text-xl font-semibold mb-3">Compatibility Calculator</h3>
+                        <p className="text-gray-300 mb-4 text-sm">Advanced relationship analysis with cosmic alignment</p>
+                        <Button variant="primary" size="sm" className="w-full">
+                          Calculate Compatibility
+                        </Button>
+                      </div>
+                    </Card>
+                  </Link>
+
+                  <Link href="/dream-analysis">
+                    <Card className="p-6 hover:scale-105 cosmic-glow cursor-pointer">
+                      <div className="text-center">
+                        <div className="text-4xl mb-4">🌙</div>
+                        <h3 className="text-xl font-semibold mb-3">Dream Analysis</h3>
+                        <p className="text-gray-300 mb-4 text-sm">Multi-method dream interpretation with spiritual guidance</p>
+                        <Button variant="primary" size="sm" className="w-full">
+                          Analyze Dreams
+                        </Button>
+                      </div>
+                    </Card>
+                  </Link>
+                </div>
+              </div>
+            </section>
+
+            {/* Cosmic Guidance Section */}
+            <section className="py-12 px-4">
+              <div className="max-w-7xl mx-auto">
+                <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Cosmic Guidance</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {cosmicGuidance.map((guidance, index) => (
+                    <Card key={index} className="p-6 hover:scale-105 cosmic-glow">
+                      <div className="text-center">
+                        <div className="text-4xl mb-4">{guidance.icon}</div>
+                        <h3 className="text-xl font-semibold mb-3">{guidance.title}</h3>
+                        <p className="text-gray-300 mb-4 text-sm">{guidance.preview}</p>
+                        
+                        <div className="mb-4">
+                          <p className="text-gray-300 text-sm">{guidance.detail}</p>
+                        </div>
+                        
+                        <Button variant="primary" size="sm" className="w-full">
+                          Read More
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </section>
 
         {/* Share Your Daily Secrets */}
         <section className="py-12 px-4">
