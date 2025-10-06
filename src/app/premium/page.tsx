@@ -1,218 +1,170 @@
-/**
- * Premium Subscription Page
- * Displays pricing plans and subscription options
- */
-
 'use client'
 
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Crown, Star, Zap, Shield, Sparkles } from 'lucide-react'
-import AppShell from '@/components/layout/AppShell'
-import PricingCard from '@/components/pricing/PricingCard'
-import { PRICING_PLANS } from '@/lib/stripe/config'
 
 export default function PremiumPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [selectedPlan, setSelectedPlan] = useState('monthly')
 
-  const handleSelectPlan = async (planId: string) => {
-    if (planId === 'free') {
-      // Redirect to free features
-      window.location.href = '/zodiac'
-      return
+  const plans = [
+    {
+      id: 'monthly',
+      name: 'Monthly Plan',
+      price: '$9.99',
+      period: '/month',
+      features: [
+        'Unlimited daily horoscopes',
+        'AI-powered dream analysis',
+        'Complete numerology reports',
+        'Compatibility readings',
+        'Personal cosmic journal',
+        'Priority support'
+      ],
+      popular: false
+    },
+    {
+      id: 'yearly',
+      name: 'Annual Plan',
+      price: '$99.99',
+      period: '/year',
+      features: [
+        'Everything in Monthly Plan',
+        'Save 20% with annual billing',
+        'Exclusive premium content',
+        'Advanced astrological charts',
+        'Personalized cosmic calendar',
+        'VIP community access'
+      ],
+      popular: true
     }
+  ]
 
-    setIsLoading(true)
-    setSelectedPlan(planId)
-
-    try {
-      const response = await fetch('/api/stripe/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          priceId: PRICING_PLANS.find(p => p.id === planId)?.stripePriceId,
-          successUrl: `${window.location.origin}/profile?success=true`,
-          cancelUrl: `${window.location.origin}/premium?canceled=true`,
-        }),
-      })
-
-      const { url } = await response.json()
-      
-      if (url) {
-        window.location.href = url
-      } else {
-        throw new Error('No checkout URL received')
-      }
-    } catch (error) {
-      console.error('Error creating checkout session:', error)
-      alert('Failed to start checkout. Please try again.')
-    } finally {
-      setIsLoading(false)
-      setSelectedPlan(null)
-    }
+  const handleSubscribe = () => {
+    console.log('Subscribing to plan:', selectedPlan)
   }
 
   return (
-    <AppShell>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
-        {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center py-16 px-4"
-        >
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6"
+    <div className="min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Go Premium</h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Unlock unlimited cosmic insights and exclusive features.
+          </p>
+        </div>
+
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {plans.map(plan => (
+            <div
+              key={plan.id}
+              className={`relative bg-white border-2 rounded-lg p-8 ${
+                plan.popular
+                  ? 'border-blue-500 ring-2 ring-blue-200'
+                  : 'border-gray-200'
+              }`}
             >
-              <Crown className="w-8 h-8 text-white" />
-            </motion.div>
-            
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
-              Unlock Your Cosmic Potential
-            </h1>
-            
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Join thousands of users discovering their destiny with personalized astrology, 
-              numerology, and AI-powered insights.
-            </p>
-          </div>
-        </motion.div>
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+              
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <div className="flex items-baseline justify-center">
+                  <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
+                  <span className="text-gray-500 ml-1">{plan.period}</span>
+                </div>
+              </div>
 
-        {/* Pricing Plans */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-6xl mx-auto px-4 pb-16"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {PRICING_PLANS.map((plan, index) => (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+              <ul className="space-y-4 mb-8">
+                {plan.features.map((feature, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="text-green-500 mr-3 mt-1">✓</span>
+                    <span className="text-gray-600">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => setSelectedPlan(plan.id)}
+                className={`w-full py-3 px-6 rounded-md font-semibold transition-colors ${
+                  selectedPlan === plan.id
+                    ? 'bg-blue-600 text-white'
+                    : plan.popular
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
               >
-                <PricingCard
-                  plan={plan}
-                  onSelectPlan={handleSelectPlan}
-                  isLoading={isLoading && selectedPlan === plan.id}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+                {selectedPlan === plan.id ? 'Selected' : 'Choose Plan'}
+              </button>
+            </div>
+          ))}
+        </div>
 
-        {/* Features Comparison */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl mx-4 mb-16 p-8"
-        >
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
-            Compare Features
-          </h2>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-4 px-6 font-semibold text-gray-900">Features</th>
-                  <th className="text-center py-4 px-6 font-semibold text-gray-900">Free</th>
-                  <th className="text-center py-4 px-6 font-semibold text-gray-900">Premium</th>
-                  <th className="text-center py-4 px-6 font-semibold text-gray-900">Annual</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                <tr>
-                  <td className="py-4 px-6 font-medium text-gray-900">Daily Insights</td>
-                  <td className="text-center py-4 px-6">3 per day</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Unlimited</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Unlimited</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-6 font-medium text-gray-900">Numerology</td>
-                  <td className="text-center py-4 px-6">Basic</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Full Suite</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Full Suite</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-6 font-medium text-gray-900">Astrology Charts</td>
-                  <td className="text-center py-4 px-6">Simple</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Advanced</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Advanced</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-6 font-medium text-gray-900">Dream Analysis</td>
-                  <td className="text-center py-4 px-6">-</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">AI Powered</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">AI Powered</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-6 font-medium text-gray-900">Support</td>
-                  <td className="text-center py-4 px-6">Community</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Priority</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">Priority</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-6 font-medium text-gray-900">Ads</td>
-                  <td className="text-center py-4 px-6">Yes</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">No</td>
-                  <td className="text-center py-4 px-6 text-green-600 font-semibold">No</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
+        {/* Subscribe Button */}
+        <div className="text-center">
+          <button
+            onClick={handleSubscribe}
+            className="btn btn-primary px-12 py-4 text-lg"
+          >
+            Subscribe to {plans.find(p => p.id === selectedPlan)?.name}
+          </button>
+        </div>
 
-        {/* Trust Indicators */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-center py-16 px-4"
-        >
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">
-              Trusted by Thousands of Users
-            </h2>
+        {/* Features Section */}
+        <div className="mt-20">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Premium Features</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">🔮</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Advanced Insights</h3>
+              <p className="text-gray-600">Get detailed, personalized cosmic guidance tailored to your unique profile.</p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-              <div className="flex flex-col items-center">
-                <Shield className="w-12 h-12 text-green-500 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Secure Payments</h3>
-                <p className="text-gray-600 text-center">
-                  Your payment information is encrypted and secure with Stripe
-                </p>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">🤖</span>
               </div>
-              
-              <div className="flex flex-col items-center">
-                <Zap className="w-12 h-12 text-yellow-500 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Instant Access</h3>
-                <p className="text-gray-600 text-center">
-                  Get immediate access to all premium features after payment
-                </p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">AI Analysis</h3>
+              <p className="text-gray-600">Powered by advanced AI to provide accurate and meaningful interpretations.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">👥</span>
               </div>
-              
-              <div className="flex flex-col items-center">
-                <Sparkles className="w-12 h-12 text-purple-500 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Cancel Anytime</h3>
-                <p className="text-gray-600 text-center">
-                  No long-term commitments. Cancel your subscription anytime
-                </p>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Community Access</h3>
+              <p className="text-gray-600">Join our exclusive community of cosmic seekers and share experiences.</p>
             </div>
           </div>
-        </motion.div>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mt-20">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Frequently Asked Questions</h2>
+          <div className="max-w-3xl mx-auto space-y-6">
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I cancel anytime?</h3>
+              <p className="text-gray-600">Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period.</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Is there a free trial?</h3>
+              <p className="text-gray-600">Yes, we offer a 7-day free trial for new subscribers. No credit card required to start.</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">What payment methods do you accept?</h3>
+              <p className="text-gray-600">We accept all major credit cards, PayPal, and other secure payment methods.</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </AppShell>
+    </div>
   )
 }

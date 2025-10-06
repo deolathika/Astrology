@@ -1,332 +1,406 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Sparkles, 
-  Star, 
-  Moon, 
-  Heart, 
-  Users, 
-  Bell, 
-  Settings, 
-  Crown, 
-  Zap, 
-  Globe, 
-  Smartphone, 
-  ArrowRight, 
-  CheckCircle, 
-  Shield, 
-  Database, 
-  BarChart, 
-  Play, 
-  BookOpen, 
-  MessageCircle, 
-  Calculator, 
-  Target,
-  Sun,
-  Compass,
-  Eye,
-  Brain,
-  Gem,
-  Flame,
-  Waves,
-  Mountain,
-  Wind
-} from 'lucide-react'
-import AppShell from '@/components/layout/AppShell'
 import Link from 'next/link'
+import Navigation from '@/components/readdy/Navigation'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
+import Card from '@/components/readdy/Card'
+import Button from '@/components/readdy/Button'
+import PremiumGate from '@/components/readdy/PremiumGate'
+import PremiumBadge from '@/components/readdy/PremiumBadge'
 
 export default function HomePage() {
+  const [currentTime, setCurrentTime] = useState(new Date())
   const [currentQuote, setCurrentQuote] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
+  const [selectedAstrologySystem, setSelectedAstrologySystem] = useState('western')
+  const [selectedNumerologySystem, setSelectedNumerologySystem] = useState('pythagorean')
+  const [userRole, setUserRole] = useState<'guest' | 'premium'>('premium')
 
-  const quotes = [
-    "The stars are the land-marks of the universe.",
-    "Your destiny is written in the stars.",
-    "Every dream is a message from your soul.",
-    "Numbers hold the secrets of your life path.",
-    "The cosmos speaks through your dreams."
+  const astrologyQuotes = [
+    "The stars align to guide your path today.",
+    "Your cosmic energy is at its peak this moment.",
+    "Trust the universe's timing in all things.",
+    "Your destiny unfolds with each passing day.",
+    "The cosmos whispers secrets to those who listen."
   ]
 
   useEffect(() => {
-    setIsLoading(false)
-    const interval = setInterval(() => {
-      setCurrentQuote((prev) => (prev + 1) % quotes.length)
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+
+    const quoteTimer = setInterval(() => {
+      setCurrentQuote((prev) => (prev + 1) % astrologyQuotes.length)
     }, 5000)
-    return () => clearInterval(interval)
+
+    return () => {
+      clearInterval(timer)
+      clearInterval(quoteTimer)
+    }
   }, [])
 
-  const features = [
-    {
-      icon: Star,
-      title: "Astrology",
-      description: "Discover your cosmic blueprint with personalized birth chart analysis",
-      color: "from-purple-500 to-pink-500",
-      href: "/zodiac",
-      systems: ["Western", "Vedic", "Chinese", "Sri Lankan"]
-    },
-    {
-      icon: Calculator,
-      title: "Numerology",
-      description: "Unlock the hidden meanings in your numbers and life path",
-      color: "from-blue-500 to-cyan-500",
-      href: "/numerology",
-      systems: ["Pythagorean", "Chaldean", "Master Numbers"]
-    },
-    {
-      icon: Moon,
-      title: "Dream Analysis",
-      description: "Decode your dreams with AI-powered interpretation",
-      color: "from-indigo-500 to-purple-500",
-      href: "/dreams",
-      systems: ["AI Analysis", "Symbol Interpretation", "Dream Journal"]
-    },
-    {
-      icon: Heart,
-      title: "Compatibility",
-      description: "Find your cosmic match with relationship insights",
-      color: "from-pink-500 to-rose-500",
-      href: "/compatibility",
-      systems: ["Love Compatibility", "Friendship Analysis", "Business Partnerships"]
-    },
-    {
-      icon: Users,
-      title: "Community",
-      description: "Connect with like-minded souls on your journey",
-      color: "from-green-500 to-emerald-500",
-      href: "/community",
-      systems: ["Discussion Forums", "Expert Guidance", "Shared Experiences"]
-    },
-    {
-      icon: Crown,
-      title: "Premium",
-      description: "Unlock exclusive features and deeper insights",
-      color: "from-yellow-500 to-orange-500",
-      href: "/premium",
-      systems: ["Advanced Readings", "Personalized Reports", "Priority Support"]
-    }
-  ]
-
   const zodiacSigns = [
-    { name: "Aries", element: "Fire", icon: Flame, color: "from-red-500 to-orange-500" },
-    { name: "Taurus", element: "Earth", icon: Mountain, color: "from-green-500 to-emerald-500" },
-    { name: "Gemini", element: "Air", icon: Wind, color: "from-blue-500 to-cyan-500" },
-    { name: "Cancer", element: "Water", icon: Waves, color: "from-blue-600 to-indigo-600" },
-    { name: "Leo", element: "Fire", icon: Sun, color: "from-yellow-500 to-orange-500" },
-    { name: "Virgo", element: "Earth", icon: Gem, color: "from-green-600 to-teal-600" },
-    { name: "Libra", element: "Air", icon: Compass, color: "from-pink-500 to-purple-500" },
-    { name: "Scorpio", element: "Water", icon: Eye, color: "from-red-600 to-pink-600" },
-    { name: "Sagittarius", element: "Fire", icon: Target, color: "from-purple-500 to-indigo-500" },
-    { name: "Capricorn", element: "Earth", icon: Mountain, color: "from-gray-600 to-slate-600" },
-    { name: "Aquarius", element: "Air", icon: Brain, color: "from-cyan-500 to-blue-500" },
-    { name: "Pisces", element: "Water", icon: Waves, color: "from-blue-500 to-purple-500" }
+    { name: 'Aries', symbol: '♈', element: 'Fire', color: 'from-red-500 to-orange-500' },
+    { name: 'Taurus', symbol: '♉', element: 'Earth', color: 'from-green-500 to-emerald-500' },
+    { name: 'Gemini', symbol: '♊', element: 'Air', color: 'from-yellow-500 to-amber-500' },
+    { name: 'Cancer', symbol: '♋', element: 'Water', color: 'from-blue-500 to-cyan-500' },
+    { name: 'Leo', symbol: '♌', element: 'Fire', color: 'from-orange-500 to-yellow-500' },
+    { name: 'Virgo', symbol: '♍', element: 'Earth', color: 'from-green-600 to-lime-500' },
+    { name: 'Libra', symbol: '♎', element: 'Air', color: 'from-pink-500 to-rose-500' },
+    { name: 'Scorpio', symbol: '♏', element: 'Water', color: 'from-purple-500 to-violet-500' },
+    { name: 'Sagittarius', symbol: '♐', element: 'Fire', color: 'from-indigo-500 to-blue-500' },
+    { name: 'Capricorn', symbol: '♑', element: 'Earth', color: 'from-gray-600 to-slate-500' },
+    { name: 'Aquarius', symbol: '♒', element: 'Air', color: 'from-cyan-500 to-teal-500' },
+    { name: 'Pisces', symbol: '♓', element: 'Water', color: 'from-blue-400 to-indigo-500' }
   ]
 
-  if (isLoading) {
-    return (
-      <AppShell>
-        <div className="min-h-screen flex items-center justify-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full"
-          />
-        </div>
-      </AppShell>
-    )
+  const cosmicGuidance = [
+    { title: 'Love', icon: '💕', preview: 'Venus brings harmony to relationships today', detail: 'Your romantic connections are blessed with understanding and compassion. Single? Your soulmate energy is strong.' },
+    { title: 'Career', icon: '💼', preview: 'Mercury favors communication and networking', detail: 'Present your ideas with confidence. A new opportunity may arise through professional connections.' },
+    { title: 'Finance', icon: '💰', preview: 'Jupiter\'s influence brings financial opportunities', detail: 'This is an excellent time for investments and financial planning. Trust your instincts on money matters.' },
+    { title: 'Health', icon: '🏥', preview: 'Focus on mental and physical wellness', detail: 'Balance is key. Consider meditation or yoga. Your body is asking for gentle care and attention.' },
+    { title: 'Travel', icon: '✈️', preview: 'Adventure calls from distant horizons', detail: 'Travel plans are favored. Whether business or pleasure, journeys will bring growth and new perspectives.' }
+  ]
+
+  const todaysRules = {
+    dos: [
+      'Trust your intuition in decision-making',
+      'Express gratitude for small blessings',
+      'Take time for self-reflection',
+      'Connect with nature or loved ones'
+    ],
+    donts: [
+      'Avoid making hasty financial decisions',
+      'Don\'t ignore your body\'s signals',
+      'Avoid confrontational conversations',
+      'Don\'t suppress your creative impulses'
+    ]
+  }
+
+  const handleShare = async (platform: string) => {
+    const shareText = `Discover your cosmic secrets with Daily Secrets! 🌟 ${window.location.href}`
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Daily Secrets',
+          text: shareText,
+          url: window.location.href
+        })
+      } catch (err) {
+        console.log('Share cancelled')
+      }
+    } else {
+      // Fallback for platforms
+      const urls = {
+        twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
+        instagram: `https://www.instagram.com/`,
+        whatsapp: `https://wa.me/?text=${encodeURIComponent(shareText)}`
+      }
+      window.open(urls[platform as keyof typeof urls], '_blank')
+    }
   }
 
   return (
-    <AppShell>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-purple-300 rounded-full opacity-30"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                y: [0, -20, 0],
-                opacity: [0.3, 0.8, 0.3],
-              }}
-              transition={{
-                duration: Math.random() * 3 + 2,
-                repeat: Infinity,
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
-        </div>
+    <div className="min-h-screen relative">
+      {/* Starfield Background */}
+      <StarfieldBackground />
+      
+      {/* Navigation */}
+      <Navigation />
 
-        {/* Main Content */}
-        <div className="relative z-10 container mx-auto px-4 py-16">
-          {/* Hero Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <div className="flex items-center justify-center mb-6">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <Sparkles className="w-12 h-12 text-purple-600 mr-4" />
-              </motion.div>
-              <h1 className="text-6xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Daily Secrets
-              </h1>
-            </div>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Unlock the mysteries of the cosmos with personalized astrology, numerology, and dream analysis
+      {/* Main Content */}
+      <main className="relative z-10 pt-16">
+        {/* Hero Section */}
+        <section className="text-center py-20 px-4">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-cosmic animate-float">
+              Daily Secrets
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              {astrologyQuotes[currentQuote]}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/zodiac">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Explore Your Destiny ✨
-                </motion.button>
-              </Link>
-              <Link href="/portal">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="border-2 border-purple-400 text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-purple-50 transition-all duration-300"
-                >
-                  Learn More
-                </motion.button>
-              </Link>
+            
+            {/* Current Time Display */}
+            <div className="glass-card p-6 max-w-md mx-auto mb-12">
+              <h3 className="text-lg font-semibold mb-2">Cosmic Time</h3>
+              <p className="text-2xl font-mono">
+                {currentTime.toLocaleTimeString()}
+              </p>
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Features Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
-          >
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6 hover:bg-white/90 transition-all duration-300"
-              >
-                <Link href={feature.href}>
-                  <div className="cursor-pointer">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center mb-4`}>
-                      <feature.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                    <p className="text-gray-600 mb-4">{feature.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {feature.systems.map((system, i) => (
-                        <span key={i} className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
-                          {system}
-                        </span>
-                      ))}
-                    </div>
+        {/* Your Cosmic Profile Strip */}
+        <section className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <Card className="p-8 cosmic-glow">
+              <h2 className="text-3xl font-bold mb-8 text-center text-cosmic">Your Cosmic Profile</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Astrology System Selector */}
+                <div>
+                  <h3 className="text-xl font-semibold mb-4 text-purple-300">Astrology System</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { id: 'sri-lanka', name: 'Sri Lanka', flag: '🇱🇰' },
+                      { id: 'vedic', name: 'India/Vedic', flag: '🕉️' },
+                      { id: 'western', name: 'Western', flag: '♈' },
+                      { id: 'chinese', name: 'Chinese', flag: '🐉' }
+                    ].map((system) => (
+                      <button
+                        key={system.id}
+                        onClick={() => setSelectedAstrologySystem(system.id)}
+                        className={`p-3 rounded-lg border transition-all ${
+                          selectedAstrologySystem === system.id
+                            ? 'bg-purple-500/20 border-purple-400 text-white'
+                            : 'bg-white/10 border-white/20 text-gray-300 hover:bg-white/20'
+                        }`}
+                      >
+                        <div className="text-2xl mb-1">{system.flag}</div>
+                        <div className="text-sm font-medium">{system.name}</div>
+                      </button>
+                    ))}
                   </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
+                </div>
 
-          {/* Zodiac Signs Preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mb-16"
-          >
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Explore All Zodiac Signs</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {zodiacSigns.map((sign, index) => (
-                <motion.div
-                  key={sign.name}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl p-4 text-center hover:bg-white/90 transition-all duration-300"
-                >
-                  <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${sign.color} flex items-center justify-center mx-auto mb-2`}>
-                    <sign.icon className="w-4 h-4 text-white" />
+                {/* Numerology System Selector */}
+                <div>
+                  <h3 className="text-xl font-semibold mb-4 text-purple-300">Numerology System</h3>
+                  <div className="space-y-3">
+                    {[
+                      { id: 'pythagorean', name: 'Pythagorean' },
+                      { id: 'chaldean', name: 'Chaldean' },
+                      { id: 'kabbalistic', name: 'Kabbalistic' }
+                    ].map((system) => (
+                      <button
+                        key={system.id}
+                        onClick={() => setSelectedNumerologySystem(system.id)}
+                        className={`w-full p-3 rounded-lg border transition-all ${
+                          selectedNumerologySystem === system.id
+                            ? 'bg-purple-500/20 border-purple-400 text-white'
+                            : 'bg-white/10 border-white/20 text-gray-300 hover:bg-white/20'
+                        }`}
+                      >
+                        <div className="text-sm font-medium">{system.name}</div>
+                      </button>
+                    ))}
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-900">{sign.name}</h3>
-                  <p className="text-xs text-gray-600">{sign.element}</p>
-                </motion.div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Daily Cosmic Guidance */}
+        <section className="py-12 px-4">
+          <div className="max-w-4xl mx-auto">
+            <Card className="p-8 cosmic-glow">
+              <h2 className="text-2xl font-bold mb-6 text-center text-cosmic">Daily Cosmic Guidance</h2>
+              <div className="text-center">
+                <div className="text-6xl mb-4">♈</div>
+                <h3 className="text-xl font-semibold mb-4">Aries - Today's Energy</h3>
+                <p className="text-gray-300 mb-6">
+                  Your fiery energy is at its peak today. Take initiative on projects you've been putting off. 
+                  The universe supports bold moves and new beginnings.
+                </p>
+                <Button variant="cosmic" size="lg" className="btn-cosmic">
+                  Get Full Reading
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Today's Cosmic Rules */}
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Today's Cosmic Rules</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Dos */}
+              <Card className="p-6 cosmic-glow">
+                <h3 className="text-xl font-semibold mb-4 text-green-400 flex items-center">
+                  <span className="text-2xl mr-2">✅</span>
+                  Do's
+                </h3>
+                <ul className="space-y-3">
+                  {todaysRules.dos.map((rule, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="w-2 h-2 bg-green-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                      <span className="text-gray-300">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+
+              {/* Don'ts */}
+              <Card className="p-6 cosmic-glow">
+                <h3 className="text-xl font-semibold mb-4 text-red-400 flex items-center">
+                  <span className="text-2xl mr-2">❌</span>
+                  Don'ts
+                </h3>
+                <ul className="space-y-3">
+                  {todaysRules.donts.map((rule, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="w-2 h-2 bg-red-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                      <span className="text-gray-300">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Cosmic Guidance Section */}
+        <section className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Cosmic Guidance</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {cosmicGuidance.map((guidance, index) => (
+                <Card key={index} className="p-6 hover:scale-105 cosmic-glow">
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">{guidance.icon}</div>
+                    <h3 className="text-xl font-semibold mb-3">{guidance.title}</h3>
+                    <p className="text-gray-300 mb-4 text-sm">{guidance.preview}</p>
+                    
+                    <div className="mb-4">
+                      <p className="text-gray-300 text-sm">{guidance.detail}</p>
+                    </div>
+                    
+                    <Button variant="primary" size="sm" className="w-full">
+                      Read More
+                    </Button>
+                  </div>
+                </Card>
               ))}
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Daily Quote */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-center bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-8 mb-16"
-          >
-            <Star className="w-8 h-8 text-yellow-500 mx-auto mb-4" />
-            <AnimatePresence mode="wait">
-              <motion.blockquote
-                key={currentQuote}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                className="text-2xl font-medium text-gray-900 mb-4"
-              >
-                "{quotes[currentQuote]}"
-              </motion.blockquote>
-            </AnimatePresence>
-            <cite className="text-gray-600">— Daily Secrets</cite>
-          </motion.div>
+        {/* Share Your Daily Secrets */}
+        <section className="py-12 px-4">
+          <div className="max-w-4xl mx-auto">
+            <Card className="p-8 cosmic-glow">
+              <h2 className="text-2xl font-bold mb-6 text-center text-cosmic">Share Your Daily Secrets</h2>
+              <div className="flex flex-wrap justify-center gap-4">
+                {[
+                  { platform: 'twitter', icon: '🐦', name: 'X' },
+                  { platform: 'facebook', icon: '📘', name: 'Facebook' },
+                  { platform: 'instagram', icon: '📷', name: 'Instagram' },
+                  { platform: 'whatsapp', icon: '💬', name: 'WhatsApp' }
+                ].map((social) => (
+                  <Button
+                    key={social.platform}
+                    variant="secondary"
+                    size="lg"
+                    onClick={() => handleShare(social.platform)}
+                    className="flex items-center space-x-2"
+                  >
+                    <span className="text-xl">{social.icon}</span>
+                    <span>{social.name}</span>
+                  </Button>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </section>
 
-          {/* CTA Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-center"
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Begin Your Journey?</h2>
-            <p className="text-gray-600 mb-8">Join thousands of users discovering their cosmic destiny</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/zodiac">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white px-12 py-4 rounded-xl font-semibold text-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Start Your Cosmic Journey ✨
-                </motion.button>
-              </Link>
-              <Link href="/portal">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="border-2 border-purple-400 text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-purple-50 transition-all duration-300"
-                >
-                  Try Free Demo
-                </motion.button>
-              </Link>
+        {/* Cosmic Community Teaser */}
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Cosmic Community</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="p-6 text-center hover:scale-105 cosmic-glow">
+                <div className="text-4xl mb-4">🔍</div>
+                <h3 className="text-lg font-semibold mb-2">Discover</h3>
+                <p className="text-gray-300 text-sm mb-4">Find like-minded cosmic seekers</p>
+                <Button variant="primary" size="sm" className="w-full">
+                  Explore
+                </Button>
+              </Card>
+
+              <Card className="p-6 text-center hover:scale-105 cosmic-glow">
+                <div className="text-4xl mb-4">💕</div>
+                <h3 className="text-lg font-semibold mb-2">Cosmic Match</h3>
+                <p className="text-gray-300 text-sm mb-4">Find your astrological soulmate</p>
+                <Button variant="primary" size="sm" className="w-full">
+                  Match
+                </Button>
+              </Card>
+
+              <Card className="p-6 text-center hover:scale-105 cosmic-glow">
+                <div className="text-4xl mb-4">🤝</div>
+                <h3 className="text-lg font-semibold mb-2">Connections</h3>
+                <p className="text-gray-300 text-sm mb-4">Build meaningful relationships</p>
+                <Button variant="primary" size="sm" className="w-full">
+                  Connect
+                </Button>
+              </Card>
+
+              <Card className="p-6 text-center hover:scale-105 cosmic-glow">
+                <div className="text-4xl mb-4">💬</div>
+                <h3 className="text-lg font-semibold mb-2">Chat</h3>
+                <p className="text-gray-300 text-sm mb-4">Join cosmic conversations</p>
+                <Button variant="primary" size="sm" className="w-full">
+                  Chat
+                </Button>
+              </Card>
             </div>
-          </motion.div>
-        </div>
-      </div>
-    </AppShell>
+          </div>
+        </section>
+
+        {/* 12 Signs Grid */}
+        <section className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">The Zodiac Wheel</h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {zodiacSigns.map((sign, index) => (
+                <Card key={sign.name} className="p-6 text-center hover:scale-105 cosmic-glow">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${sign.color} flex items-center justify-center text-2xl`}>
+                    {sign.symbol}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">{sign.name}</h3>
+                  <p className="text-sm text-gray-400 mb-4">{sign.element}</p>
+                  <Button variant="cosmic" size="sm" className="w-full">
+                    Unlock Full Reading
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Trust Strip */}
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <Card className="p-8 cosmic-glow">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div>
+                  <div className="text-4xl mb-4">🔒</div>
+                  <h3 className="text-lg font-semibold mb-2">Privacy Protected</h3>
+                  <p className="text-gray-300 text-sm">Your personal information is secure and never shared</p>
+                </div>
+                <div>
+                  <div className="text-4xl mb-4">🚫</div>
+                  <h3 className="text-lg font-semibold mb-2">No Spam</h3>
+                  <p className="text-gray-300 text-sm">We respect your inbox and only send meaningful updates</p>
+                </div>
+                <div>
+                  <div className="text-4xl mb-4">💰</div>
+                  <h3 className="text-lg font-semibold mb-2">Transparent Pricing</h3>
+                  <p className="text-gray-300 text-sm">Clear, honest pricing with no hidden fees</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
+      </main>
+    </div>
   )
 }

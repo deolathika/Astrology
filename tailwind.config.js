@@ -7,126 +7,117 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // Design Token Integration
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-        // 🌌 COSMIC COLOR PALETTE - GALACTIC THEME 🌌
+        // CSS Variables from design tokens
+        'bg': 'var(--color-bg)',
+        'surface': 'var(--color-surface)',
+        'text': 'var(--color-text)',
+        'text-muted': 'var(--color-text-muted)',
+        'text-light': 'var(--color-text-light)',
+        'primary': 'var(--color-primary)',
+        'secondary': 'var(--color-secondary)',
+        'accent': 'var(--color-accent)',
+        'success': 'var(--color-success)',
+        'warning': 'var(--color-warning)',
+        'error': 'var(--color-error)',
         
-        // Deep Space Colors
-        'deep-space': '#0A0A0F',     // Deepest space
-        'cosmic-navy': '#1A1A2E',     // Space navy
-        'stellar-gray': '#2D2D3A',    // Stellar gray
-        'nebula-dark': '#16213E',     // Nebula dark
-        
-        // Electric Cosmic Colors
-        'electric-violet': '#7B4FFF',  // Electric violet
-        'cosmic-purple': '#9D4EDD',   // Cosmic purple
-        'stellar-pink': '#FF6EC7',     // Stellar pink
-        'nebula-pink': '#EC4899',      // Nebula pink
-        
-        // Celestial Colors
-        'celestial-blue': '#3FC5FF',   // Celestial blue
-        'cosmic-cyan': '#00D4FF',      // Cosmic cyan
-        'stellar-teal': '#00F5FF',     // Stellar teal
-        'aurora-green': '#76FF9C',     // Aurora green
-        
-        // Supernova Colors
-        'supernova-gold': '#FFD75A',   // Supernova gold
-        'stellar-yellow': '#FFE066',   // Stellar yellow
-        'cosmic-orange': '#FF8C42',    // Cosmic orange
-        'nebula-red': '#FF4757',       // Nebula red
-        
-        // Surface Colors
-        'starlight-white': '#F8F9FA',  // Starlight white
-        'cosmic-silver': '#E9ECEF',    // Cosmic silver
-        'stellar-gray-light': '#DEE2E6', // Stellar gray light
-        
-        // Legacy compatibility
-        'brand-yellow': '#FFD75A',
-        'brand-white': '#F8F9FA',
-        'brand-purple': '#7B4FFF',
-        'surface-light': '#F8F9FA',
-        'surface-dark': '#1A1A2E',
-        'lavender': '#E9ECEF',
-        'cream': '#DEE2E6',
-        'soft-blue': '#3FC5FF',
-        'mystical-purple': '#9D4EDD',
-        'cosmic-pink': '#FF6EC7',
-        'cosmic-dark': '#2D2D3A',
+        // Legacy cosmic colors (maintained for compatibility)
+        'cosmic-purple': '#6D28D9',
+        'cosmic-blue': '#0EA5E9',
+        'cosmic-green': '#22C55E',
+        'cosmic-gold': '#F59E0B',
+        'cosmic-pink': '#EC4899',
+        'cosmic-violet': '#8B5CF6',
       },
+      
+      fontFamily: {
+        'sans': ['Inter Tight', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
+      },
+      
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
+        '5xl': ['3rem', { lineHeight: '1' }],
+      },
+      
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+      },
+      
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '1.25rem',
+        '3xl': '1.5rem',
+      },
+      
+      boxShadow: {
+        'soft': '0 4px 16px rgba(17,24,39,0.05)',
+        'medium': '0 8px 30px rgba(17,24,39,0.06)',
+        'large': '0 12px 40px rgba(17,24,39,0.08)',
+        'glow': '0 0 20px rgba(109,40,217,0.15)',
+        'glow-blue': '0 0 20px rgba(14,165,233,0.15)',
+        'glow-green': '0 0 20px rgba(34,197,94,0.15)',
+      },
+      
       backgroundImage: {
-        'cosmic-gradient': 'linear-gradient(135deg, #7B4FFF 0%, #FFD75A 50%, #FF6EC7 100%)',
-        'nebula-gradient': 'linear-gradient(180deg, #3FC5FF 0%, #00F5FF 50%, #76FF9C 100%)',
-        'stellar-gradient': 'linear-gradient(135deg, #9D4EDD 0%, #FF6EC7 50%, #EC4899 100%)',
-        'supernova-gradient': 'linear-gradient(180deg, #FFD75A 0%, #FFE066 50%, #FF8C42 100%)',
-        'space-gradient': 'linear-gradient(180deg, #F8F9FA 0%, #E9ECEF 100%)',
-        'deep-space-gradient': 'linear-gradient(180deg, #0A0A0F 0%, #1A1A2E 50%, #2D2D3A 100%)',
-        'cosmic-card-gradient': 'linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%)',
+        'gradient-primary': 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%)',
+        'gradient-soft': 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%)',
+        'gradient-cosmic': 'linear-gradient(135deg, #6D28D9 0%, #0EA5E9 50%, #22C55E 100%)',
       },
+      
       animation: {
-        'pulse-cosmic': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'bounce-cosmic': 'bounce 1s infinite',
-        'spin-cosmic': 'spin 3s linear infinite',
-        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'fade-in': 'fadeIn 0.5s ease-out',
         'slide-up': 'slideUp 0.3s ease-out',
+        'scale-in': 'scaleIn 0.2s ease-out',
         'glow': 'glow 2s ease-in-out infinite alternate',
+        'float': 'float 3s ease-in-out infinite',
       },
+      
       keyframes: {
         fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 5px #7B4FFF' },
-          '100%': { boxShadow: '0 0 20px #7B4FFF, 0 0 30px #7B4FFF' },
+          '0%': { boxShadow: '0 0 5px var(--color-primary)' },
+          '100%': { boxShadow: '0 0 20px var(--color-primary), 0 0 30px var(--color-primary)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
         },
       },
-      fontFamily: {
-        'cosmic': ['Inter', 'system-ui', 'sans-serif'],
-        'accent': ['Cormorant Garamond', 'serif'],
+      
+      transitionDuration: {
+        '200': '200ms',
+        '300': '300ms',
+        '500': '500ms',
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+      
+      transitionTimingFunction: {
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
     },
   },
   plugins: [],
   darkMode: 'class',
-};
+}

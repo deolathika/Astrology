@@ -1,289 +1,542 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import AppShell from '@/components/layout/AppShell'
-import UserFlowRouter from '@/components/user-flow/UserFlowRouter'
-import { 
-  User, 
-  Settings, 
-  Bell, 
-  Shield, 
-  Crown,
-  Calendar,
-  Target,
-  Download,
-  Info,
-  Save,
-  Check,
-  X,
-  Lock,
-  Sparkles
-} from 'lucide-react'
-import { CosmicCard, CosmicButton } from '@/components/cosmic'
-import LoadingState from '@/components/ui/LoadingState'
-import EmptyState from '@/components/ui/EmptyState'
-import ErrorState from '@/components/ui/ErrorState'
-import PersonalInfoForm from '@/components/profile/PersonalInfoForm'
-import PremiumModal from '@/components/gating/PremiumModal'
+import React, { useState } from 'react'
+import Navigation from '@/components/readdy/Navigation'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
+import Card from '@/components/readdy/Card'
+import Button from '@/components/readdy/Button'
 
 interface UserProfile {
-  id: string
   name: string
   email: string
-  role: string
-  image?: string
-  birthDate?: string
-  birthTime?: string
-  birthPlace?: string
-  astrologySystem?: string
-  numerologySystem?: string
-  language?: string
-  theme?: string
-  timezone?: string
+  zodiacSign: string
+  lifePathNumber: number
+  birthDate: string
+  birthTime: string
+  birthLocation: string
+  interests: string[]
+  readingHistory: any[]
+  preferences: {
+    theme: string
+    notifications: boolean
+    privacy: string
+    language: string
+  }
 }
 
 export default function ProfilePage() {
-  const { data: session } = useSession()
-  const router = useRouter()
-  const [activeTab, setActiveTab] = useState('profile')
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [showPremiumModal, setShowPremiumModal] = useState(false)
+  const [activeTab, setActiveTab] = useState('overview')
+  const [showInfoModal, setShowInfoModal] = useState(false)
+  const [infoContent, setInfoContent] = useState('')
+  const [isEditing, setIsEditing] = useState(false)
 
-  const tabs = [
-    { id: 'profile', label: 'Profile', icon: User, description: 'Personal information and preferences' },
-    { id: 'settings', label: 'Settings', icon: Settings, description: 'App preferences and notifications' },
-    { id: 'subscription', label: 'Subscription', icon: Crown, description: 'Manage your subscription' },
-    { id: 'legal', label: 'Legal', icon: Shield, description: 'Terms, privacy, and legal information' }
-  ]
-
-  useEffect(() => {
-    loadProfile()
-  }, [])
-
-  const loadProfile = async () => {
-    setLoading(true)
-    try {
-      if (session?.user) {
-        // Load from backend for authenticated users
-        const response = await fetch('/api/user/profile')
-        if (response.ok) {
-          const data = await response.json()
-          setProfile(data)
-        }
-      } else {
-        // Load from localStorage for guest users
-        const guestProfile = localStorage.getItem('guestProfile')
-        if (guestProfile) {
-          setProfile(JSON.parse(guestProfile))
-        } else {
-          // Create default guest profile
-          setProfile({
-            id: 'guest',
-            name: '',
-            email: '',
-            role: 'guest'
-          })
-        }
-      }
-    } catch (err) {
-      setError('Failed to load profile')
-    } finally {
-      setLoading(false)
+  const userProfile: UserProfile = {
+    name: 'Sarah Johnson',
+    email: 'sarah.johnson@example.com',
+    zodiacSign: 'Leo',
+    lifePathNumber: 7,
+    birthDate: '1990-08-15',
+    birthTime: '14:30',
+    birthLocation: 'New York, USA',
+    interests: ['Astrology', 'Meditation', 'Crystals', 'Dream Analysis'],
+    readingHistory: [
+      { date: '2024-01-15', type: 'Daily Horoscope', rating: 5 },
+      { date: '2024-01-14', type: 'Dream Analysis', rating: 4 },
+      { date: '2024-01-13', type: 'Compatibility Reading', rating: 5 },
+      { date: '2024-01-12', type: 'Numerology Reading', rating: 4 },
+      { date: '2024-01-11', type: 'Astrology Reading', rating: 5 }
+    ],
+    preferences: {
+      theme: 'Cosmic',
+      notifications: true,
+      privacy: 'Public',
+      language: 'English'
     }
   }
 
-  const handleUpdateProfile = async (data: any) => {
-    setLoading(true)
-    try {
-      if (session?.user) {
-        // Save to backend for authenticated users
-        const response = await fetch('/api/user/profile', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        })
-        if (response.ok) {
-          setProfile(data)
-        }
-      } else {
-        // Save to localStorage for guest users
-        localStorage.setItem('guestProfile', JSON.stringify(data))
-        setProfile(data)
-      }
-    } catch (err) {
-      setError('Failed to save profile')
-    } finally {
-      setLoading(false)
-    }
+  const [profile, setProfile] = useState(userProfile)
+
+  const handleSaveProfile = () => {
+    // Save profile logic here
+    setIsEditing(false)
+    console.log('Profile saved:', profile)
   }
 
-  if (loading) {
-    return (
-      <AppShell>
-        <LoadingState message="Loading profile..." />
-      </AppShell>
-    )
-  }
-
-  if (error) {
-    return (
-      <AppShell>
-        <ErrorState
-          title="Failed to load profile"
-          description="We couldn't load your profile information. Please try again."
-          error={error}
-          onRetry={loadProfile}
-        />
-      </AppShell>
-    )
+  const showInfo = (content: string) => {
+    setInfoContent(content)
+    setShowInfoModal(true)
   }
 
   return (
-    <AppShell>
-      <UserFlowRouter>
-        <div className="min-h-screen cosmic-bg">
-          {/* Header */}
-          <motion.header 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="container mx-auto px-4 py-6"
-          >
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-white mb-4">Profile & Settings</h1>
-              <p className="text-violet-300">Manage your personal information and preferences</p>
-            </div>
-          </motion.header>
+    <div className="min-h-screen relative">
+      {/* Starfield Background */}
+      <StarfieldBackground />
+      
+      {/* Navigation */}
+      <Navigation />
 
-          {/* Tab Navigation */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="container mx-auto px-4 mb-8"
-          >
-            <div className="flex flex-wrap justify-center gap-2">
-              {tabs.map((tab) => (
-                <motion.button
-                  key={tab.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-300 ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                      : 'bg-white/10 text-violet-300 hover:bg-white/20'
-                  }`}
-                >
-                  <tab.icon className="w-5 h-5" />
-                  <span className="font-medium">{tab.label}</span>
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
+      {/* Main Content */}
+      <main className="relative z-10 pt-16">
+        {/* Hero Section */}
+        <section className="text-center py-20 px-4">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-cosmic animate-float">
+              Your Profile
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Manage your cosmic profile, reading history, and personal preferences.
+            </p>
+          </div>
+        </section>
 
-          {/* Profile Tab */}
-          {activeTab === 'profile' && (
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="container mx-auto px-4 space-y-6"
-            >
-              <PersonalInfoForm 
-                user={profile}
-                onSave={handleUpdateProfile}
-                isGuest={!session?.user}
-              />
+        {/* Profile Navigation */}
+        <section className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <Card className="p-6 cosmic-glow">
+              <div className="flex flex-wrap justify-center gap-4">
+                {[
+                  { id: 'overview', name: 'Overview', icon: '👤' },
+                  { id: 'readings', name: 'Readings', icon: '📚' },
+                  { id: 'preferences', name: 'Preferences', icon: '⚙️' },
+                  { id: 'privacy', name: 'Privacy', icon: '🔒' },
+                  { id: 'notifications', name: 'Notifications', icon: '🔔' },
+                  { id: 'billing', name: 'Billing', icon: '💳' }
+                ].map((tab) => (
+                  <Button
+                    key={tab.id}
+                    variant={activeTab === tab.id ? 'cosmic' : 'secondary'}
+                    size="lg"
+                    onClick={() => setActiveTab(tab.id)}
+                    className="flex items-center space-x-2"
+                  >
+                    <span className="text-xl">{tab.icon}</span>
+                    <span>{tab.name}</span>
+                  </Button>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <section className="py-12 px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Profile Card */}
+                <div className="lg:col-span-1">
+                  <Card className="p-6 cosmic-glow">
+                    <div className="text-center">
+                      <div className="text-6xl mb-4">👤</div>
+                      <h3 className="text-2xl font-bold mb-2">{profile.name}</h3>
+                      <p className="text-gray-400 mb-4">{profile.email}</p>
+                      
+                      <div className="space-y-3 mb-6">
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Zodiac Sign:</span>
+                          <span className="text-purple-300 font-semibold">{profile.zodiacSign}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Life Path:</span>
+                          <span className="text-purple-300 font-semibold">{profile.lifePathNumber}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Birth Date:</span>
+                          <span className="text-gray-300">{profile.birthDate}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Location:</span>
+                          <span className="text-gray-300">{profile.birthLocation}</span>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        variant="cosmic" 
+                        size="lg" 
+                        className="w-full"
+                        onClick={() => setIsEditing(!isEditing)}
+                      >
+                        {isEditing ? 'Save Changes' : 'Edit Profile'}
+                      </Button>
+                    </div>
+                  </Card>
+                </div>
+
+                {/* Profile Details */}
+                <div className="lg:col-span-2">
+                  <Card className="p-6 cosmic-glow">
+                    <h3 className="text-2xl font-bold mb-6 text-cosmic">Profile Information</h3>
+                    
+                    {isEditing ? (
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-white text-sm font-medium mb-2">Full Name</label>
+                          <input
+                            type="text"
+                            className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            value={profile.name}
+                            onChange={(e) => setProfile({...profile, name: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-white text-sm font-medium mb-2">Email</label>
+                          <input
+                            type="email"
+                            className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            value={profile.email}
+                            onChange={(e) => setProfile({...profile, email: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-white text-sm font-medium mb-2">Birth Date</label>
+                          <input
+                            type="date"
+                            className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            value={profile.birthDate}
+                            onChange={(e) => setProfile({...profile, birthDate: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-white text-sm font-medium mb-2">Birth Time</label>
+                          <input
+                            type="time"
+                            className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            value={profile.birthTime}
+                            onChange={(e) => setProfile({...profile, birthTime: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-white text-sm font-medium mb-2">Birth Location</label>
+                          <input
+                            type="text"
+                            className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            value={profile.birthLocation}
+                            onChange={(e) => setProfile({...profile, birthLocation: e.target.value})}
+                          />
+                        </div>
+                        <div className="flex space-x-4">
+                          <Button variant="cosmic" size="lg" onClick={handleSaveProfile}>
+                            Save Changes
+                          </Button>
+                          <Button variant="secondary" size="lg" onClick={() => setIsEditing(false)}>
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="text-lg font-semibold mb-2 text-purple-300">Personal Information</h4>
+                          <p className="text-gray-300">Name: {profile.name}</p>
+                          <p className="text-gray-300">Email: {profile.email}</p>
+                          <p className="text-gray-300">Birth Date: {profile.birthDate}</p>
+                          <p className="text-gray-300">Birth Time: {profile.birthTime}</p>
+                          <p className="text-gray-300">Birth Location: {profile.birthLocation}</p>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-semibold mb-2 text-purple-300">Cosmic Profile</h4>
+                          <p className="text-gray-300">Zodiac Sign: {profile.zodiacSign}</p>
+                          <p className="text-gray-300">Life Path Number: {profile.lifePathNumber}</p>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-semibold mb-2 text-purple-300">Interests</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {profile.interests.map((interest, index) => (
+                              <span key={index} className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">
+                                {interest}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Readings Tab */}
+        {activeTab === 'readings' && (
+          <section className="py-12 px-4">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Your Reading History</h2>
               
-              {/* Guest user premium upgrade prompt */}
-              {!session?.user && (
-                <div className="bg-gradient-to-r from-violet-900/50 to-purple-900/50 rounded-xl p-6 border border-white/10">
+              <div className="space-y-6">
+                {profile.readingHistory.map((reading, index) => (
+                  <Card key={index} className="p-6 cosmic-glow">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="text-3xl">
+                          {reading.type === 'Daily Horoscope' && '♈'}
+                          {reading.type === 'Dream Analysis' && '🌙'}
+                          {reading.type === 'Compatibility Reading' && '💕'}
+                          {reading.type === 'Numerology Reading' && '🔢'}
+                          {reading.type === 'Astrology Reading' && '⭐'}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold">{reading.type}</h3>
+                          <p className="text-gray-400">{reading.date}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} className={`text-lg ${i < reading.rating ? 'text-yellow-400' : 'text-gray-600'}`}>
+                              ⭐
+                            </span>
+                          ))}
+                        </div>
+                        <Button variant="secondary" size="sm">
+                          View Details
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Preferences Tab */}
+        {activeTab === 'preferences' && (
+          <section className="py-12 px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Preferences</h2>
+              
+              <Card className="p-8 cosmic-glow">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-white text-sm font-medium mb-2">Theme</label>
+                    <select className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      <option value="cosmic">Cosmic</option>
+                      <option value="minimal">Minimal</option>
+                      <option value="ocean">Ocean</option>
+                      <option value="forest">Forest</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-white text-sm font-medium mb-2">Language</label>
+                    <select className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      <option value="english">English</option>
+                      <option value="spanish">Spanish</option>
+                      <option value="french">French</option>
+                      <option value="german">German</option>
+                    </select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Email Notifications</span>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Push Notifications</span>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">SMS Notifications</span>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="pt-6">
+                    <Button variant="cosmic" size="lg" className="w-full">
+                      Save Preferences
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </section>
+        )}
+
+        {/* Privacy Tab */}
+        {activeTab === 'privacy' && (
+          <section className="py-12 px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Privacy Settings</h2>
+              
+              <Card className="p-8 cosmic-glow">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-white text-sm font-medium mb-2">Profile Visibility</label>
+                    <select className="w-full p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                      <option value="public">Public</option>
+                      <option value="friends">Friends Only</option>
+                      <option value="private">Private</option>
+                    </select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Show Birth Information</span>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Show Reading History</span>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Allow Friend Requests</span>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Data Sharing for Analytics</span>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="pt-6">
+                    <Button variant="cosmic" size="lg" className="w-full">
+                      Save Privacy Settings
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </section>
+        )}
+
+        {/* Notifications Tab */}
+        {activeTab === 'notifications' && (
+          <section className="py-12 px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Notification Settings</h2>
+              
+              <Card className="p-8 cosmic-glow">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold text-purple-300">Daily Horoscope</h4>
+                      <p className="text-gray-300 text-sm">Get your daily cosmic guidance</p>
+                    </div>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold text-purple-300">Dream Analysis</h4>
+                      <p className="text-gray-300 text-sm">Notifications for dream interpretation</p>
+                    </div>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold text-purple-300">Community Updates</h4>
+                      <p className="text-gray-300 text-sm">New posts and community activity</p>
+                    </div>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold text-purple-300">Compatibility Matches</h4>
+                      <p className="text-gray-300 text-sm">New cosmic matches and connections</p>
+                    </div>
+                    <Button variant="secondary" size="sm">
+                      Toggle
+                    </Button>
+                  </div>
+                  
+                  <div className="pt-6">
+                    <Button variant="cosmic" size="lg" className="w-full">
+                      Save Notification Settings
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </section>
+        )}
+
+        {/* Billing Tab */}
+        {activeTab === 'billing' && (
+          <section className="py-12 px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Billing & Subscription</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300">Current Plan</h3>
                   <div className="text-center">
-                    <h3 className="text-xl font-bold text-white mb-2">Unlock Full Personalization</h3>
-                    <p className="text-violet-300 mb-4">Save your data across devices and access premium features</p>
-                    <CosmicButton
-                      onClick={() => setShowPremiumModal(true)}
-                      className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
-                    >
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Upgrade to Premium
-                    </CosmicButton>
+                    <div className="text-4xl mb-4">👑</div>
+                    <h4 className="text-2xl font-bold mb-2">Premium Plan</h4>
+                    <p className="text-gray-300 mb-4">$9.99/month</p>
+                    <p className="text-gray-400 text-sm mb-6">All features unlocked</p>
+                    <Button variant="secondary" size="sm">
+                      Manage Subscription
+                    </Button>
                   </div>
-                </div>
-              )}
-            </motion.section>
-          )}
-
-          {/* Settings Tab */}
-          {activeTab === 'settings' && (
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="container mx-auto px-4 space-y-6"
-            >
-              <CosmicCard variant="glass" className="p-6">
-                <h2 className="text-2xl font-semibold text-white mb-6">Settings</h2>
-                <div className="space-y-4">
-                  <div className="text-center text-violet-300">
-                    Settings panel coming soon...
+                </Card>
+                
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300">Payment History</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">January 2024</span>
+                      <span className="text-green-400">$9.99</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">December 2023</span>
+                      <span className="text-green-400">$9.99</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">November 2023</span>
+                      <span className="text-green-400">$9.99</span>
+                    </div>
                   </div>
-                </div>
-              </CosmicCard>
-            </motion.section>
-          )}
+                </Card>
+              </div>
+            </div>
+          </section>
+        )}
 
-          {/* Subscription Tab */}
-          {activeTab === 'subscription' && (
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="container mx-auto px-4 space-y-6"
-            >
-              <CosmicCard variant="glass" className="p-6">
-                <h2 className="text-2xl font-semibold text-white mb-6">Subscription</h2>
-                <div className="text-center text-violet-300">
-                  Subscription management coming soon...
-                </div>
-              </CosmicCard>
-            </motion.section>
-          )}
-
-          {/* Legal Tab */}
-          {activeTab === 'legal' && (
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="container mx-auto px-4 space-y-6"
-            >
-              <CosmicCard variant="glass" className="p-6">
-                <h2 className="text-2xl font-semibold text-white mb-6">Legal Information</h2>
-                <div className="text-center text-violet-300">
-                  Legal information coming soon...
-                </div>
-              </CosmicCard>
-            </motion.section>
-          )}
-        </div>
-        
-        {/* Premium Modal */}
-        <PremiumModal
-          isOpen={showPremiumModal}
-          onClose={() => setShowPremiumModal(false)}
-          onUpgrade={() => {
-            // Handle upgrade logic
-            console.log('Upgrade to Premium')
-          }}
-        />
-      </UserFlowRouter>
-    </AppShell>
+        {/* Info Modal */}
+        {showInfoModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <Card className="p-8 max-w-md mx-auto cosmic-glow">
+              <h2 className="text-2xl font-bold mb-4 text-cosmic">Information</h2>
+              <p className="text-gray-300 mb-6">{infoContent}</p>
+              <Button 
+                variant="cosmic" 
+                size="lg" 
+                className="w-full"
+                onClick={() => setShowInfoModal(false)}
+              >
+                Close
+              </Button>
+            </Card>
+          </div>
+        )}
+      </main>
+    </div>
   )
 }

@@ -2,57 +2,49 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Lock, Sparkles } from 'lucide-react'
-import CosmicButton from '@/components/cosmic/CosmicButton'
+import { Lock, Crown } from 'lucide-react'
 
 interface LockOverlayProps {
+  children: React.ReactNode
   onUnlock: () => void
-  title?: string
-  description?: string
-  className?: string
+  feature?: string
 }
 
-export default function LockOverlay({
-  onUnlock,
-  title = "Premium Feature",
-  description = "Unlock this feature with Premium",
-  className = ""
-}: LockOverlayProps) {
+export default function LockOverlay({ children, onUnlock, feature = 'this feature' }: LockOverlayProps) {
   return (
-    <div className={`relative ${className}`}>
+    <div className="relative group">
       {/* Blurred Content */}
       <div className="filter blur-sm pointer-events-none">
-        {/* This will be the content that gets blurred */}
+        {children}
       </div>
       
       {/* Lock Overlay */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-violet-900/80 to-purple-900/80 backdrop-blur-sm rounded-xl"
-      >
-        <div className="text-center p-6">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="w-16 h-16 bg-gradient-to-r from-gold-400 to-silver-400 rounded-full flex items-center justify-center mx-auto mb-4"
-          >
-            <Lock className="w-8 h-8 text-violet-900" />
-          </motion.div>
+      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center p-8"
+        >
+          <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-8 h-8 text-white" />
+          </div>
           
-          <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-          <p className="text-violet-200 mb-6">{description}</p>
-          
-          <CosmicButton
-            onClick={onUnlock}
-            className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
-          >
-            <Sparkles className="w-5 h-5 mr-2" />
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
             Unlock Premium
-          </CosmicButton>
-        </div>
-      </motion.div>
+          </h3>
+          <p className="text-gray-600 mb-6 max-w-sm">
+            Get full access to {feature} and unlock unlimited cosmic insights
+          </p>
+          
+          <button
+            onClick={onUnlock}
+            className="bg-gradient-to-r from-purple-500 via-blue-500 to-green-500 text-white px-8 py-3 rounded-2xl font-semibold shadow-[0_8px_30px_rgba(17,24,39,0.1)] hover:shadow-[0_12px_40px_rgba(17,24,39,0.15)] transition-all duration-300 flex items-center space-x-2 mx-auto"
+          >
+            <Crown className="w-5 h-5" />
+            <span>Upgrade Now</span>
+          </button>
+        </motion.div>
+      </div>
     </div>
   )
 }

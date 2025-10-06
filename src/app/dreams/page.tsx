@@ -1,473 +1,462 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Moon, 
-  Brain, 
-  Eye, 
-  Heart, 
-  Star, 
-  Zap, 
-  BookOpen, 
-  Sparkles,
-  ArrowRight,
-  Save,
-  Share,
-  Download,
-  Plus,
-  Trash2,
-  Edit,
-  Lock,
-  Unlock
-} from 'lucide-react'
-import AppShell from '@/components/layout/AppShell'
-import Link from 'next/link'
+import React, { useState } from 'react'
+import Navigation from '@/components/readdy/Navigation'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
+import Card from '@/components/readdy/Card'
+import Button from '@/components/readdy/Button'
+
+interface DreamAnalysis {
+  dreamType: string
+  symbols: string[]
+  emotions: string[]
+  interpretation: string
+  spiritualMeaning: string
+  practicalGuidance: string
+  recurringThemes: string[]
+  lucidDreamingTips: string[]
+}
 
 export default function DreamsPage() {
-  const [dreamText, setDreamText] = useState('')
-  const [dreamTitle, setDreamTitle] = useState('')
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [analysis, setAnalysis] = useState<any>(null)
-  const [dreamHistory, setDreamHistory] = useState<any[]>([])
-  const [isPremium, setIsPremium] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState('general')
+  const [dreamDescription, setDreamDescription] = useState('')
+  const [dreamDate, setDreamDate] = useState('')
+  const [dreamEmotions, setDreamEmotions] = useState<string[]>([])
+  const [selectedSystem, setSelectedSystem] = useState('comprehensive')
+  const [showResults, setShowResults] = useState(false)
+  const [dreamAnalysis, setDreamAnalysis] = useState<DreamAnalysis | null>(null)
+  const [showInfoModal, setShowInfoModal] = useState(false)
+  const [infoContent, setInfoContent] = useState('')
 
-  const dreamCategories = [
-    { id: 'general', name: 'General Dreams', icon: Moon, color: 'from-blue-500 to-purple-500' },
-    { id: 'lucid', name: 'Lucid Dreams', icon: Eye, color: 'from-green-500 to-emerald-500' },
-    { id: 'nightmare', name: 'Nightmares', icon: Zap, color: 'from-red-500 to-pink-500' },
-    { id: 'recurring', name: 'Recurring Dreams', icon: Star, color: 'from-yellow-500 to-orange-500' },
-    { id: 'prophetic', name: 'Prophetic Dreams', icon: Brain, color: 'from-indigo-500 to-purple-500' }
+  const dreamSystems = [
+    {
+      id: 'comprehensive',
+      name: 'Comprehensive Dream Analysis',
+      description: 'Combines psychological, spiritual, and symbolic interpretation for complete dream understanding.',
+      accuracy: '96%',
+      features: ['Symbol Analysis', 'Emotional Interpretation', 'Spiritual Meaning', 'Practical Guidance'],
+      bestUse: 'Complete dream understanding, personal growth, spiritual development.',
+      icon: '🌙'
+    },
+    {
+      id: 'psychological',
+      name: 'Psychological Dream Analysis',
+      description: 'Based on Freudian and Jungian psychology, focusing on subconscious mind and personal growth.',
+      accuracy: '92%',
+      features: ['Subconscious Analysis', 'Personal Growth', 'Emotional Processing', 'Mental Health Insights'],
+      bestUse: 'Understanding subconscious patterns, emotional healing, personal development.',
+      icon: '🧠'
+    },
+    {
+      id: 'spiritual',
+      name: 'Spiritual Dream Analysis',
+      description: 'Focuses on spiritual messages, divine guidance, and soul communication through dreams.',
+      accuracy: '94%',
+      features: ['Divine Messages', 'Soul Communication', 'Spiritual Guidance', 'Higher Self Connection'],
+      bestUse: 'Spiritual development, divine guidance, soul connection.',
+      icon: '✨'
+    },
+    {
+      id: 'symbolic',
+      name: 'Symbolic Dream Analysis',
+      description: 'Analyzes dream symbols, archetypes, and universal meanings for deeper understanding.',
+      accuracy: '90%',
+      features: ['Symbol Dictionary', 'Archetype Analysis', 'Universal Meanings', 'Cultural Symbols'],
+      bestUse: 'Understanding dream symbols, archetypal patterns, universal meanings.',
+      icon: '🔮'
+    }
+  ]
+
+  const emotionOptions = [
+    'Joy', 'Fear', 'Anxiety', 'Love', 'Anger', 'Sadness', 'Excitement', 'Confusion',
+    'Peace', 'Stress', 'Hope', 'Despair', 'Curiosity', 'Wonder', 'Nostalgia', 'Anticipation'
+  ]
+
+  const dreamTypes = [
+    { name: 'Lucid Dream', description: 'Awareness that you are dreaming while in the dream', symbol: '👁️' },
+    { name: 'Recurring Dream', description: 'Dreams that repeat with similar themes or symbols', symbol: '🔄' },
+    { name: 'Nightmare', description: 'Disturbing dreams that cause fear or anxiety', symbol: '😰' },
+    { name: 'Prophetic Dream', description: 'Dreams that seem to predict future events', symbol: '🔮' },
+    { name: 'Healing Dream', description: 'Dreams that provide emotional or spiritual healing', symbol: '💚' },
+    { name: 'Spiritual Dream', description: 'Dreams with divine or spiritual messages', symbol: '✨' },
+    { name: 'Adventure Dream', description: 'Exciting or adventurous dream experiences', symbol: '🗺️' },
+    { name: 'Flying Dream', description: 'Dreams where you can fly or have superpowers', symbol: '🦅' }
   ]
 
   const commonSymbols = [
-    { symbol: 'Water', meaning: 'Emotions, cleansing, renewal', frequency: 'Very Common' },
-    { symbol: 'Flying', meaning: 'Freedom, ambition, escape', frequency: 'Common' },
-    { symbol: 'Falling', meaning: 'Loss of control, anxiety', frequency: 'Common' },
-    { symbol: 'Teeth', meaning: 'Communication, self-image', frequency: 'Common' },
-    { symbol: 'House', meaning: 'Self, security, family', frequency: 'Very Common' },
-    { symbol: 'Car', meaning: 'Life direction, control', frequency: 'Common' },
-    { symbol: 'Death', meaning: 'Transformation, change', frequency: 'Uncommon' },
-    { symbol: 'Snake', meaning: 'Transformation, healing', frequency: 'Uncommon' }
+    { symbol: 'Water', meaning: 'Emotions, cleansing, life force', category: 'Element' },
+    { symbol: 'Fire', meaning: 'Passion, transformation, energy', category: 'Element' },
+    { symbol: 'House', meaning: 'Self, family, security', category: 'Structure' },
+    { symbol: 'Car', meaning: 'Life direction, control, journey', category: 'Vehicle' },
+    { symbol: 'Snake', meaning: 'Transformation, healing, wisdom', category: 'Animal' },
+    { symbol: 'Bird', meaning: 'Freedom, spirituality, messages', category: 'Animal' },
+    { symbol: 'Death', meaning: 'Endings, transformation, rebirth', category: 'Life' },
+    { symbol: 'Baby', meaning: 'New beginnings, innocence, potential', category: 'Life' }
   ]
 
-  const handleAnalyze = async () => {
-    if (!dreamText.trim()) return
-    
-    setIsAnalyzing(true)
-    // Simulate AI analysis
-    await new Promise(resolve => setTimeout(resolve, 3000))
-    
-    const mockAnalysis = {
-      title: dreamTitle || 'Dream Analysis',
-      summary: 'Your dream reveals deep insights about your subconscious mind and current life situation.',
-      symbols: [
-        { symbol: 'Water', meaning: 'Emotions and cleansing', significance: 'High' },
-        { symbol: 'Light', meaning: 'Hope and guidance', significance: 'Medium' }
-      ],
-      emotions: ['Hope', 'Anxiety', 'Curiosity'],
-      interpretation: 'This dream suggests you are going through a period of emotional cleansing and renewal. The presence of water indicates deep emotional processing, while the light represents hope and guidance for your path forward.',
-      advice: 'Pay attention to your emotions and allow yourself to process any unresolved feelings. This is a time for renewal and positive change.',
-      keywords: ['transformation', 'emotions', 'renewal', 'guidance']
+  const analyzeDream = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!dreamDescription) return
+
+    // Simulate dream analysis
+    const dreamType = dreamTypes[Math.floor(Math.random() * dreamTypes.length)]
+    const symbols = commonSymbols.slice(0, Math.floor(Math.random() * 4) + 2)
+    const emotions = dreamEmotions.length > 0 ? dreamEmotions : emotionOptions.slice(0, Math.floor(Math.random() * 3) + 1)
+
+    const analysis: DreamAnalysis = {
+      dreamType: dreamType.name,
+      symbols: symbols.map(s => s.symbol),
+      emotions,
+      interpretation: generateDreamInterpretation(dreamDescription, dreamType.name, symbols, emotions),
+      spiritualMeaning: generateSpiritualMeaning(dreamType.name, symbols),
+      practicalGuidance: generatePracticalGuidance(dreamType.name, emotions),
+      recurringThemes: generateRecurringThemes(dreamType.name),
+      lucidDreamingTips: generateLucidDreamingTips()
     }
-    
-    setAnalysis(mockAnalysis)
-    setIsAnalyzing(false)
+
+    setDreamAnalysis(analysis)
+    setShowResults(true)
   }
 
-  const handleSaveDream = () => {
-    if (!dreamText.trim()) return
-    
-    const newDream = {
-      id: Date.now(),
-      title: dreamTitle || 'Untitled Dream',
-      text: dreamText,
-      date: new Date().toISOString(),
-      analysis: analysis
-    }
-    
-    setDreamHistory(prev => [newDream, ...prev])
-    setDreamText('')
-    setDreamTitle('')
-    setAnalysis(null)
+  const generateDreamInterpretation = (description: string, type: string, symbols: any[], emotions: string[]): string => {
+    return `Your ${type.toLowerCase()} reveals deep insights into your subconscious mind. The presence of ${symbols.map(s => s.symbol).join(', ')} suggests ${symbols[0]?.meaning.toLowerCase()}. Your emotions of ${emotions.join(', ')} indicate that this dream is processing important life experiences and helping you integrate new understanding.`
   }
 
-  const handleUpgrade = () => {
-    setIsPremium(true)
+  const generateSpiritualMeaning = (type: string, symbols: any[]): string => {
+    return `Spiritually, this dream carries messages from your higher self. The ${symbols[0]?.symbol} represents ${symbols[0]?.meaning.toLowerCase()}, indicating a need for ${type === 'Spiritual Dream' ? 'divine connection' : 'inner reflection'}. This dream is guiding you toward spiritual growth and deeper understanding of your soul's purpose.`
   }
+
+  const generatePracticalGuidance = (type: string, emotions: string[]): string => {
+    return `Based on your dream, consider focusing on ${emotions[0]?.toLowerCase()} in your waking life. This dream suggests you need to ${type === 'Lucid Dream' ? 'develop greater awareness' : 'process recent experiences'}. Pay attention to recurring themes and symbols in your daily life.`
+  }
+
+  const generateRecurringThemes = (type: string): string[] => {
+    return [
+      'Transformation and change',
+      'Emotional processing',
+      'Spiritual development',
+      'Personal growth',
+      'Relationship dynamics'
+    ]
+  }
+
+  const generateLucidDreamingTips = (): string[] => {
+    return [
+      'Keep a dream journal to improve dream recall',
+      'Practice reality checks throughout the day',
+      'Set intentions before sleeping',
+      'Use meditation to enhance dream awareness',
+      'Try the WILD technique (Wake-Induced Lucid Dream)'
+    ]
+  }
+
+  const handleEmotionToggle = (emotion: string) => {
+    setDreamEmotions(prev => 
+      prev.includes(emotion) 
+        ? prev.filter(e => e !== emotion)
+        : [...prev, emotion]
+    )
+  }
+
+  const showInfo = (content: string) => {
+    setInfoContent(content)
+    setShowInfoModal(true)
+  }
+
+  const currentSystem = dreamSystems.find(sys => sys.id === selectedSystem)
 
   return (
-    <AppShell>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-        {/* Main Content */}
-        <div className="relative z-10 container mx-auto px-4 py-16">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <div className="flex items-center justify-center mb-6">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <Moon className="w-12 h-12 text-purple-600 mr-4" />
-              </motion.div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Dream Analysis
-              </h1>
-            </div>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Unlock the secrets of your dreams with AI-powered analysis. Discover the hidden meanings, symbols, and messages from your subconscious mind.
-            </p>
-          </motion.div>
+    <div className="min-h-screen relative">
+      {/* Starfield Background */}
+      <StarfieldBackground />
+      
+      {/* Navigation */}
+      <Navigation />
 
-          {/* Dream Categories */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-16"
-          >
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Dream Categories</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {dreamCategories.map((category, index) => (
-                <motion.div
-                  key={category.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`cursor-pointer bg-white/80 backdrop-blur-lg border-2 rounded-xl p-4 text-center transition-all duration-300 ${
-                    selectedCategory === category.id 
-                      ? 'border-purple-500 bg-purple-50' 
-                      : 'border-white/20 hover:border-purple-300'
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center mx-auto mb-2`}>
-                    <category.icon className="w-4 h-4 text-white" />
+      {/* Main Content */}
+      <main className="relative z-10 pt-16">
+        {/* Hero Section */}
+        <section className="text-center py-20 px-4">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-cosmic animate-float">
+              Dream Analysis
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Unlock the hidden messages in your dreams through advanced psychological and spiritual interpretation.
+            </p>
+          </div>
+        </section>
+
+        {/* Dream Systems */}
+        <section className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Dream Analysis Systems</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {dreamSystems.map((system) => (
+                <Card key={system.id} className="p-6 hover:scale-105 cosmic-glow">
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">{system.icon}</div>
+                    <h3 className="text-xl font-semibold mb-3">{system.name}</h3>
+                    <p className="text-gray-300 text-sm mb-4">{system.description}</p>
+                    
+                    <div className="mb-4">
+                      <span className="text-purple-300 font-semibold">Accuracy: {system.accuracy}</span>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <p className="text-gray-300 text-xs mb-2">Key Features:</p>
+                      <ul className="list-disc list-inside text-gray-400 text-xs">
+                        {system.features.map((feature, i) => (
+                          <li key={i}>{feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <Button 
+                      variant={selectedSystem === system.id ? 'cosmic' : 'secondary'}
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => setSelectedSystem(system.id)}
+                    >
+                      {selectedSystem === system.id ? 'Selected' : 'Select System'}
+                    </Button>
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-900">{category.name}</h3>
-                </motion.div>
+                </Card>
               ))}
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Dream Input Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mb-16"
-          >
-            <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Describe Your Dream</h3>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Dream Title (Optional)</label>
-                  <input
-                    type="text"
-                    value={dreamTitle}
-                    onChange={(e) => setDreamTitle(e.target.value)}
-                    placeholder="Give your dream a title..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
+        {/* Dream Analysis Form */}
+        <section className="py-12 px-4">
+          <div className="max-w-4xl mx-auto">
+            <Card className="p-8 cosmic-glow">
+              <h2 className="text-3xl font-bold mb-8 text-center text-cosmic">
+                Analyze Your Dream
+              </h2>
+              
+              {currentSystem && (
+                <div className="glass-card p-6 mb-8">
+                  <h3 className="text-2xl font-bold text-cosmic mb-3 flex items-center justify-center md:justify-start">
+                    <span className="text-4xl mr-3">{currentSystem.icon}</span> {currentSystem.name}
+                  </h3>
+                  <p className="text-gray-300 mb-4">{currentSystem.description}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div>
+                      <p className="text-purple-300 font-semibold">Accuracy: <span className="text-white">{currentSystem.accuracy}</span></p>
+                      <p className="text-purple-300 font-semibold mt-2">Best Use: <span className="text-white">{currentSystem.bestUse}</span></p>
+                    </div>
+                    <div>
+                      <p className="text-purple-300 font-semibold">Key Features:</p>
+                      <ul className="list-disc list-inside text-gray-300">
+                        {currentSystem.features.map((feature, i) => (
+                          <li key={i}>{feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
+              )}
+
+              <form onSubmit={analyzeDream} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Dream Description</label>
+                  <label htmlFor="dreamDescription" className="block text-white text-sm font-medium mb-2">
+                    Describe Your Dream
+                  </label>
                   <textarea
-                    value={dreamText}
-                    onChange={(e) => setDreamText(e.target.value)}
-                    placeholder="Describe your dream in detail. Include emotions, colors, people, places, and any symbols you remember..."
+                    id="dreamDescription"
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Describe your dream in detail. Include what happened, who was there, how you felt, and any significant symbols or events..."
+                    value={dreamDescription}
+                    onChange={(e) => setDreamDescription(e.target.value)}
+                    required
                   />
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleAnalyze}
-                    disabled={isAnalyzing || !dreamText.trim()}
-                    className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
-                  >
-                    {isAnalyzing ? (
-                      <div className="flex items-center">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
-                        />
-                        Analyzing...
-                      </div>
-                    ) : (
-                      'Analyze My Dream'
-                    )}
-                  </motion.button>
-                  {dreamText.trim() && (
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={handleSaveDream}
-                      className="border-2 border-purple-400 text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-purple-50 transition-all duration-300"
-                    >
-                      <Save className="w-5 h-5 inline mr-2" />
-                      Save Dream
-                    </motion.button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </motion.div>
 
-          {/* Analysis Results */}
-          {analysis && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="mb-16"
-            >
-              <div className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">{analysis.title}</h3>
-                
-                {/* Summary */}
-                <div className="mb-8">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Summary</h4>
-                  <p className="text-gray-600">{analysis.summary}</p>
+                <div>
+                  <label htmlFor="dreamDate" className="block text-white text-sm font-medium mb-2">
+                    Dream Date
+                  </label>
+                  <input
+                    type="date"
+                    id="dreamDate"
+                    className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    value={dreamDate}
+                    onChange={(e) => setDreamDate(e.target.value)}
+                  />
                 </div>
 
-                {/* Symbols */}
-                <div className="mb-8">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Key Symbols</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {analysis.symbols.map((symbol, index) => (
-                      <div key={index} className="bg-purple-50 rounded-lg p-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-semibold text-gray-900">{symbol.symbol}</span>
-                          <span className={`text-sm px-2 py-1 rounded-full ${
-                            symbol.significance === 'High' ? 'bg-red-100 text-red-700' :
-                            symbol.significance === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-green-100 text-green-700'
-                          }`}>
-                            {symbol.significance}
-                          </span>
-                        </div>
-                        <p className="text-gray-600 text-sm">{symbol.meaning}</p>
-                      </div>
+                <div>
+                  <label className="block text-white text-sm font-medium mb-2">
+                    Emotions in the Dream
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {emotionOptions.map((emotion) => (
+                      <button
+                        key={emotion}
+                        type="button"
+                        className={`p-2 rounded-lg text-sm transition-all ${
+                          dreamEmotions.includes(emotion)
+                            ? 'bg-purple-500 text-white'
+                            : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                        }`}
+                        onClick={() => handleEmotionToggle(emotion)}
+                      >
+                        {emotion}
+                      </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Emotions */}
-                <div className="mb-8">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Emotions Detected</h4>
+                <div className="text-center">
+                  <Button type="submit" variant="cosmic" size="lg" className="btn-cosmic">
+                    Analyze My Dream
+                  </Button>
+                </div>
+              </form>
+            </Card>
+          </div>
+        </section>
+
+        {/* Results */}
+        {showResults && dreamAnalysis && (
+          <section className="py-12 px-4">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-4xl font-bold text-center mb-12 text-cosmic">
+                Your Dream Analysis
+              </h2>
+              
+              {/* Dream Type */}
+              <Card className="p-8 cosmic-glow mb-8">
+                <h3 className="text-2xl font-bold mb-4 text-center text-cosmic">Dream Type</h3>
+                <div className="text-center">
+                  <div className="text-6xl mb-4">
+                    {dreamTypes.find(t => t.name === dreamAnalysis.dreamType)?.symbol}
+                  </div>
+                  <h4 className="text-2xl font-bold mb-2">{dreamAnalysis.dreamType}</h4>
+                  <p className="text-gray-300">
+                    {dreamTypes.find(t => t.name === dreamAnalysis.dreamType)?.description}
+                  </p>
+                </div>
+              </Card>
+
+              {/* Interpretation */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300">Dream Interpretation</h3>
+                  <p className="text-gray-300 mb-4">{dreamAnalysis.interpretation}</p>
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    onClick={() => showInfo('Dream interpretation combines psychological analysis with symbolic meaning to reveal insights about your subconscious mind and life experiences.')}
+                  >
+                    Learn More
+                  </Button>
+                </Card>
+
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300">Spiritual Meaning</h3>
+                  <p className="text-gray-300 mb-4">{dreamAnalysis.spiritualMeaning}</p>
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    onClick={() => showInfo('Spiritual dream analysis focuses on divine messages, soul communication, and higher self guidance through dream symbolism.')}
+                  >
+                    Learn More
+                  </Button>
+                </Card>
+              </div>
+
+              {/* Symbols and Emotions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300">Dream Symbols</h3>
+                  <div className="space-y-2">
+                    {dreamAnalysis.symbols.map((symbol, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <span className="text-2xl">{symbol}</span>
+                        <span className="text-gray-300">
+                          {commonSymbols.find(s => s.symbol === symbol)?.meaning}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300">Emotions</h3>
                   <div className="flex flex-wrap gap-2">
-                    {analysis.emotions.map((emotion, index) => (
-                      <span key={index} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                    {dreamAnalysis.emotions.map((emotion, index) => (
+                      <span key={index} className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">
                         {emotion}
                       </span>
                     ))}
                   </div>
-                </div>
-
-                {/* Interpretation */}
-                <div className="mb-8">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Dream Interpretation</h4>
-                  <p className="text-gray-600 mb-4">{analysis.interpretation}</p>
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <h5 className="font-semibold text-gray-900 mb-2">Guidance</h5>
-                    <p className="text-gray-600">{analysis.advice}</p>
-                  </div>
-                </div>
-
-                {/* Keywords */}
-                <div className="mb-8">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Keywords</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {analysis.keywords.map((keyword, index) => (
-                      <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    <Share className="w-5 h-5 inline mr-2" />
-                    Share Analysis
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="border-2 border-purple-400 text-purple-600 px-6 py-3 rounded-xl font-semibold hover:bg-purple-50 transition-all duration-300"
-                  >
-                    <Download className="w-5 h-5 inline mr-2" />
-                    Download Report
-                  </motion.button>
-                </div>
+                </Card>
               </div>
-            </motion.div>
-          )}
 
-          {/* Common Dream Symbols */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mb-16"
-          >
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Common Dream Symbols</h2>
+              {/* Practical Guidance */}
+              <Card className="p-6 cosmic-glow mb-8">
+                <h3 className="text-xl font-bold mb-4 text-purple-300">Practical Guidance</h3>
+                <p className="text-gray-300">{dreamAnalysis.practicalGuidance}</p>
+              </Card>
+
+              {/* Lucid Dreaming Tips */}
+              <Card className="p-6 cosmic-glow">
+                <h3 className="text-xl font-bold mb-4 text-purple-300">Lucid Dreaming Tips</h3>
+                <ul className="space-y-2">
+                  {dreamAnalysis.lucidDreamingTips.map((tip, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-purple-400 mr-2">💡</span>
+                      <span className="text-gray-300">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
+          </section>
+        )}
+
+        {/* Dream Types Guide */}
+        <section className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">
+              Dream Types Guide
+            </h2>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {commonSymbols.map((symbol, index) => (
-                <motion.div
-                  key={symbol.symbol}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
-                  className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl p-6 hover:bg-white/90 transition-all duration-300"
-                >
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{symbol.symbol}</h3>
-                  <p className="text-gray-600 mb-3">{symbol.meaning}</p>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    symbol.frequency === 'Very Common' ? 'bg-green-100 text-green-700' :
-                    symbol.frequency === 'Common' ? 'bg-blue-100 text-blue-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {symbol.frequency}
-                  </span>
-                </motion.div>
+              {dreamTypes.map((type, index) => (
+                <Card key={index} className="p-6 cosmic-glow">
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">{type.symbol}</div>
+                    <h3 className="text-lg font-semibold mb-2">{type.name}</h3>
+                    <p className="text-gray-300 text-sm">{type.description}</p>
+                  </div>
+                </Card>
               ))}
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Dream History */}
-          {dreamHistory.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mb-16"
-            >
-              <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Your Dream Journal</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {dreamHistory.slice(0, 6).map((dream, index) => (
-                  <motion.div
-                    key={dream.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                    className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl p-6 hover:bg-white/90 transition-all duration-300"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">{dream.title}</h3>
-                      <div className="flex space-x-2">
-                        <button className="text-gray-400 hover:text-gray-600">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button className="text-gray-400 hover:text-red-600">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {dream.text.substring(0, 100)}...
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">
-                        {new Date(dream.date).toLocaleDateString()}
-                      </span>
-                      <button className="text-purple-600 hover:text-purple-800 text-sm font-medium">
-                        View Analysis
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Premium Upgrade CTA */}
-          {!isPremium && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.0 }}
-              className="mb-16"
-            >
-              <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 rounded-2xl p-8 text-white text-center">
-                <Brain className="w-16 h-16 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold mb-4">Unlock Advanced Dream Analysis</h3>
-                <p className="text-lg mb-6">
-                  Get deeper insights, dream journaling, and personalized dream guidance
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleUpgrade}
-                  className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Upgrade to Premium
-                </motion.button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Additional Resources */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="text-center"
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">Explore More</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Link href="/zodiac">
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6 hover:bg-white/90 transition-all duration-300"
-                >
-                  <Star className="w-8 h-8 text-purple-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Astrology</h3>
-                  <p className="text-gray-600">Discover your cosmic blueprint</p>
-                </motion.div>
-              </Link>
-              <Link href="/numerology">
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6 hover:bg-white/90 transition-all duration-300"
-                >
-                  <BookOpen className="w-8 h-8 text-blue-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Numerology</h3>
-                  <p className="text-gray-600">Unlock the power of numbers</p>
-                </motion.div>
-              </Link>
-              <Link href="/compatibility">
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="bg-white/80 backdrop-blur-lg border border-white/20 rounded-2xl p-6 hover:bg-white/90 transition-all duration-300"
-                >
-                  <Heart className="w-8 h-8 text-pink-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Compatibility</h3>
-                  <p className="text-gray-600">Find your cosmic match</p>
-                </motion.div>
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </AppShell>
+        {/* Info Modal */}
+        {showInfoModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <Card className="p-8 max-w-md mx-auto cosmic-glow">
+              <h2 className="text-2xl font-bold mb-4 text-cosmic">Information</h2>
+              <p className="text-gray-300 mb-6">{infoContent}</p>
+              <Button 
+                variant="cosmic" 
+                size="lg" 
+                className="w-full"
+                onClick={() => setShowInfoModal(false)}
+              >
+                Close
+              </Button>
+            </Card>
+          </div>
+        )}
+      </main>
+    </div>
   )
 }

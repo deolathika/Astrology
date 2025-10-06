@@ -12,8 +12,6 @@ import { SessionProviderWrapper } from '@/components/providers/SessionProviderWr
 import { Analytics } from '@/lib/monitoring/analytics'
 import { initSentry } from '@/lib/monitoring/sentry'
 import './globals.css'
-import '../styles/cosmic-theme.css'
-import '../styles/cosmic-luxury.css'
 
 // Initialize Sentry
 initSentry()
@@ -21,9 +19,9 @@ initSentry()
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Daily Secrets - Your Personal Cosmic Journey',
-  description: 'Discover your cosmic secrets with personalized astrology, numerology, and dream analysis. Your journey to self-discovery starts here.',
-  keywords: ['astrology', 'numerology', 'dreams', 'cosmic', 'personal', 'journey', 'insights'],
+  title: 'Daily Secrets - Your Personal Journey',
+  description: 'Discover your secrets with personalized astrology, numerology, and dream analysis. Your journey to self-discovery starts here.',
+  keywords: ['astrology', 'numerology', 'dreams', 'personal', 'journey', 'insights'],
   authors: [{ name: 'Daily Secrets Team' }],
   creator: 'Daily Secrets',
   publisher: 'Daily Secrets',
@@ -40,14 +38,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://daily-secrets.app',
-    title: 'Daily Secrets - Your Personal Cosmic Journey',
-    description: 'Discover your cosmic secrets with personalized astrology, numerology, and dream analysis.',
+    title: 'Daily Secrets - Your Personal Journey',
+    description: 'Discover your secrets with personalized astrology, numerology, and dream analysis.',
     siteName: 'Daily Secrets',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Daily Secrets - Your Personal Cosmic Journey',
-    description: 'Discover your cosmic secrets with personalized astrology, numerology, and dream analysis.',
+    title: 'Daily Secrets - Your Personal Journey',
+    description: 'Discover your secrets with personalized astrology, numerology, and dream analysis.',
     creator: '@dailysecrets',
   },
   robots: {
@@ -85,7 +83,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Daily Secrets" />
       </head>
-          <body className={`${inter.className} h-full cosmic-bg text-foreground antialiased`}>
+          <body className={`${inter.className} h-full text-white antialiased`}>
             <SessionProviderWrapper>
               <QueryProvider>
                 <AuthProvider>

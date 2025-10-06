@@ -1,134 +1,154 @@
 'use client'
 
-import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState } from 'react'
 import { 
   X, 
   Crown, 
-  Sparkles, 
   Star, 
   Moon, 
+  Calculator, 
   Heart, 
-  Brain, 
-  MessageCircle,
-  Check,
-  Zap
+  Users,
+  CheckCircle,
+  Lock,
+  Unlock
 } from 'lucide-react'
-import CosmicButton from '@/components/cosmic/CosmicButton'
 
 interface PremiumModalProps {
   isOpen: boolean
   onClose: () => void
-  onUpgrade: () => void
-  title?: string
-  description?: string
-  features?: string[]
+  onStartTrial: () => void
+  onMaybeLater: () => void
 }
 
-const defaultFeatures = [
-  'Detailed daily horoscopes for all signs',
-  'AI-powered dream interpretation',
-  'Full numerology readings',
-  'Compatibility insights',
-  'Personal cosmic journal & history',
-  'Unlimited daily insights',
-  'Premium community access',
-  'Advanced astrology charts'
-]
-
-export default function PremiumModal({
-  isOpen,
-  onClose,
-  onUpgrade,
-  title = "Unlock Premium Insights",
-  description = "Discover your full cosmic potential with unlimited access to all features",
-  features = defaultFeatures
+export default function PremiumModal({ 
+  isOpen, 
+  onClose, 
+  onStartTrial, 
+  onMaybeLater 
 }: PremiumModalProps) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const premiumFeatures = [
+    {
+      icon: Star,
+      title: 'Detailed daily horoscopes for all signs',
+      description: 'Get comprehensive daily insights for all zodiac signs'
+    },
+    {
+      icon: Moon,
+      title: 'AI-powered dream analysis & interpretation',
+      description: 'Advanced AI technology to decode your dreams'
+    },
+    {
+      icon: Calculator,
+      title: 'Complete numerology calculations',
+      description: 'Full numerology reports with all core numbers'
+    },
+    {
+      icon: Heart,
+      title: 'Compatibility readings & insights',
+      description: 'Deep relationship compatibility analysis'
+    },
+    {
+      icon: Users,
+      title: 'Personal cosmic journal & history',
+      description: 'Track your cosmic journey over time'
+    }
+  ]
+
+  const handleStartTrial = async () => {
+    setIsLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    setIsLoading(false)
+    onStartTrial()
+  }
+
   if (!isOpen) return null
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)' }}
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className="relative w-full max-w-md bg-gradient-to-br from-violet-900/90 to-purple-900/90 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
+      <div className="relative glass-card p-8 max-w-md w-full mx-auto animate-fade-in-up">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-lg transition-colors"
         >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <X className="w-5 h-5 text-white" />
+        </button>
 
-          {/* Header */}
-          <div className="text-center mb-6">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="w-16 h-16 bg-gradient-to-r from-gold-400 to-silver-400 rounded-full flex items-center justify-center mx-auto mb-4"
-            >
-              <Crown className="w-8 h-8 text-violet-900" />
-            </motion.div>
-            
-            <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-            <p className="text-violet-200">{description}</p>
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Crown className="w-8 h-8 text-white" />
           </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Unlock Premium Insights</h2>
+          <p className="text-white/80">
+            Get access to detailed cosmic readings, personalized guidance, and exclusive features that reveal the deeper mysteries of your destiny.
+          </p>
+        </div>
 
-          {/* Features */}
-          <div className="space-y-3 mb-6">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-                className="flex items-center space-x-3"
-              >
-                <div className="w-5 h-5 bg-gradient-to-r from-gold-400 to-silver-400 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-violet-900" />
-                </div>
-                <span className="text-violet-100">{feature}</span>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Pricing */}
-          <div className="bg-white/10 rounded-xl p-4 mb-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-1">$9.99<span className="text-sm text-violet-300">/month</span></div>
-              <div className="text-violet-300 text-sm">Cancel anytime • 7-day free trial</div>
+        {/* Features List */}
+        <div className="space-y-4 mb-8">
+          {premiumFeatures.map((feature, index) => (
+            <div key={index} className="flex items-start space-x-3">
+              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <CheckCircle className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold text-sm">{feature.title}</h3>
+                <p className="text-white/70 text-xs">{feature.description}</p>
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <CosmicButton
-              onClick={onUpgrade}
-              className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
-            >
-              <Sparkles className="w-5 h-5 mr-2" />
-              Start Free Trial
-            </CosmicButton>
-            
-            <button
-              onClick={onClose}
-              className="w-full text-violet-300 hover:text-white transition-colors py-2"
-            >
-              Maybe Later
-            </button>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        {/* Pricing */}
+        <div className="text-center mb-6">
+          <div className="text-3xl font-bold text-white mb-1">$9.99<span className="text-lg text-white/70">/month</span></div>
+          <p className="text-white/70 text-sm">Cancel anytime • 7-day free trial</p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={handleStartTrial}
+            disabled={isLoading}
+            className="w-full btn-primary py-4 text-lg flex items-center justify-center space-x-2"
+          >
+            {isLoading ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Star className="w-5 h-5" />
+            )}
+            <span>{isLoading ? 'Processing...' : 'Start Free Trial'}</span>
+          </button>
+          
+          <button
+            onClick={onMaybeLater}
+            className="w-full text-white/70 hover:text-white text-sm py-2 transition-colors"
+          >
+            Maybe Later
+          </button>
+        </div>
+
+        {/* Legal */}
+        <div className="text-center mt-6">
+          <p className="text-white/60 text-xs">
+            By continuing, you agree to our{' '}
+            <a href="/terms" className="text-white/80 hover:text-white underline">Terms of Service</a>
+            {' '}and{' '}
+            <a href="/privacy" className="text-white/80 hover:text-white underline">Privacy Policy</a>
+          </p>
+        </div>
+      </div>
+    </div>
   )
 }
