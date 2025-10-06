@@ -7,7 +7,7 @@ import AdvancedAstrologySystem from '@/components/astrology/AdvancedAstrologySys
 
 export default function AstrologyPage() {
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative main-content">
       <StarfieldBackground />
       <Navigation />
 

@@ -1,20 +1,61 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Moon, 
+  Brain, 
+  Eye, 
+  Heart, 
+  Star, 
+  Zap, 
+  Shield, 
+  Flame, 
+  Waves, 
+  Mountain, 
+  Wind,
+  Sparkles,
+  BookOpen,
+  Compass,
+  Target,
+  Gem,
+  Crown,
+  Globe,
+  MessageCircle,
+  Users,
+  Calendar,
+  Clock,
+  Send,
+  Loader2
+} from 'lucide-react'
 import Navigation from '@/components/readdy/Navigation'
 import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'
 
+interface DreamSymbol {
+  symbol: string
+  meaning: string
+  category: string
+  significance: 'high' | 'medium' | 'low'
+  color: string
+}
+
 interface DreamAnalysis {
-  dreamType: string
-  symbols: string[]
-  emotions: string[]
+  id: string
+  method: string
+  description: string
+  symbols: DreamSymbol[]
   interpretation: string
-  spiritualMeaning: string
-  practicalGuidance: string
-  recurringThemes: string[]
-  lucidDreamingTips: string[]
+  guidance: string
+  emotionalTone: string
+  spiritualMessage: string
+  practicalAdvice: string
+  confidence: number
+  timestamp: string
+  emotions?: string[]
+  practicalGuidance?: string
+  lucidDreamingTips?: string[]
 }
 
 export default function DreamsPage() {
@@ -26,6 +67,41 @@ export default function DreamsPage() {
   const [dreamAnalysis, setDreamAnalysis] = useState<DreamAnalysis | null>(null)
   const [showInfoModal, setShowInfoModal] = useState(false)
   const [infoContent, setInfoContent] = useState('')
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [vividness, setVividness] = useState(5)
+  const [dreamHistory, setDreamHistory] = useState<DreamAnalysis[]>([])
+  const [selectedMethod, setSelectedMethod] = useState('freudian')
+
+  const analysisMethods = [
+    { 
+      id: 'freudian', 
+      name: 'Freudian Analysis', 
+      description: 'Focuses on repressed desires and unconscious conflicts.',
+      icon: Brain,
+      color: 'text-red-400'
+    },
+    { 
+      id: 'jungian', 
+      name: 'Jungian Analysis', 
+      description: 'Explores archetypes, collective unconscious, and individuation.',
+      icon: Eye,
+      color: 'text-blue-400'
+    },
+    { 
+      id: 'spiritual', 
+      name: 'Spiritual Interpretation', 
+      description: 'Connects dreams to spiritual messages and higher self guidance.',
+      icon: Sparkles,
+      color: 'text-purple-400'
+    },
+    { 
+      id: 'symbolic', 
+      name: 'Symbolic Interpretation', 
+      description: 'Deciphers universal and personal symbols within the dream narrative.',
+      icon: Gem,
+      color: 'text-green-400'
+    }
+  ]
 
   const dreamSystems = [
     {
@@ -93,28 +169,84 @@ export default function DreamsPage() {
     { symbol: 'Baby', meaning: 'New beginnings, innocence, potential', category: 'Life' }
   ]
 
-  const analyzeDream = (e: React.FormEvent) => {
+  // LLM Integration for Dream Analysis
+  const analyzeDreamWithLLM = async (dreamText: string, method: string, emotions: string[], vividness: number) => {
+    try {
+      const response = await fetch('/api/analyze-dream', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          dreamText,
+          method,
+          emotions,
+          vividness,
+          timestamp: new Date().toISOString()
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze dream')
+      }
+
+      const result = await response.json()
+      return result
+    } catch (error) {
+      console.error('LLM Analysis Error:', error)
+      // Fallback to local analysis
+      return generateLocalAnalysis(dreamText, method, emotions, vividness)
+    }
+  }
+
+  const generateLocalAnalysis = (dreamText: string, method: string, emotions: string[], vividness: number) => {
+    const dreamType = dreamTypes[Math.floor(Math.random() * dreamTypes.length)]
+    const symbols = commonSymbols.slice(0, Math.floor(Math.random() * 4) + 2)
+    
+    return {
+      id: Date.now().toString(),
+      method: method,
+      description: dreamText,
+      symbols: symbols.map(s => ({
+        symbol: s.symbol,
+        meaning: s.meaning,
+        category: s.category,
+        significance: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)] as 'high' | 'medium' | 'low',
+        color: ['text-red-400', 'text-blue-400', 'text-green-400', 'text-purple-400'][Math.floor(Math.random() * 4)]
+      })),
+      interpretation: generateDreamInterpretation(dreamText, dreamType.name, symbols, emotions),
+      guidance: generatePracticalGuidance(dreamType.name, emotions),
+      emotionalTone: emotions.join(', '),
+      spiritualMessage: generateSpiritualMeaning(dreamType.name, symbols),
+      practicalAdvice: generatePracticalGuidance(dreamType.name, emotions),
+      confidence: Math.floor(Math.random() * 20) + 80,
+      timestamp: new Date().toISOString()
+    }
+  }
+
+  const analyzeDream = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!dreamDescription) return
 
-    // Simulate dream analysis
-    const dreamType = dreamTypes[Math.floor(Math.random() * dreamTypes.length)]
-    const symbols = commonSymbols.slice(0, Math.floor(Math.random() * 4) + 2)
-    const emotions = dreamEmotions.length > 0 ? dreamEmotions : emotionOptions.slice(0, Math.floor(Math.random() * 3) + 1)
-
-    const analysis: DreamAnalysis = {
-      dreamType: dreamType.name,
-      symbols: symbols.map(s => s.symbol),
-      emotions,
-      interpretation: generateDreamInterpretation(dreamDescription, dreamType.name, symbols, emotions),
-      spiritualMeaning: generateSpiritualMeaning(dreamType.name, symbols),
-      practicalGuidance: generatePracticalGuidance(dreamType.name, emotions),
-      recurringThemes: generateRecurringThemes(dreamType.name),
-      lucidDreamingTips: generateLucidDreamingTips()
+    setIsAnalyzing(true)
+    
+    try {
+      // Use LLM for analysis
+      const analysis = await analyzeDreamWithLLM(
+        dreamDescription, 
+        selectedMethod, 
+        dreamEmotions, 
+        vividness
+      )
+      
+      setDreamAnalysis(analysis)
+      setDreamHistory(prev => [analysis, ...prev.slice(0, 9)]) // Keep last 10 analyses
+      setShowResults(true)
+    } catch (error) {
+      console.error('Analysis failed:', error)
+    } finally {
+      setIsAnalyzing(false)
     }
-
-    setDreamAnalysis(analysis)
-    setShowResults(true)
   }
 
   const generateDreamInterpretation = (description: string, type: string, symbols: any[], emotions: string[]): string => {
@@ -165,7 +297,7 @@ export default function DreamsPage() {
   const currentSystem = dreamSystems.find(sys => sys.id === selectedSystem)
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative main-content">
       {/* Starfield Background */}
       <StarfieldBackground />
       
@@ -227,13 +359,40 @@ export default function DreamsPage() {
           </div>
         </section>
 
-        {/* Dream Analysis Form */}
+        {/* Enhanced Dream Analysis Form */}
         <section className="py-12 px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <Card className="p-8 cosmic-glow">
               <h2 className="text-3xl font-bold mb-8 text-center text-cosmic">
-                Analyze Your Dream
+                Advanced Dream Analysis
               </h2>
+              
+              {/* Analysis Methods */}
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold text-cosmic mb-4">Choose Analysis Method</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {analysisMethods.map((method) => {
+                    const IconComponent = method.icon
+                    return (
+                      <div
+                        key={method.id}
+                        className={`p-4 cursor-pointer transition-all border rounded-lg ${
+                          selectedMethod === method.id 
+                            ? 'border-purple-500 border-2 cosmic-glow' 
+                            : 'border-white/10 border hover:border-white/20'
+                        }`}
+                        onClick={() => setSelectedMethod(method.id)}
+                      >
+                        <div className="text-center">
+                          <IconComponent className={`mx-auto mb-2 ${method.color}`} size={24} />
+                          <h4 className="font-semibold text-white mb-1">{method.name}</h4>
+                          <p className="text-gray-400 text-xs">{method.description}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
               
               {currentSystem && (
                 <div className="glass-card p-6 mb-8">
@@ -274,17 +433,55 @@ export default function DreamsPage() {
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="dreamDate" className="block text-white text-sm font-medium mb-2">
-                    Dream Date
-                  </label>
-                  <input
-                    type="date"
-                    id="dreamDate"
-                    className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={dreamDate}
-                    onChange={(e) => setDreamDate(e.target.value)}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label htmlFor="dreamDate" className="block text-white text-sm font-medium mb-2">
+                      Dream Date
+                    </label>
+                    <input
+                      type="date"
+                      id="dreamDate"
+                      className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={dreamDate}
+                      onChange={(e) => setDreamDate(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="vividness" className="block text-white text-sm font-medium mb-2">
+                      Dream Vividness (1-10)
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="range"
+                        id="vividness"
+                        min="1"
+                        max="10"
+                        value={vividness}
+                        onChange={(e) => setVividness(Number(e.target.value))}
+                        className="flex-1"
+                      />
+                      <span className="text-purple-300 font-semibold">{vividness}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="analysisMethod" className="block text-white text-sm font-medium mb-2">
+                      Analysis Method
+                    </label>
+                    <select
+                      id="analysisMethod"
+                      value={selectedMethod}
+                      onChange={(e) => setSelectedMethod(e.target.value)}
+                      className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      {analysisMethods.map((method) => (
+                        <option key={method.id} value={method.id}>
+                          {method.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -310,14 +507,69 @@ export default function DreamsPage() {
                 </div>
 
                 <div className="text-center">
-                  <Button type="submit" variant="cosmic" size="lg" className="btn-cosmic">
-                    Analyze My Dream
+                  <Button 
+                    type="submit" 
+                    variant="cosmic" 
+                    size="lg" 
+                    className="btn-cosmic"
+                    disabled={isAnalyzing}
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Analyzing Dream...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Analyze My Dream
+                      </>
+                    )}
                   </Button>
                 </div>
               </form>
             </Card>
           </div>
         </section>
+
+        {/* Dream History */}
+        {dreamHistory.length > 0 && (
+          <section className="py-12 px-4">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-8 text-cosmic">Recent Dream Analyses</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {dreamHistory.slice(0, 6).map((analysis) => (
+                  <Card key={analysis.id} className="p-6 cosmic-glow">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-cosmic">{analysis.method}</h3>
+                      <span className="text-sm text-gray-400">
+                        {new Date(analysis.timestamp).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                      {analysis.description.substring(0, 100)}...
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-purple-300 font-semibold">
+                        Confidence: {analysis.confidence}%
+                      </span>
+                      <Button 
+                        variant="secondary" 
+                        size="sm"
+                        onClick={() => {
+                          setDreamAnalysis(analysis)
+                          setShowResults(true)
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Results */}
         {showResults && dreamAnalysis && (
@@ -327,24 +579,37 @@ export default function DreamsPage() {
                 Your Dream Analysis
               </h2>
               
-              {/* Dream Type */}
+              {/* Analysis Method */}
               <Card className="p-8 cosmic-glow mb-8">
-                <h3 className="text-2xl font-bold mb-4 text-center text-cosmic">Dream Type</h3>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-cosmic">Analysis Method</h3>
+                  <span className="text-purple-300 font-semibold">
+                    Confidence: {dreamAnalysis.confidence}%
+                  </span>
+                </div>
                 <div className="text-center">
                   <div className="text-6xl mb-4">
-                    {dreamTypes.find(t => t.name === dreamAnalysis.dreamType)?.symbol}
+                    {analysisMethods.find(m => m.id === dreamAnalysis.method)?.icon && 
+                      React.createElement(analysisMethods.find(m => m.id === dreamAnalysis.method)!.icon, { 
+                        className: "mx-auto text-purple-400", 
+                        size: 48 
+                      })
+                    }
                   </div>
-                  <h4 className="text-2xl font-bold mb-2">{dreamAnalysis.dreamType}</h4>
+                  <h4 className="text-2xl font-bold mb-2">{dreamAnalysis.method}</h4>
                   <p className="text-gray-300">
-                    {dreamTypes.find(t => t.name === dreamAnalysis.dreamType)?.description}
+                    {analysisMethods.find(m => m.id === dreamAnalysis.method)?.description}
                   </p>
                 </div>
               </Card>
 
-              {/* Interpretation */}
+              {/* Enhanced Analysis Results */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <Card className="p-6 cosmic-glow">
-                  <h3 className="text-xl font-bold mb-4 text-purple-300">Dream Interpretation</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-300 flex items-center">
+                    <Brain className="mr-2" size={20} />
+                    Dream Interpretation
+                  </h3>
                   <p className="text-gray-300 mb-4">{dreamAnalysis.interpretation}</p>
                   <Button 
                     variant="secondary" 
@@ -356,8 +621,11 @@ export default function DreamsPage() {
                 </Card>
 
                 <Card className="p-6 cosmic-glow">
-                  <h3 className="text-xl font-bold mb-4 text-purple-300">Spiritual Meaning</h3>
-                  <p className="text-gray-300 mb-4">{dreamAnalysis.spiritualMeaning}</p>
+                  <h3 className="text-xl font-bold mb-4 text-purple-300 flex items-center">
+                    <Sparkles className="mr-2" size={20} />
+                    Spiritual Message
+                  </h3>
+                  <p className="text-gray-300 mb-4">{dreamAnalysis.spiritualMessage}</p>
                   <Button 
                     variant="secondary" 
                     size="sm" 
@@ -368,16 +636,63 @@ export default function DreamsPage() {
                 </Card>
               </div>
 
+              {/* Symbols Analysis */}
+              {dreamAnalysis.symbols && dreamAnalysis.symbols.length > 0 && (
+                <Card className="p-6 cosmic-glow mb-8">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300 flex items-center">
+                    <Gem className="mr-2" size={20} />
+                    Dream Symbols
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {dreamAnalysis.symbols.map((symbol: DreamSymbol, index: number) => (
+                      <div key={index} className="p-4 bg-white/5 rounded-lg border border-white/10">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-white">{symbol.symbol}</h4>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            symbol.significance === 'high' ? 'bg-red-500/20 text-red-300' :
+                            symbol.significance === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
+                            'bg-green-500/20 text-green-300'
+                          }`}>
+                            {symbol.significance}
+                          </span>
+                        </div>
+                        <p className="text-gray-300 text-sm mb-1">{symbol.meaning}</p>
+                        <p className="text-gray-400 text-xs">Category: {symbol.category}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {/* Guidance and Advice */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300 flex items-center">
+                    <Compass className="mr-2" size={20} />
+                    Practical Guidance
+                  </h3>
+                  <p className="text-gray-300">{dreamAnalysis.guidance}</p>
+                </Card>
+
+                <Card className="p-6 cosmic-glow">
+                  <h3 className="text-xl font-bold mb-4 text-purple-300 flex items-center">
+                    <Target className="mr-2" size={20} />
+                    Practical Advice
+                  </h3>
+                  <p className="text-gray-300">{dreamAnalysis.practicalAdvice}</p>
+                </Card>
+              </div>
+
               {/* Symbols and Emotions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <Card className="p-6 cosmic-glow">
                   <h3 className="text-xl font-bold mb-4 text-purple-300">Dream Symbols</h3>
                   <div className="space-y-2">
-                    {dreamAnalysis.symbols.map((symbol, index) => (
+                    {dreamAnalysis.symbols.map((symbol: DreamSymbol, index: number) => (
                       <div key={index} className="flex items-center space-x-2">
-                        <span className="text-2xl">{symbol}</span>
+                        <span className="text-2xl">{symbol.symbol}</span>
                         <span className="text-gray-300">
-                          {commonSymbols.find(s => s.symbol === symbol)?.meaning}
+                          {symbol.meaning}
                         </span>
                       </div>
                     ))}
@@ -387,7 +702,7 @@ export default function DreamsPage() {
                 <Card className="p-6 cosmic-glow">
                   <h3 className="text-xl font-bold mb-4 text-purple-300">Emotions</h3>
                   <div className="flex flex-wrap gap-2">
-                    {dreamAnalysis.emotions.map((emotion, index) => (
+                    {(dreamAnalysis.emotions || []).map((emotion: string, index: number) => (
                       <span key={index} className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">
                         {emotion}
                       </span>
@@ -399,14 +714,14 @@ export default function DreamsPage() {
               {/* Practical Guidance */}
               <Card className="p-6 cosmic-glow mb-8">
                 <h3 className="text-xl font-bold mb-4 text-purple-300">Practical Guidance</h3>
-                <p className="text-gray-300">{dreamAnalysis.practicalGuidance}</p>
+                <p className="text-gray-300">{dreamAnalysis.practicalGuidance || dreamAnalysis.guidance}</p>
               </Card>
 
               {/* Lucid Dreaming Tips */}
               <Card className="p-6 cosmic-glow">
                 <h3 className="text-xl font-bold mb-4 text-purple-300">Lucid Dreaming Tips</h3>
                 <ul className="space-y-2">
-                  {dreamAnalysis.lucidDreamingTips.map((tip, index) => (
+                  {(dreamAnalysis.lucidDreamingTips || []).map((tip: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <span className="text-purple-400 mr-2">💡</span>
                       <span className="text-gray-300">{tip}</span>

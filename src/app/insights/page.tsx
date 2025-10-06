@@ -7,7 +7,7 @@ import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 
 export default function InsightsPage() {
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative main-content">
       <StarfieldBackground />
       <Navigation />
       

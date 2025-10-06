@@ -477,7 +477,7 @@ export default function CompatibilityPage() {
   const currentSystem = compatibilitySystems.find(sys => sys.id === selectedSystem)
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative main-content">
       {/* Starfield Background */}
       <StarfieldBackground />
       

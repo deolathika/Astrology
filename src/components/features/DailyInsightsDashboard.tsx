@@ -58,6 +58,13 @@ export default function DailyInsightsDashboard() {
   })
   const [currentTime, setCurrentTime] = useState(new Date())
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [dailyCosmicData, setDailyCosmicData] = useState({
+    energy: 85,
+    focusArea: 'Manifestation',
+    cosmicMessage: 'Trust your intuition and take inspired action today.',
+    luckyMoments: '2:30 PM - 4:00 PM',
+    energyLevel: 'High & Vibrant'
+  })
 
   const categories = [
     { id: 'all', name: 'All Insights', icon: Sparkles },
@@ -151,6 +158,38 @@ export default function DailyInsightsDashboard() {
     return () => clearInterval(timer)
   }, [])
 
+  // Update cosmic data based on time of day
+  useEffect(() => {
+    const hour = currentTime.getHours()
+    const messages = [
+      'Trust your intuition and take inspired action today.',
+      'The universe is aligning in your favor - stay open to opportunities.',
+      'Your energy is magnetic today - use it to manifest your desires.',
+      'Focus on gratitude and watch abundance flow into your life.',
+      'The stars are whispering secrets of your destiny - listen closely.',
+      'You are exactly where you need to be in this moment.',
+      'Your dreams are the universe\'s way of speaking to your soul.',
+      'Every challenge is an opportunity for spiritual growth.',
+      'The cosmos is conspiring to bring you exactly what you need.',
+      'Your inner light is shining brighter than you know.',
+      'Today holds infinite possibilities for your highest good.',
+      'You are a co-creator with the universe - use this power wisely.'
+    ]
+    
+    const focusAreas = ['Manifestation', 'Relationships', 'Career', 'Health', 'Spirituality']
+    const energyLevels = ['High & Vibrant', 'Balanced & Centered', 'Calm & Reflective', 'Dynamic & Active', 'Peaceful & Grounded']
+    
+    const timeBasedData = {
+      energy: hour < 6 ? 60 : hour < 12 ? 90 : hour < 18 ? 85 : hour < 22 ? 70 : 50,
+      focusArea: focusAreas[Math.floor(hour / 5) % focusAreas.length],
+      cosmicMessage: messages[Math.floor(hour / 5) % messages.length],
+      luckyMoments: hour < 12 ? '9:00 AM - 11:00 AM' : hour < 18 ? '2:30 PM - 4:00 PM' : '7:00 PM - 9:00 PM',
+      energyLevel: energyLevels[Math.floor(hour / 5) % energyLevels.length]
+    }
+    
+    setDailyCosmicData(timeBasedData)
+  }, [currentTime])
+
   const filteredInsights = selectedCategory === 'all' 
     ? insights 
     : insights.filter(insight => insight.category === selectedCategory)
@@ -174,9 +213,10 @@ export default function DailyInsightsDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="relative z-10 p-6">
+      <div className="relative z-10 py-12 px-4">
+        <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -200,29 +240,94 @@ export default function DailyInsightsDashboard() {
           </div>
         </motion.div>
 
-        {/* Cosmic Energy Indicator */}
+        {/* Daily Affirmation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <Card className="p-6 cosmic-glow text-center">
+            <div className="flex items-center justify-center mb-4">
+              <Sparkles className="w-8 h-8 text-purple-400 mr-3" />
+              <h3 className="text-2xl font-bold text-cosmic">Today's Affirmation</h3>
+            </div>
+            <p className="text-xl text-gray-300 italic mb-4">
+              "I am aligned with the universe's infinite wisdom and flow with cosmic energy."
+            </p>
+            <p className="text-sm text-gray-400">
+              Repeat this affirmation throughout your day to stay connected to your spiritual essence.
+            </p>
+          </Card>
+        </motion.div>
+
+        {/* Daily Cosmic Snapshot */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="mb-8"
         >
-          <Card className="p-6 text-center">
-            <div className="flex items-center justify-center mb-4">
-              <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${cosmicEnergy.color} flex items-center justify-center`}>
-                <Star className="w-8 h-8 text-white" />
+          <Card className="p-8 cosmic-glow">
+            <h2 className="text-3xl font-bold text-center mb-8 text-cosmic">Your Daily Cosmic Snapshot</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Your Energy */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Your Energy</h3>
+                <p className="text-sm text-gray-300 mb-2">{dailyCosmicData.energyLevel}</p>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div className="bg-gradient-to-r from-yellow-400 to-orange-400 h-2 rounded-full" style={{width: `${dailyCosmicData.energy}%`}}></div>
+                </div>
+              </div>
+
+              {/* Focus Area */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Focus Area</h3>
+                <p className="text-sm text-gray-300 mb-2">{dailyCosmicData.focusArea}</p>
+                <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">Today's Priority</span>
+              </div>
+
+              {/* Cosmic Message */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Cosmic Message</h3>
+                <p className="text-sm text-gray-300 mb-2">"{dailyCosmicData.cosmicMessage}"</p>
+                <Button variant="secondary" size="sm">Read More</Button>
+              </div>
+
+              {/* Lucky Moments */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Star className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Lucky Moments</h3>
+                <p className="text-sm text-gray-300 mb-2">{dailyCosmicData.luckyMoments}</p>
+                <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">Best Time</span>
               </div>
             </div>
-            <h3 className="text-2xl font-bold mb-2">{cosmicEnergy.type}</h3>
-            <p className="text-gray-300 mb-4">{cosmicEnergy.description}</p>
-            <div className="w-full bg-gray-700 rounded-full h-3">
-              <motion.div
-                className={`h-3 rounded-full bg-gradient-to-r ${cosmicEnergy.color}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${cosmicEnergy.level}%` }}
-                transition={{ duration: 2, ease: "easeOut" }}
-              />
+            
+            {/* Complete Reading CTA */}
+            <div className="mt-8 text-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Button variant="cosmic" size="lg" className="w-full sm:w-auto">
+                  <Star className="w-5 h-5 mr-2" />
+                  View Complete Reading
+                </Button>
+                <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+                  <Heart className="w-5 h-5 mr-2" />
+                  Get Personalized Insights
+                </Button>
+              </div>
+              <p className="text-sm text-gray-400 mt-4">
+                Get your full astrological profile, numerology analysis, and personalized guidance
+              </p>
             </div>
-            <p className="text-sm text-gray-400 mt-2">Energy Level: {cosmicEnergy.level}%</p>
           </Card>
         </motion.div>
 
@@ -327,6 +432,7 @@ export default function DailyInsightsDashboard() {
             </Button>
           </div>
         </motion.div>
+        </div>
       </div>
     </div>
   )
