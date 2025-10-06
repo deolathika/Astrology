@@ -21,6 +21,11 @@ export const globalLocations: Location[] = [
   { city: 'Negombo', country: 'Sri Lanka', latitude: 7.2086, longitude: 79.8358, timezone: '+05:30', region: 'South Asia', population: 142136 },
   { city: 'Ratnapura', country: 'Sri Lanka', latitude: 6.6828, longitude: 80.4012, timezone: '+05:30', region: 'South Asia', population: 46500 },
   { city: 'Kurunegala', country: 'Sri Lanka', latitude: 7.4863, longitude: 80.3623, timezone: '+05:30', region: 'South Asia', population: 28571 },
+  { city: 'Matale', country: 'Sri Lanka', latitude: 7.4675, longitude: 80.6234, timezone: '+05:30', region: 'South Asia', population: 36000 },
+  { city: 'Chilaw', country: 'Sri Lanka', latitude: 7.5758, longitude: 79.7953, timezone: '+05:30', region: 'South Asia', population: 24000 },
+  { city: 'Kalutara', country: 'Sri Lanka', latitude: 6.5854, longitude: 79.9607, timezone: '+05:30', region: 'South Asia', population: 38000 },
+  { city: 'Nuwara Eliya', country: 'Sri Lanka', latitude: 6.9497, longitude: 80.7891, timezone: '+05:30', region: 'South Asia', population: 25000 },
+  { city: 'Badulla', country: 'Sri Lanka', latitude: 6.9934, longitude: 81.0550, timezone: '+05:30', region: 'South Asia', population: 42000 },
 
   // India
   { city: 'Mumbai', country: 'India', latitude: 19.0760, longitude: 72.8777, timezone: '+05:30', region: 'South Asia', population: 12478447, isCapital: false },
@@ -186,7 +191,125 @@ export const globalLocations: Location[] = [
   { city: 'Oslo', country: 'Norway', latitude: 59.9139, longitude: 10.7522, timezone: '+01:00', region: 'Europe', population: 697010, isCapital: true },
   { city: 'Helsinki', country: 'Finland', latitude: 60.1699, longitude: 24.9384, timezone: '+02:00', region: 'Europe', population: 656229, isCapital: true },
   { city: 'Warsaw', country: 'Poland', latitude: 52.2297, longitude: 21.0122, timezone: '+01:00', region: 'Europe', population: 1790658, isCapital: true },
-  { city: 'Prague', country: 'Czech Republic', latitude: 50.0755, longitude: 14.4378, timezone: '+01:00', region: 'Europe', population: 1301132, isCapital: true }
+  { city: 'Prague', country: 'Czech Republic', latitude: 50.0755, longitude: 14.4378, timezone: '+01:00', region: 'Europe', population: 1301132, isCapital: true },
+
+  // Pakistan
+  { city: 'Karachi', country: 'Pakistan', latitude: 24.8607, longitude: 67.0011, timezone: '+05:00', region: 'South Asia', population: 15741426, isCapital: false },
+  { city: 'Lahore', country: 'Pakistan', latitude: 31.5204, longitude: 74.3587, timezone: '+05:00', region: 'South Asia', population: 11126285, isCapital: false },
+  { city: 'Islamabad', country: 'Pakistan', latitude: 33.6844, longitude: 73.0479, timezone: '+05:00', region: 'South Asia', population: 1009832, isCapital: true },
+  { city: 'Rawalpindi', country: 'Pakistan', latitude: 33.5651, longitude: 73.0169, timezone: '+05:00', region: 'South Asia', population: 2098231 },
+  { city: 'Faisalabad', country: 'Pakistan', latitude: 31.4504, longitude: 73.1350, timezone: '+05:00', region: 'South Asia', population: 3204726 },
+  { city: 'Multan', country: 'Pakistan', latitude: 30.1575, longitude: 71.5249, timezone: '+05:00', region: 'South Asia', population: 1871843 },
+  { city: 'Peshawar', country: 'Pakistan', latitude: 34.0151, longitude: 71.5249, timezone: '+05:00', region: 'South Asia', population: 1970042 },
+  { city: 'Quetta', country: 'Pakistan', latitude: 30.1798, longitude: 66.9750, timezone: '+05:00', region: 'South Asia', population: 1001205 },
+  { city: 'Sialkot', country: 'Pakistan', latitude: 32.4945, longitude: 74.5229, timezone: '+05:00', region: 'South Asia', population: 655852 },
+  { city: 'Gujranwala', country: 'Pakistan', latitude: 32.1877, longitude: 74.1945, timezone: '+05:00', region: 'South Asia', population: 2027001 },
+
+  // Bangladesh
+  { city: 'Dhaka', country: 'Bangladesh', latitude: 23.8103, longitude: 90.4125, timezone: '+06:00', region: 'South Asia', population: 21000000, isCapital: true },
+  { city: 'Chittagong', country: 'Bangladesh', latitude: 22.3569, longitude: 91.7832, timezone: '+06:00', region: 'South Asia', population: 2920000 },
+  { city: 'Sylhet', country: 'Bangladesh', latitude: 24.8949, longitude: 91.8687, timezone: '+06:00', region: 'South Asia', population: 479837 },
+  { city: 'Rajshahi', country: 'Bangladesh', latitude: 24.3745, longitude: 88.6042, timezone: '+06:00', region: 'South Asia', population: 448479 },
+  { city: 'Khulna', country: 'Bangladesh', latitude: 22.8456, longitude: 89.5403, timezone: '+06:00', region: 'South Asia', population: 663342 },
+  { city: 'Barisal', country: 'Bangladesh', latitude: 22.7010, longitude: 90.3535, timezone: '+06:00', region: 'South Asia', population: 328278 },
+  { city: 'Rangpur', country: 'Bangladesh', latitude: 25.7461, longitude: 89.2512, timezone: '+06:00', region: 'South Asia', population: 294265 },
+  { city: 'Mymensingh', country: 'Bangladesh', latitude: 24.7471, longitude: 90.4203, timezone: '+06:00', region: 'South Asia', population: 258040 },
+  { city: 'Comilla', country: 'Bangladesh', latitude: 23.4607, longitude: 91.1809, timezone: '+06:00', region: 'South Asia', population: 339133 },
+  { city: 'Narayanganj', country: 'Bangladesh', latitude: 23.6231, longitude: 90.4996, timezone: '+06:00', region: 'South Asia', population: 2200000 },
+
+  // Nepal
+  { city: 'Kathmandu', country: 'Nepal', latitude: 27.7172, longitude: 85.3240, timezone: '+05:45', region: 'South Asia', population: 975453, isCapital: true },
+  { city: 'Pokhara', country: 'Nepal', latitude: 28.2096, longitude: 83.9856, timezone: '+05:45', region: 'South Asia', population: 255465 },
+  { city: 'Lalitpur', country: 'Nepal', latitude: 27.6710, longitude: 85.3250, timezone: '+05:45', region: 'South Asia', population: 284922 },
+  { city: 'Bharatpur', country: 'Nepal', latitude: 27.6850, longitude: 84.4330, timezone: '+05:45', region: 'South Asia', population: 143836 },
+  { city: 'Biratnagar', country: 'Nepal', latitude: 26.4525, longitude: 87.2718, timezone: '+05:45', region: 'South Asia', population: 204949 },
+  { city: 'Birgunj', country: 'Nepal', latitude: 27.0000, longitude: 84.8667, timezone: '+05:45', region: 'South Asia', population: 135904 },
+  { city: 'Dharan', country: 'Nepal', latitude: 26.8147, longitude: 87.2847, timezone: '+05:45', region: 'South Asia', population: 116181 },
+  { city: 'Butwal', country: 'Nepal', latitude: 27.7000, longitude: 83.4500, timezone: '+05:45', region: 'South Asia', population: 118462 },
+  { city: 'Hetauda', country: 'Nepal', latitude: 27.4167, longitude: 85.0333, timezone: '+05:45', region: 'South Asia', population: 84671 },
+  { city: 'Janakpur', country: 'Nepal', latitude: 26.7288, longitude: 85.9254, timezone: '+05:45', region: 'South Asia', population: 159468 },
+
+  // Afghanistan
+  { city: 'Kabul', country: 'Afghanistan', latitude: 34.5553, longitude: 69.2075, timezone: '+04:30', region: 'South Asia', population: 4273156, isCapital: true },
+  { city: 'Kandahar', country: 'Afghanistan', latitude: 31.6282, longitude: 65.7153, timezone: '+04:30', region: 'South Asia', population: 614254 },
+  { city: 'Herat', country: 'Afghanistan', latitude: 34.3482, longitude: 62.1997, timezone: '+04:30', region: 'South Asia', population: 556205 },
+  { city: 'Mazar-i-Sharif', country: 'Afghanistan', latitude: 36.7008, longitude: 67.1109, timezone: '+04:30', region: 'South Asia', population: 469247 },
+  { city: 'Jalalabad', country: 'Afghanistan', latitude: 34.4265, longitude: 70.4515, timezone: '+04:30', region: 'South Asia', population: 356274 },
+  { city: 'Kunduz', country: 'Afghanistan', latitude: 36.7280, longitude: 68.8565, timezone: '+04:30', region: 'South Asia', population: 304600 },
+  { city: 'Ghazni', country: 'Afghanistan', latitude: 33.5450, longitude: 68.4173, timezone: '+04:30', region: 'South Asia', population: 190000 },
+  { city: 'Balkh', country: 'Afghanistan', latitude: 36.7581, longitude: 66.8987, timezone: '+04:30', region: 'South Asia', population: 138594 },
+  { city: 'Baghlan', country: 'Afghanistan', latitude: 36.1300, longitude: 68.6995, timezone: '+04:30', region: 'South Asia', population: 195000 },
+  { city: 'Gardez', country: 'Afghanistan', latitude: 33.6000, longitude: 69.2167, timezone: '+04:30', region: 'South Asia', population: 103601 },
+
+  // Bhutan
+  { city: 'Thimphu', country: 'Bhutan', latitude: 27.4728, longitude: 89.6390, timezone: '+06:00', region: 'South Asia', population: 114551, isCapital: true },
+  { city: 'Phuntsholing', country: 'Bhutan', latitude: 26.8667, longitude: 89.3833, timezone: '+06:00', region: 'South Asia', population: 27000 },
+  { city: 'Paro', country: 'Bhutan', latitude: 27.4333, longitude: 89.4167, timezone: '+06:00', region: 'South Asia', population: 15000 },
+  { city: 'Gelephu', country: 'Bhutan', latitude: 26.8667, longitude: 90.4833, timezone: '+06:00', region: 'South Asia', population: 12000 },
+  { city: 'Samdrup Jongkhar', country: 'Bhutan', latitude: 26.8000, longitude: 91.5000, timezone: '+06:00', region: 'South Asia', population: 10000 },
+
+  // Maldives
+  { city: 'Malé', country: 'Maldives', latitude: 4.1755, longitude: 73.5093, timezone: '+05:00', region: 'South Asia', population: 133412, isCapital: true },
+  { city: 'Addu City', country: 'Maldives', latitude: -0.6800, longitude: 73.1500, timezone: '+05:00', region: 'South Asia', population: 33000 },
+  { city: 'Fuvahmulah', country: 'Maldives', latitude: -0.2983, longitude: 73.4242, timezone: '+05:00', region: 'South Asia', population: 12000 },
+  { city: 'Kulhudhuffushi', country: 'Maldives', latitude: 6.6167, longitude: 73.0667, timezone: '+05:00', region: 'South Asia', population: 8000 },
+  { city: 'Thinadhoo', country: 'Maldives', latitude: 0.5333, longitude: 72.9833, timezone: '+05:00', region: 'South Asia', population: 5000 },
+
+  // Africa - Major Cities
+  { city: 'Lagos', country: 'Nigeria', latitude: 6.5244, longitude: 3.3792, timezone: '+01:00', region: 'Africa', population: 15388000, isCapital: false },
+  { city: 'Cairo', country: 'Egypt', latitude: 30.0444, longitude: 31.2357, timezone: '+02:00', region: 'Africa', population: 20484965, isCapital: true },
+  { city: 'Kinshasa', country: 'Democratic Republic of Congo', latitude: -4.4419, longitude: 15.2663, timezone: '+01:00', region: 'Africa', population: 17071000, isCapital: true },
+  { city: 'Lagos', country: 'Nigeria', latitude: 6.5244, longitude: 3.3792, timezone: '+01:00', region: 'Africa', population: 15388000, isCapital: false },
+  { city: 'Khartoum', country: 'Sudan', latitude: 15.5007, longitude: 32.5599, timezone: '+02:00', region: 'Africa', population: 6395988, isCapital: true },
+  { city: 'Dar es Salaam', country: 'Tanzania', latitude: -6.7924, longitude: 39.2083, timezone: '+03:00', region: 'Africa', population: 7036600, isCapital: false },
+  { city: 'Algiers', country: 'Algeria', latitude: 36.7372, longitude: 3.0598, timezone: '+01:00', region: 'Africa', population: 3415811, isCapital: true },
+  { city: 'Addis Ababa', country: 'Ethiopia', latitude: 9.1450, longitude: 38.7667, timezone: '+03:00', region: 'Africa', population: 3340000, isCapital: true },
+  { city: 'Nairobi', country: 'Kenya', latitude: -1.2921, longitude: 36.8219, timezone: '+03:00', region: 'Africa', population: 4397073, isCapital: true },
+  { city: 'Casablanca', country: 'Morocco', latitude: 33.5731, longitude: -7.5898, timezone: '+01:00', region: 'Africa', population: 3359818, isCapital: false },
+  { city: 'Abidjan', country: 'Ivory Coast', latitude: 5.3600, longitude: -4.0083, timezone: '+00:00', region: 'Africa', population: 4980000, isCapital: false },
+  { city: 'Accra', country: 'Ghana', latitude: 5.6037, longitude: -0.1870, timezone: '+00:00', region: 'Africa', population: 2383253, isCapital: true },
+  { city: 'Dakar', country: 'Senegal', latitude: 14.6928, longitude: -17.4467, timezone: '+00:00', region: 'Africa', population: 1438725, isCapital: true },
+  { city: 'Bamako', country: 'Mali', latitude: 12.6392, longitude: -8.0029, timezone: '+00:00', region: 'Africa', population: 2009109, isCapital: true },
+  { city: 'Ouagadougou', country: 'Burkina Faso', latitude: 12.3714, longitude: -1.5197, timezone: '+00:00', region: 'Africa', population: 2453496, isCapital: true },
+
+  // Latin America
+  { city: 'Mexico City', country: 'Mexico', latitude: 19.4326, longitude: -99.1332, timezone: '-06:00', region: 'North America', population: 21804515, isCapital: true },
+  { city: 'São Paulo', country: 'Brazil', latitude: -23.5505, longitude: -46.6333, timezone: '-03:00', region: 'South America', population: 12396372, isCapital: false },
+  { city: 'Buenos Aires', country: 'Argentina', latitude: -34.6118, longitude: -58.3960, timezone: '-03:00', region: 'South America', population: 15594428, isCapital: true },
+  { city: 'Lima', country: 'Peru', latitude: -12.0464, longitude: -77.0428, timezone: '-05:00', region: 'South America', population: 10750000, isCapital: true },
+  { city: 'Bogotá', country: 'Colombia', latitude: 4.7110, longitude: -74.0721, timezone: '-05:00', region: 'South America', population: 10700000, isCapital: true },
+  { city: 'Santiago', country: 'Chile', latitude: -33.4489, longitude: -70.6693, timezone: '-03:00', region: 'South America', population: 7035000, isCapital: true },
+  { city: 'Caracas', country: 'Venezuela', latitude: 10.4806, longitude: -66.9036, timezone: '-04:00', region: 'South America', population: 2920000, isCapital: true },
+  { city: 'Quito', country: 'Ecuador', latitude: -0.1807, longitude: -78.4678, timezone: '-05:00', region: 'South America', population: 2640000, isCapital: true },
+  { city: 'La Paz', country: 'Bolivia', latitude: -16.5000, longitude: -68.1500, timezone: '-04:00', region: 'South America', population: 1890000, isCapital: true },
+  { city: 'Asunción', country: 'Paraguay', latitude: -25.2637, longitude: -57.5759, timezone: '-03:00', region: 'South America', population: 525000, isCapital: true },
+  { city: 'Montevideo', country: 'Uruguay', latitude: -34.9011, longitude: -56.1645, timezone: '-03:00', region: 'South America', population: 1380000, isCapital: true },
+  { city: 'Georgetown', country: 'Guyana', latitude: 6.8013, longitude: -58.1551, timezone: '-04:00', region: 'South America', population: 200000, isCapital: true },
+  { city: 'Paramaribo', country: 'Suriname', latitude: 5.8520, longitude: -55.2038, timezone: '-03:00', region: 'South America', population: 240000, isCapital: true },
+  { city: 'Cayenne', country: 'French Guiana', latitude: 4.9224, longitude: -52.3135, timezone: '-03:00', region: 'South America', population: 150000, isCapital: true },
+  { city: 'Brasília', country: 'Brazil', latitude: -15.7801, longitude: -47.9292, timezone: '-03:00', region: 'South America', population: 3015268, isCapital: true },
+
+  // Caribbean
+  { city: 'Havana', country: 'Cuba', latitude: 23.1136, longitude: -82.3666, timezone: '-05:00', region: 'Caribbean', population: 2141652, isCapital: true },
+  { city: 'Santo Domingo', country: 'Dominican Republic', latitude: 18.4861, longitude: -69.9312, timezone: '-04:00', region: 'Caribbean', population: 2201941, isCapital: true },
+  { city: 'Port-au-Prince', country: 'Haiti', latitude: 18.5944, longitude: -72.3074, timezone: '-05:00', region: 'Caribbean', population: 987310, isCapital: true },
+  { city: 'Kingston', country: 'Jamaica', latitude: 17.9714, longitude: -76.7932, timezone: '-05:00', region: 'Caribbean', population: 937700, isCapital: true },
+  { city: 'San Juan', country: 'Puerto Rico', latitude: 18.4655, longitude: -66.1057, timezone: '-04:00', region: 'Caribbean', population: 318441, isCapital: true },
+  { city: 'Port of Spain', country: 'Trinidad and Tobago', latitude: 10.6549, longitude: -61.5019, timezone: '-04:00', region: 'Caribbean', population: 370074, isCapital: true },
+  { city: 'Bridgetown', country: 'Barbados', latitude: 13.1057, longitude: -59.6182, timezone: '-04:00', region: 'Caribbean', population: 110000, isCapital: true },
+  { city: 'Nassau', country: 'Bahamas', latitude: 25.0478, longitude: -77.3554, timezone: '-05:00', region: 'Caribbean', population: 274400, isCapital: true },
+  { city: 'Castries', country: 'Saint Lucia', latitude: 14.0101, longitude: -60.9875, timezone: '-04:00', region: 'Caribbean', population: 70000, isCapital: true },
+  { city: 'Roseau', country: 'Dominica', latitude: 15.3016, longitude: -61.3881, timezone: '-04:00', region: 'Caribbean', population: 15000, isCapital: true },
+
+  // Central America
+  { city: 'Guatemala City', country: 'Guatemala', latitude: 14.6349, longitude: -90.5069, timezone: '-06:00', region: 'Central America', population: 2450000, isCapital: true },
+  { city: 'San Salvador', country: 'El Salvador', latitude: 13.6929, longitude: -89.2182, timezone: '-06:00', region: 'Central America', population: 1830000, isCapital: true },
+  { city: 'Tegucigalpa', country: 'Honduras', latitude: 14.0723, longitude: -87.1921, timezone: '-06:00', region: 'Central America', population: 1200000, isCapital: true },
+  { city: 'Managua', country: 'Nicaragua', latitude: 12.1364, longitude: -86.2514, timezone: '-06:00', region: 'Central America', population: 1028808, isCapital: true },
+  { city: 'San José', country: 'Costa Rica', latitude: 9.9281, longitude: -84.0907, timezone: '-06:00', region: 'Central America', population: 333980, isCapital: true },
+  { city: 'Panama City', country: 'Panama', latitude: 8.9824, longitude: -79.5199, timezone: '-05:00', region: 'Central America', population: 880691, isCapital: true },
+  { city: 'Belize City', country: 'Belize', latitude: 17.5046, longitude: -88.1962, timezone: '-06:00', region: 'Central America', population: 61000, isCapital: false },
+  { city: 'Belmopan', country: 'Belize', latitude: 17.2516, longitude: -88.7669, timezone: '-06:00', region: 'Central America', population: 20000, isCapital: true }
 ]
 
 export const getLocationByCity = (cityName: string): Location | undefined => {
