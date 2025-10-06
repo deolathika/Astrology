@@ -1,6 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Clock, Calendar, Star, Sparkles, Target, Eye, Heart, Brain, Shield, Flame, Waves, Mountain, Wind, Gem, Crown, BookOpen, Settings, Download, Share, RotateCcw, Play, Pause, SkipForward, SkipBack } from 'lucide-react'
 import Navigation from '@/components/readdy/Navigation'
 import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import Card from '@/components/readdy/Card'
@@ -59,6 +61,7 @@ export default function NumerologyPage() {
   const [useGoogleMaps, setUseGoogleMaps] = useState(false)
   const [googleMapsLocation, setGoogleMapsLocation] = useState<any>(null)
   const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false)
+  const [currentTime, setCurrentTime] = useState(new Date())
   
   // Additional fields for comprehensive analysis
   const [businessName, setBusinessName] = useState('')
@@ -67,6 +70,13 @@ export default function NumerologyPage() {
   const [partnerName, setPartnerName] = useState('')
   const [partnerBirthDate, setPartnerBirthDate] = useState('')
   const [showCompatibility, setShowCompatibility] = useState(false)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   const numerologySystems = [
     {
@@ -697,176 +707,167 @@ export default function NumerologyPage() {
   const currentSystem = numerologySystems.find(sys => sys.id === selectedSystem)
 
   return (
-    <div className="min-h-screen relative">
-      {/* Starfield Background */}
-      <StarfieldBackground />
-      
-      {/* Navigation */}
-      <Navigation />
-
-      {/* Main Content */}
-      <main className="relative z-10 pt-16">
-        {/* Hero Section */}
-        <section className="text-center py-20 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-cosmic animate-float">
-              Advanced Numerology
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Uncover the hidden meanings and influences of numbers in your life through ancient wisdom and modern insights.
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            Advanced Numerology System
+          </h1>
+          <p className="text-xl text-gray-300 mb-6">
+            Professional-grade numerological analysis with multiple systems and comprehensive calculations
+          </p>
+          <div className="flex items-center justify-center gap-4 text-gray-400">
+            <Clock className="w-5 h-5" />
+            <span className="text-lg font-mono">
+              {currentTime.toLocaleTimeString()}
+            </span>
+            <Calendar className="w-5 h-5 ml-4" />
+            <span className="text-lg">
+              {currentTime.toLocaleDateString()}
+            </span>
           </div>
-        </section>
+        </motion.div>
 
         {/* Numerology Systems */}
-        <section className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Numerology Systems</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {numerologySystems.map((system) => (
-                <Card key={system.id} className="p-6 hover:scale-105 cosmic-glow">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">{system.icon}</div>
-                    <h3 className="text-xl font-semibold mb-3">{system.name}</h3>
-                    <p className="text-gray-300 text-sm mb-4">{system.description}</p>
-                    
-                    <div className="mb-4">
-                      <span className="text-purple-300 font-semibold">Accuracy: {system.accuracy}</span>
-                    </div>
-                    
-                    <div className="mb-4">
-                      <p className="text-gray-300 text-xs mb-2">Key Features:</p>
-                      <ul className="list-disc list-inside text-gray-400 text-xs">
-                        {system.features.map((feature, i) => (
-                          <li key={i}>{feature}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    <Button 
-                      variant={selectedSystem === system.id ? 'cosmic' : 'secondary'}
-                      size="sm" 
-                      className="w-full"
-                      onClick={() => setSelectedSystem(system.id)}
-                    >
-                      {selectedSystem === system.id ? 'Selected' : 'Select System'}
-                    </Button>
-                  </div>
-                </Card>
-              ))}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-cosmic">Numerology Systems</h2>
+            <p className="text-gray-300 mb-6">Choose from 8 different numerological traditions and systems</p>
+            <div className="flex flex-wrap justify-center gap-2 mb-6">
+              <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">8 Systems</span>
+              <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Advanced Calculations</span>
+              <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm">Cultural Integration</span>
+              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm">Professional Grade</span>
             </div>
           </div>
-        </section>
-
-        {/* Calculation Form */}
-        <section className="py-12 px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="p-8 cosmic-glow">
-              <h2 className="text-3xl font-bold mb-8 text-center text-cosmic">
-                Calculate Your Numerology
-              </h2>
-              
-              {currentSystem && (
-                <div className="glass-card p-6 mb-8">
-                  <h3 className="text-2xl font-bold text-cosmic mb-3 flex items-center justify-center md:justify-start">
-                    <span className="text-4xl mr-3">{currentSystem.icon}</span> {currentSystem.name}
-                  </h3>
-                  <p className="text-gray-300 mb-4">{currentSystem.description}</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                    <div>
-                      <p className="text-purple-300 font-semibold">Accuracy: <span className="text-white">{currentSystem.accuracy}</span></p>
-                      <p className="text-purple-300 font-semibold mt-2">Best Use: <span className="text-white">{currentSystem.bestUse}</span></p>
-                    </div>
-                    <div>
-                      <p className="text-purple-300 font-semibold">Key Features:</p>
-                      <ul className="list-disc list-inside text-gray-300">
-                        {currentSystem.features.map((feature, i) => (
-                          <li key={i}>{feature}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handleCalculateNumerology} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="fullName" className="block text-white text-sm font-medium mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="e.g., John Doe"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="birthDate" className="block text-white text-sm font-medium mb-2">Birth Date</label>
-                  <input
-                    type="date"
-                    id="birthDate"
-                    className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="birthTime" className="block text-white text-sm font-medium mb-2">Birth Time (Optional)</label>
-                  <input
-                    type="time"
-                    id="birthTime"
-                    className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    value={birthTime}
-                    onChange={(e) => setBirthTime(e.target.value)}
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <div className="flex items-center justify-between mb-4">
-                    <label className="block text-white text-sm font-medium">Birth Location</label>
-                    <div className="flex items-center gap-4">
-                      <button
-                        type="button"
-                        onClick={() => setUseGoogleMaps(false)}
-                        className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                          !useGoogleMaps 
-                            ? 'bg-purple-500 text-white' 
-                            : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                        }`}
-                      >
-                        City List
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setUseGoogleMaps(true)}
-                        className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                          useGoogleMaps 
-                            ? 'bg-purple-500 text-white' 
-                            : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                        }`}
-                      >
-                        Google Maps
-                      </button>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {numerologySystems.map((system) => (
+              <Card key={system.id} className="p-6 hover:scale-105 cosmic-glow">
+                <div className="text-center">
+                  <div className="text-4xl mb-4">{system.icon}</div>
+                  <h3 className="text-xl font-semibold mb-3 text-cosmic">{system.name}</h3>
+                  <p className="text-gray-300 mb-4 text-sm">{system.description}</p>
+                  
+                  <div className="mb-4">
+                    <p className="text-purple-300 font-semibold mb-2">Features:</p>
+                    <ul className="text-sm text-gray-300 space-y-1">
+                      {system.features.map((feature, i) => (
+                        <li key={i} className="flex items-center">
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                   
-                  {useGoogleMaps ? (
-                    <GoogleMapsLocationPicker
-                      onLocationSelect={handleGoogleMapsLocationSelect}
-                      selectedLocation={googleMapsLocation}
-                      placeholder="Search for your exact birth location..."
-                    />
-                  ) : (
-                    <LocationSelector
-                      onLocationSelect={handleLocationSelect}
-                      selectedLocation={selectedLocation}
-                      placeholder="Search for your birth city..."
-                    />
-                  )}
+                  <div className="mb-4">
+                    <p className="text-green-400 font-semibold">Accuracy: {system.accuracy}</p>
+                  </div>
+                  
+                  <Button
+                    variant={selectedSystem === system.id ? 'cosmic' : 'secondary'}
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setSelectedSystem(system.id)}
+                  >
+                    {selectedSystem === system.id ? 'Selected' : 'Select System'}
+                  </Button>
                 </div>
+              </Card>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Birth Data Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12"
+        >
+          <Card className="p-8">
+            <h2 className="text-2xl font-bold mb-6 text-center text-cosmic">Personal Information</h2>
+              
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-white text-sm font-medium mb-2">Full Name</label>
+                <input
+                  type="text"
+                  className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-white text-sm font-medium mb-2">Birth Date</label>
+                <input
+                  type="date"
+                  className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-white text-sm font-medium mb-2">Birth Time</label>
+                <input
+                  type="time"
+                  className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  value={birthTime}
+                  onChange={(e) => setBirthTime(e.target.value)}
+                />
+              </div>
+              <div className="md:col-span-3">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="block text-white text-sm font-medium">Birth Location</label>
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setUseGoogleMaps(false)}
+                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                        !useGoogleMaps 
+                          ? 'bg-purple-500 text-white' 
+                          : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                      }`}
+                    >
+                      City List
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setUseGoogleMaps(true)}
+                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                        useGoogleMaps 
+                          ? 'bg-purple-500 text-white' 
+                          : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                      }`}
+                    >
+                      Google Maps
+                    </button>
+                  </div>
+                </div>
+                
+                {useGoogleMaps ? (
+                  <GoogleMapsLocationPicker
+                    onLocationSelect={handleGoogleMapsLocationSelect}
+                    selectedLocation={googleMapsLocation}
+                    placeholder="Search for your exact birth location..."
+                  />
+                ) : (
+                  <LocationSelector
+                    onLocationSelect={handleLocationSelect}
+                    selectedLocation={selectedLocation}
+                    placeholder="Search for your birth city..."
+                  />
+                )}
+              </div>
                 {/* Advanced Fields */}
                 <div className="md:col-span-2">
                   <div className="flex items-center justify-between mb-4">
@@ -940,23 +941,41 @@ export default function NumerologyPage() {
                   </>
                 )}
 
-                <div className="md:col-span-2 text-center mt-6">
-                  <Button type="submit" variant="cosmic" size="lg" className="btn-cosmic">
-                    Calculate My Numerology
-                  </Button>
-                </div>
-              </form>
-            </Card>
-          </div>
-        </section>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Calculate Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <Button
+            variant="cosmic"
+            size="lg"
+            onClick={handleCalculateNumerology}
+            disabled={!fullName || !birthDate}
+            className="btn-cosmic"
+          >
+            <Star className="w-5 h-5 mr-2" />
+            Calculate {currentSystem?.name} Numerology
+          </Button>
+        </motion.div>
 
         {/* Results */}
-        {showResults && numerologyResult && (
-          <section className="py-12 px-4">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-4xl font-bold text-center mb-12 text-cosmic">
-                Your Numerology Reading
-              </h2>
+        <AnimatePresence>
+          {showResults && numerologyResult && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              <Card className="p-8">
+                <h2 className="text-3xl font-bold text-center mb-8 text-cosmic">
+                  Your Numerology Reading
+                </h2>
               
               {/* Core Numbers */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
@@ -1393,31 +1412,33 @@ export default function NumerologyPage() {
                   </div>
                 </div>
               </Card>
-            </div>
-          </section>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Numerology Guide */}
-        <section className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">
-              Numerology Number Meanings
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                <Card key={number} className="p-6 cosmic-glow">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4 text-cosmic font-bold">{number}</div>
-                    <h3 className="text-lg font-semibold mb-3">Number {number}</h3>
-                    <p className="text-gray-300 text-sm">{getNumberMeaning(number)}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12"
+        >
+          <h2 className="text-3xl font-bold text-center mb-8 text-cosmic">
+            Numerology Number Meanings
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+              <Card key={number} className="p-6 cosmic-glow">
+                <div className="text-center">
+                  <div className="text-4xl mb-4 text-cosmic font-bold">{number}</div>
+                  <h3 className="text-lg font-semibold mb-3">Number {number}</h3>
+                  <p className="text-gray-300 text-sm">{getNumberMeaning(number)}</p>
+                </div>
+              </Card>
+            ))}
           </div>
-        </section>
-      </main>
+        </motion.div>
+      </div>
     </div>
   )
 }
