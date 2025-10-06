@@ -9,7 +9,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { CosmicLayout, CosmicCard, CosmicButton, CosmicInput } from '@/components/cosmic'
+import Card from '@/components/readdy/Card'
+import Button from '@/components/readdy/Button'
+import Input from '@/components/readdy/Input'
 import { Sparkles, Star, Moon, Heart, ArrowRight, Crown, Zap } from 'lucide-react'
 
 export default function GuestPage() {
@@ -57,7 +59,7 @@ export default function GuestPage() {
   }
 
   return (
-    <CosmicLayout variant="nebula" size="lg" background="nebula">
+    <div variant="nebula" size="lg" background="nebula">
       <div className="cosmic-container max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -71,7 +73,7 @@ export default function GuestPage() {
 
         {/* Daily Insights */}
         {dailyInsights && (
-          <CosmicCard variant="glass" size="lg" className="mb-8">
+          <Card variant="glass" size="lg" className="mb-8">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-semibold text-cosmic-gold mb-2">
                 Today's Cosmic Guidance
@@ -118,17 +120,17 @@ export default function GuestPage() {
                 </p>
               </div>
             </div>
-          </CosmicCard>
+          </Card>
         )}
 
         {/* Birth Information Form */}
-        <CosmicCard variant="default" size="lg" className="mb-8">
+        <Card variant="default" size="lg" className="mb-8">
           <h2 className="text-2xl font-semibold text-cosmic-gold mb-6 text-center">
             Get Your Personalized Reading
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <CosmicInput
+            <Input
               variant="default"
               size="md"
               label="Full Name"
@@ -137,7 +139,7 @@ export default function GuestPage() {
               onChange={(e) => setBirthData({ ...birthData, name: e.target.value })}
             />
             
-            <CosmicInput
+            <Input
               variant="default"
               size="md"
               label="Birth Date"
@@ -146,7 +148,7 @@ export default function GuestPage() {
               onChange={(e) => setBirthData({ ...birthData, birthDate: e.target.value })}
             />
             
-            <CosmicInput
+            <Input
               variant="default"
               size="md"
               label="Birth Time"
@@ -155,7 +157,7 @@ export default function GuestPage() {
               onChange={(e) => setBirthData({ ...birthData, birthTime: e.target.value })}
             />
             
-            <CosmicInput
+            <Input
               variant="default"
               size="md"
               label="Birth Place"
@@ -166,26 +168,26 @@ export default function GuestPage() {
           </div>
           
           <div className="text-center mt-6">
-            <CosmicButton
+            <Button
               variant="primary"
               size="lg"
               onClick={handleSignUp}
               className="mr-4"
             >
               Get Free Reading
-            </CosmicButton>
-            <CosmicButton
+            </Button>
+            <Button
               variant="secondary"
               size="lg"
               onClick={handleSignIn}
             >
               Sign In
-            </CosmicButton>
+            </Button>
           </div>
-        </CosmicCard>
+        </Card>
 
         {/* Premium Features Teaser */}
-        <CosmicCard variant="premium" size="lg" className="mb-8">
+        <Card variant="premium" size="lg" className="mb-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-cosmic-gold mb-4">
               Unlock Your Cosmic Potential
@@ -232,15 +234,15 @@ export default function GuestPage() {
               </div>
             </div>
             
-            <CosmicButton
+            <Button
               variant="premium"
               size="lg"
               onClick={handleUpgrade}
             >
               Upgrade to Premium
-            </CosmicButton>
+            </Button>
           </div>
-        </CosmicCard>
+        </Card>
 
         {/* Footer */}
         <div className="text-center">
@@ -249,7 +251,7 @@ export default function GuestPage() {
           </p>
         </div>
       </div>
-    </CosmicLayout>
+    </div>
   )
 }
 

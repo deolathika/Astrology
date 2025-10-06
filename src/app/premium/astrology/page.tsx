@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import CosmicNebulaBackground from '@/components/cosmic/CosmicNebulaBackground'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import ComprehensiveAstrologySystem from '@/components/astrology/ComprehensiveAstrologySystem'
 
 export default function PremiumAstrologyPage() {
@@ -34,7 +34,7 @@ export default function PremiumAstrologyPage() {
 
   return (
     <div className="min-h-screen cosmic-minimalist-modern-bg relative overflow-hidden">
-      <CosmicNebulaBackground />
+      <StarfieldBackground />
 
       {/* Minimalist Modern Navigation */}
       <nav className="cosmic-nav-minimalist-modern fixed top-0 left-0 right-0 z-50">
