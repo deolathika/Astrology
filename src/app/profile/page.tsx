@@ -5,6 +5,7 @@ import Navigation from '@/components/readdy/Navigation'
 import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'
+import { usePersonalInfo } from '@/contexts/PersonalInfoContext'
 
 interface UserProfile {
   name: string
@@ -25,19 +26,20 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
+  const { personalInfo, zodiacInfo, isPersonalized, updatePersonalInfo } = usePersonalInfo()
   const [activeTab, setActiveTab] = useState('overview')
   const [showInfoModal, setShowInfoModal] = useState(false)
   const [infoContent, setInfoContent] = useState('')
   const [isEditing, setIsEditing] = useState(false)
 
   const userProfile: UserProfile = {
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@example.com',
-    zodiacSign: 'Leo',
+    name: personalInfo?.name || 'Guest User',
+    email: 'user@dailysecrets.app',
+    zodiacSign: zodiacInfo?.name || 'Not Set',
     lifePathNumber: 7,
-    birthDate: '1990-08-15',
-    birthTime: '14:30',
-    birthLocation: 'New York, USA',
+    birthDate: personalInfo?.birthDate || 'Not Set',
+    birthTime: personalInfo?.birthTime || 'Not Set',
+    birthLocation: personalInfo?.birthLocation || 'Not Set',
     interests: ['Astrology', 'Meditation', 'Crystals', 'Dream Analysis'],
     readingHistory: [
       { date: '2024-01-15', type: 'Daily Horoscope', rating: 5 },
@@ -86,6 +88,25 @@ export default function ProfilePage() {
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
               Manage your cosmic profile, reading history, and personal preferences.
             </p>
+            
+            {/* Personalized Welcome Message */}
+            {isPersonalized && personalInfo && zodiacInfo && (
+              <div className="mt-8 p-6 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-2xl border border-purple-500/30 backdrop-blur-sm max-w-2xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <span className="text-2xl">✨</span>
+                  <h2 className="text-2xl font-bold text-white">
+                    Welcome back, {personalInfo.name}!
+                  </h2>
+                  <span className="text-2xl">✨</span>
+                </div>
+                <p className="text-lg text-purple-200">
+                  Your {zodiacInfo.name} profile is ready for personalized insights
+                </p>
+                <div className="mt-3 text-sm text-gray-300">
+                  Born: {personalInfo.birthDate} • {personalInfo.birthLocation}
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

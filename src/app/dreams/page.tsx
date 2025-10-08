@@ -32,6 +32,7 @@ import Navigation from '@/components/readdy/Navigation'
 import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'
+import { usePersonalInfo } from '@/contexts/PersonalInfoContext'
 
 interface DreamSymbol {
   symbol: string
@@ -59,6 +60,8 @@ interface DreamAnalysis {
 }
 
 export default function DreamsPage() {
+  const { personalInfo, zodiacInfo, isPersonalized } = usePersonalInfo()
+  
   const [dreamDescription, setDreamDescription] = useState('')
   const [dreamDate, setDreamDate] = useState('')
   const [dreamEmotions, setDreamEmotions] = useState<string[]>([])
@@ -315,6 +318,25 @@ export default function DreamsPage() {
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
               Unlock the hidden messages in your dreams through advanced psychological and spiritual interpretation.
             </p>
+            
+            {/* Personalized Welcome Message */}
+            {isPersonalized && personalInfo && zodiacInfo && (
+              <div className="mt-8 p-6 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-2xl border border-purple-500/30 backdrop-blur-sm max-w-2xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <Moon className="w-6 h-6 text-yellow-400" />
+                  <h2 className="text-2xl font-bold text-white">
+                    Welcome back, {personalInfo.name}!
+                  </h2>
+                  <Moon className="w-6 h-6 text-yellow-400" />
+                </div>
+                <p className="text-lg text-purple-200">
+                  Your {zodiacInfo.name} dream analysis is ready for personalized insights
+                </p>
+                <div className="mt-3 text-sm text-gray-300">
+                  Born: {personalInfo.birthDate} • {personalInfo.birthLocation}
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

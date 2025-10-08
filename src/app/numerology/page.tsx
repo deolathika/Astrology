@@ -10,6 +10,7 @@ import Button from '@/components/readdy/Button'
 import LocationSelector from '@/components/astrology/LocationSelector'
 import GoogleMapsLocationPicker from '@/components/astrology/GoogleMapsLocationPicker'
 import { Location } from '@/data/locations'
+import { usePersonalInfo } from '@/contexts/PersonalInfoContext'
 
 interface NumerologyResult {
   lifePathNumber: number
@@ -50,6 +51,8 @@ interface NumerologyResult {
 }
 
 export default function NumerologyPage() {
+  const { personalInfo, zodiacInfo, isPersonalized } = usePersonalInfo()
+  
   const [fullName, setFullName] = useState('')
   const [birthDate, setBirthDate] = useState('')
   const [birthTime, setBirthTime] = useState('')
@@ -62,6 +65,16 @@ export default function NumerologyPage() {
   const [googleMapsLocation, setGoogleMapsLocation] = useState<any>(null)
   const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
+
+  // Auto-populate data from personal info
+  useEffect(() => {
+    if (personalInfo && isPersonalized) {
+      setFullName(personalInfo.name)
+      setBirthDate(personalInfo.birthDate)
+      setBirthTime(personalInfo.birthTime)
+      setBirthLocation(personalInfo.birthLocation)
+    }
+  }, [personalInfo, isPersonalized])
   
   // Additional fields for comprehensive analysis
   const [businessName, setBusinessName] = useState('')
@@ -710,6 +723,13 @@ export default function NumerologyPage() {
       {/* Starfield Background */}
       <StarfieldBackground />
       
+      {/* Floating cosmic particles */}
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
+      
       {/* Navigation */}
       <Navigation />
 
@@ -738,6 +758,30 @@ export default function NumerologyPage() {
               {currentTime.toLocaleDateString()}
             </span>
           </div>
+          
+          {/* Personalized Welcome Message */}
+          {isPersonalized && personalInfo && zodiacInfo && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 p-6 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-2xl border border-purple-500/30 backdrop-blur-sm"
+            >
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <Star className="w-6 h-6 text-yellow-400" />
+                <h2 className="text-2xl font-bold text-white">
+                  Welcome back, {personalInfo.name}!
+                </h2>
+                <Star className="w-6 h-6 text-yellow-400" />
+              </div>
+              <p className="text-lg text-purple-200">
+                Your personalized numerology readings are ready for your {zodiacInfo.name} sign
+              </p>
+              <div className="mt-3 text-sm text-gray-300">
+                Born: {personalInfo.birthDate} • {personalInfo.birthLocation}
+              </div>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Numerology Systems */}
