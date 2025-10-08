@@ -137,7 +137,72 @@ body {
 .main-content {
   background: linear-gradient(135deg, var(--cosmic-bg-start) 0%, var(--cosmic-bg-mid) 50%, var(--cosmic-bg-end) 100%);
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Floating cosmic orbs */
+.main-content::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+  z-index: 1;
+}
+
+.main-content::after {
+  content: '';
+  position: absolute;
+  top: 60%;
+  right: 15%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite reverse;
+  z-index: 1;
+}
+
+/* Cosmic particles */
+@keyframes cosmic-float {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: translateY(-20px) translateX(10px) rotate(90deg);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translateY(-40px) translateX(-5px) rotate(180deg);
+    opacity: 0.8;
+  }
+  75% { 
+    transform: translateY(-20px) translateX(-10px) rotate(270deg);
+    opacity: 0.4;
+  }
+}
+
+.cosmic-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: cosmic-float 10s linear infinite;
+  z-index: 1;
+}
+
+.cosmic-particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.cosmic-particle:nth-child(2) { top: 30%; left: 80%; animation-delay: 2s; }
+.cosmic-particle:nth-child(3) { top: 70%; left: 30%; animation-delay: 4s; }
+.cosmic-particle:nth-child(4) { top: 50%; left: 70%; animation-delay: 6s; }
+.cosmic-particle:nth-child(5) { top: 80%; left: 10%; animation-delay: 8s; }
 
 .star {
   position: absolute;
