@@ -8,9 +8,9 @@
 import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/stores/app-store'
 import { useUserSettings, useUpdateSettings } from '@/lib/hooks/use-api'
-import Button from '@/components/atoms/Button'
-import { Badge } from '@/components/atoms/Badge'
-import { Input } from '@/components/atoms/Input'
+import Button from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
+import { Input } from '@/components/ui/Input'
 import Navigation from '@/components/organisms/Navigation'
 import { trackFeatureUsage } from '@/lib/monitoring/analytics'
 
