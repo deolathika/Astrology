@@ -6,6 +6,8 @@ import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'
 import { usePersonalInfo } from '@/contexts/PersonalInfoContext'
+import { useLanguage } from '@/contexts/LanguageContext'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 
 interface UserProfile {
   name: string
@@ -27,6 +29,7 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const { personalInfo, zodiacInfo, isPersonalized, updatePersonalInfo } = usePersonalInfo()
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('overview')
   const [showInfoModal, setShowInfoModal] = useState(false)
   const [infoContent, setInfoContent] = useState('')
@@ -116,12 +119,12 @@ export default function ProfilePage() {
             <Card className="p-6 cosmic-glow">
               <div className="flex flex-wrap justify-center gap-4">
                 {[
-                  { id: 'overview', name: 'Overview', icon: '👤' },
-                  { id: 'readings', name: 'Readings', icon: '📚' },
-                  { id: 'preferences', name: 'Preferences', icon: '⚙️' },
-                  { id: 'privacy', name: 'Privacy', icon: '🔒' },
-                  { id: 'notifications', name: 'Notifications', icon: '🔔' },
-                  { id: 'billing', name: 'Billing', icon: '💳' }
+                  { id: 'overview', name: t('personalInfo'), icon: '👤' },
+                  { id: 'readings', name: t('readingHistory'), icon: '📚' },
+                  { id: 'preferences', name: t('preferences'), icon: '⚙️' },
+                  { id: 'privacy', name: t('privacy'), icon: '🔒' },
+                  { id: 'notifications', name: t('notifications'), icon: '🔔' },
+                  { id: 'language', name: t('language'), icon: '🌐' }
                 ].map((tab) => (
                   <Button
                     key={tab.id}
@@ -154,19 +157,19 @@ export default function ProfilePage() {
                       
                       <div className="space-y-3 mb-6">
                         <div className="flex justify-between">
-                          <span className="text-gray-300">Zodiac Sign:</span>
+                          <span className="text-gray-300">{t('zodiacSign')}:</span>
                           <span className="text-purple-300 font-semibold">{profile.zodiacSign}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-300">Life Path:</span>
+                          <span className="text-gray-300">{t('lifePathNumber')}:</span>
                           <span className="text-purple-300 font-semibold">{profile.lifePathNumber}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-300">Birth Date:</span>
+                          <span className="text-gray-300">{t('birthDate')}:</span>
                           <span className="text-gray-300">{profile.birthDate}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-300">Location:</span>
+                          <span className="text-gray-300">{t('birthLocation')}:</span>
                           <span className="text-gray-300">{profile.birthLocation}</span>
                         </div>
                       </div>
@@ -177,7 +180,7 @@ export default function ProfilePage() {
                         className="w-full"
                         onClick={() => setIsEditing(!isEditing)}
                       >
-                        {isEditing ? 'Save Changes' : 'Edit Profile'}
+                        {isEditing ? t('save') : t('edit')}
                       </Button>
                     </div>
                   </Card>
@@ -490,6 +493,84 @@ export default function ProfilePage() {
                   <div className="pt-6">
                     <Button variant="cosmic" size="lg" className="w-full">
                       Save Notification Settings
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </section>
+        )}
+
+        {/* Language Tab */}
+        {activeTab === 'language' && (
+          <section className="py-12 px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">{t('language')} {t('settings')}</h2>
+              
+              <Card className="p-8 cosmic-glow">
+                <div className="text-center mb-8">
+                  <div className="text-6xl mb-4">🌐</div>
+                  <h3 className="text-2xl font-bold mb-4">{t('language')} {t('preferences')}</h3>
+                  <p className="text-gray-300 mb-6">
+                    Choose your preferred language for the best spiritual experience
+                  </p>
+                </div>
+
+                <div className="max-w-2xl mx-auto">
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold mb-4 text-purple-300">Select Language</h4>
+                    <LanguageSelector variant="inline" size="md" className="justify-center" />
+                  </div>
+
+                  <div className="mt-8 p-6 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="text-lg font-semibold mb-4 text-purple-300">Supported Languages</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <span>🇺🇸</span>
+                        <span>English</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>हिन्दी (Hindi)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>தமிழ் (Tamil)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇱🇰</span>
+                        <span>සිංහල (Sinhala)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>తెలుగు (Telugu)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>বাংলা (Bengali)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>मराठी (Marathi)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>ગુજરાતી (Gujarati)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>ಕನ್ನಡ (Kannada)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>🇮🇳</span>
+                        <span>മലയാളം (Malayalam)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 text-center">
+                    <Button variant="cosmic" size="lg" className="px-8">
+                      {t('save')} {t('preferences')}
                     </Button>
                   </div>
                 </div>

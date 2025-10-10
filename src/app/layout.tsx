@@ -4,12 +4,14 @@
  */
 
 import type { Metadata } from 'next'
+import React from 'react'
 import { Inter } from 'next/font/google'
 import { QueryProvider } from '@/lib/providers/query-provider'
 import { AuthProvider } from '@/lib/contexts/auth-context'
 import { ThemeProvider } from '@/lib/theme-provider'
 import { SessionProviderWrapper } from '@/components/providers/SessionProviderWrapper'
 import { PersonalInfoProvider } from '@/contexts/PersonalInfoContext'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 import { Analytics } from '@/lib/monitoring/analytics'
 import { initSentry } from '@/lib/monitoring/sentry'
 import './globals.css'
@@ -89,11 +91,13 @@ export default function RootLayout({
               <QueryProvider>
                 <AuthProvider>
                   <ThemeProvider>
-                    <PersonalInfoProvider>
-                      <div className="min-h-full flex flex-col">
-                        {children}
-                      </div>
-                    </PersonalInfoProvider>
+                    <LanguageProvider>
+                      <PersonalInfoProvider>
+                        <div className="min-h-full flex flex-col">
+                          {children}
+                        </div>
+                      </PersonalInfoProvider>
+                    </LanguageProvider>
                   </ThemeProvider>
                 </AuthProvider>
               </QueryProvider>

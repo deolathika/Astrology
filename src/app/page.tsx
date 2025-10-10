@@ -28,52 +28,50 @@ export default function HomePage() {
       icon: <Star className="w-6 h-6 text-yellow-400" />,
       link: '/astrology',
       color: 'from-yellow-500/20 to-orange-500/20',
-      priority: true
     },
     {
-      title: 'Numerology',
-      description: 'Discover your life path',
-      icon: <Zap className="w-6 h-6 text-blue-400" />,
+      title: 'Numerology Reading',
+      description: 'Unlock your life path',
+      icon: <Target className="w-6 h-6 text-green-400" />,
       link: '/numerology',
-      color: 'from-blue-500/20 to-cyan-500/20',
-      priority: true
+      color: 'from-green-500/20 to-teal-500/20',
     },
     {
       title: 'Dream Analysis',
-      description: 'Interpret your dreams',
-      icon: <Moon className="w-6 h-6 text-purple-400" />,
+      description: 'Interpret your subconscious',
+      icon: <Moon className="w-6 h-6 text-blue-400" />,
       link: '/dreams',
-      color: 'from-purple-500/20 to-indigo-500/20'
+      color: 'from-blue-500/20 to-cyan-500/20',
     },
     {
-      title: 'Compatibility',
-      description: 'Check relationship harmony',
-      icon: <Heart className="w-6 h-6 text-pink-400" />,
+      title: 'Compatibility Report',
+      description: 'Understand your relationships',
+      icon: <Heart className="w-6 h-6 text-red-400" />,
       link: '/compatibility',
-      color: 'from-pink-500/20 to-rose-500/20'
-    }
+      color: 'from-red-500/20 to-pink-500/20',
+    },
+    {
+      title: 'Community Forum',
+      description: 'Connect with like-minded souls',
+      icon: <User className="w-6 h-6 text-indigo-400" />,
+      link: '/community',
+      color: 'from-indigo-500/20 to-purple-500/20',
+    },
+    {
+      title: 'Daily Insights',
+      description: 'Personalized guidance for today',
+      icon: <Sparkles className="w-6 h-6 text-purple-400" />,
+      link: '/insights',
+      color: 'from-purple-500/20 to-fuchsia-500/20',
+    },
   ]
 
-  const quickInsights = [
-    {
-      title: 'Today\'s Energy',
-      value: 'High',
-      description: 'Perfect for new beginnings',
-      color: 'text-green-400'
-    },
-    {
-      title: 'Lucky Number',
-      value: '7',
-      description: 'Trust your intuition',
-      color: 'text-blue-400'
-    },
-    {
-      title: 'Best Time',
-      value: '2:00 PM',
-      description: 'Optimal for decisions',
-      color: 'text-purple-400'
-    }
-  ]
+  const dailyCosmicData = {
+    energyLevel: 'High & Vibrant',
+    focusArea: 'Manifestation',
+    cosmicMessage: 'Trust your intuition',
+    luckyMoments: '10:00 AM - 11:30 AM',
+  }
 
   return (
     <div className="min-h-screen relative main-content">
@@ -85,7 +83,7 @@ export default function HomePage() {
       <div className="cosmic-particle"></div>
       <div className="cosmic-particle"></div>
       <Navigation />
-      
+
       <main className="relative z-10 pt-16">
         {/* Hero Section - Clean & Focused */}
         <section className="py-20 px-4">
@@ -96,7 +94,7 @@ export default function HomePage() {
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Your personalized cosmic journey starts here. Discover your unique spiritual blueprint.
             </p>
-            
+
             {/* Personalized Welcome */}
             {isPersonalized && (
               <Card className="p-6 max-w-lg mx-auto mb-8 glow">
@@ -135,12 +133,11 @@ export default function HomePage() {
             {!isPersonalized && (
               <div className="mb-8">
                 <p className="text-gray-300 mb-6">
-                  Get personalized cosmic guidance by setting up your profile
+                  Unlock your personalized journey
                 </p>
-                <Link href="/welcome">
-                  <Button variant="cosmic" size="lg" className="btn-cosmic">
-                    <User className="w-5 h-5 mr-2" />
-                    Set Up Profile
+                <Link href="/welcome" passHref>
+                  <Button variant="cosmic" size="lg" className="animate-pulse">
+                    Get Started
                   </Button>
                 </Link>
               </div>
@@ -148,30 +145,51 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Essential Features - Most Needed */}
-        <section className="py-12 px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-8 text-white">
-              Your Cosmic Toolkit
+        {/* Daily Cosmic Insights */}
+        <section className="py-16 px-4 bg-black/10 backdrop-blur-sm border-t border-b border-white/10">
+          <div className="max-w-6xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-10 text-cosmic">
+              Daily Cosmic Insights
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card className="p-5 glow">
+                <h3 className="text-lg font-semibold text-purple-300 mb-2">Energy Level</h3>
+                <p className="text-white text-xl">{dailyCosmicData.energyLevel}</p>
+              </Card>
+              <Card className="p-5 glow">
+                <h3 className="text-lg font-semibold text-pink-300 mb-2">Focus Area</h3>
+                <p className="text-white text-xl">{dailyCosmicData.focusArea}</p>
+              </Card>
+              <Card className="p-5 glow">
+                <h3 className="text-lg font-semibold text-blue-300 mb-2">Cosmic Message</h3>
+                <p className="text-white text-xl">{dailyCosmicData.cosmicMessage}</p>
+              </Card>
+              <Card className="p-5 glow">
+                <h3 className="text-lg font-semibold text-green-300 mb-2">Lucky Moments</h3>
+                <p className="text-white text-xl">{dailyCosmicData.luckyMoments}</p>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick Actions / Essential Features */}
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-10 text-cosmic">
+              Explore Our Features
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {essentialFeatures.map((feature, index) => (
-                <Link key={index} href={feature.link}>
-                  <Card className={`p-6 text-center hover:scale-105 transition-all duration-300 glow ${feature.priority ? 'ring-2 ring-yellow-400/50' : ''}`}>
-                    {feature.priority && (
-                      <div className="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
-                        Essential
-                      </div>
-                    )}
-                    <div className={`w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center`}>
+                <Link href={feature.link} key={index} passHref>
+                  <Card
+                    className={`p-6 text-left transform transition-all duration-300 hover:scale-105 cursor-pointer
+                      bg-gradient-to-br ${feature.color} border border-white/10 hover:border-purple-500/50`}
+                  >
+                    <div className="flex items-center space-x-4 mb-4">
                       {feature.icon}
+                      <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
                     </div>
-                    <h3 className="text-lg font-semibold mb-2 text-white">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm text-gray-400">
-                      {feature.description}
-                    </p>
+                    <p className="text-gray-300">{feature.description}</p>
                   </Card>
                 </Link>
               ))}
@@ -179,114 +197,27 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Quick Insights - Daily Value */}
-        <section className="py-8 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-center mb-8 text-white">
-              Today's Cosmic Insights
+        {/* Call to Action */}
+        <section className="py-20 px-4 text-center bg-black/10 backdrop-blur-sm border-t border-white/10">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-6 text-cosmic">
+              Start Your Spiritual Journey Today
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {quickInsights.map((insight, index) => (
-                <Card key={index} className="p-6 text-center glow">
-                  <h3 className="text-lg font-semibold mb-2 text-gray-300">
-                    {insight.title}
-                  </h3>
-                  <p className={`text-3xl font-bold mb-2 ${insight.color}`}>
-                    {insight.value}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    {insight.description}
-                  </p>
-                </Card>
-              ))}
+            <p className="text-xl text-gray-300 mb-10">
+              Experience personalized insights and guidance
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <Link href="/welcome" passHref>
+                <Button variant="cosmic" size="lg">
+                  Get Started
+                </Button>
+              </Link>
+              <Link href="/about" passHref>
+                <Button variant="secondary" size="lg">
+                  Learn More
+                </Button>
+              </Link>
             </div>
-          </div>
-        </section>
-
-        {/* Personalized Dashboard - Only for returning users */}
-        {isPersonalized && (
-          <section className="py-8 px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold text-center mb-8 text-white">
-                Your Spiritual Profile
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="p-6 glow">
-                  <h3 className="text-lg font-semibold mb-4 text-purple-300">
-                    Your Cosmic Identity
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Zodiac Sign:</span>
-                      <span className="text-white">{zodiacInfo?.name || 'Not set'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Birth Date:</span>
-                      <span className="text-white">{personalInfo?.birthDate || 'Not set'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Birth Location:</span>
-                      <span className="text-white">{personalInfo?.birthLocation || 'Not set'}</span>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="p-6 glow">
-                  <h3 className="text-lg font-semibold mb-4 text-purple-300">
-                    Quick Actions
-                  </h3>
-                  <div className="space-y-3">
-                    <Link href="/astrology">
-                      <Button variant="primary" size="sm" className="w-full">
-                        <Star className="w-4 h-4 mr-2" />
-                        View Horoscope
-                      </Button>
-                    </Link>
-                    <Link href="/numerology">
-                      <Button variant="secondary" size="sm" className="w-full">
-                        <Zap className="w-4 h-4 mr-2" />
-                        Numerology Reading
-                      </Button>
-                    </Link>
-                    <Link href="/profile">
-                      <Button variant="ghost" size="sm" className="w-full">
-                        <User className="w-4 h-4 mr-2" />
-                        Edit Profile
-                      </Button>
-                    </Link>
-                  </div>
-                </Card>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Vision Section - Brief & Inspiring */}
-        <section className="py-12 px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="p-8 glow text-center">
-              <h2 className="text-2xl font-bold mb-4 text-white">
-                Our Vision
-              </h2>
-              <p className="text-gray-300 mb-6">
-                To democratize cosmic wisdom and make spiritual guidance accessible to everyone, 
-                regardless of background, culture, or technical expertise.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                {!isPersonalized && (
-                  <Link href="/welcome">
-                    <Button variant="cosmic" size="lg">
-                      Start Your Journey
-                    </Button>
-                  </Link>
-                )}
-                <Link href="/vision">
-                  <Button variant="secondary" size="lg">
-                    Learn More
-                  </Button>
-                </Link>
-              </div>
-            </Card>
           </div>
         </section>
       </main>
