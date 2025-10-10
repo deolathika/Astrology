@@ -40,7 +40,8 @@ export default function WelcomePage() {
     birthLocation: '',
     latitude: 0,
     longitude: 0,
-    timezone: ''
+    timezone: '',
+    zodiacSign: ''
   })
   const [zodiacInfo, setZodiacInfo] = useState<any>(null)
   const [currentStep, setCurrentStep] = useState(1)

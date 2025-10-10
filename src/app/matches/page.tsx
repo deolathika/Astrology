@@ -8,9 +8,9 @@
 import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/stores/app-store'
 import { useMatches, useCompatibility } from '@/lib/hooks/use-api'
-import { Button } from '@/components/atoms/Button'
-import { Badge } from '@/components/atoms/Badge'
-import { Navigation } from '@/components/organisms/Navigation'
+import Button from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
+import Navigation from '@/components/organisms/Navigation'
 import { trackFeatureUsage } from '@/lib/monitoring/analytics'
 
 export default function MatchesPage() {

@@ -3,8 +3,8 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from '@/components/atoms/Button'
-import { Input } from '@/components/atoms/Input'
+import Button from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { useAuth } from '@/lib/contexts/auth-context'
 import { trackPageView } from '@/lib/monitoring/analytics'
 

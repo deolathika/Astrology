@@ -1,353 +1,423 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
-import Navigation from '@/components/readdy/Navigation'
-import StarfieldBackground from '@/components/readdy/StarfieldBackground'
+import { motion } from 'framer-motion'
+import { 
+  FileText, 
+  Presentation, 
+  BarChart, 
+  Users, 
+  DollarSign, 
+  Shield, 
+  Download, 
+  Eye,
+  Star,
+  TrendingUp,
+  Globe,
+  Smartphone,
+  Zap,
+  Target,
+  Award,
+  BookOpen,
+  Settings,
+  Database,
+  Cloud,
+  Lock,
+  CheckCircle,
+  ArrowRight,
+  ExternalLink
+} from 'lucide-react'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'
+import Navigation from '@/components/readdy/Navigation'
+import StarfieldBackground from '@/components/readdy/StarfieldBackground'
+
+interface Document {
+  id: string
+  title: string
+  description: string
+  type: 'pitch' | 'technical' | 'business' | 'legal'
+  icon: React.ReactNode
+  downloadUrl?: string
+  previewUrl?: string
+  lastUpdated: string
+  size: string
+}
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [searchTerm, setSearchTerm] = useState('')
 
-  const adminStats = {
-    totalUsers: 1247,
-    premiumUsers: 342,
-    totalRevenue: 12847,
-    monthlyRevenue: 3247,
-    activeSystems: 8,
-    totalReadings: 15623
+  const documents: Document[] = [
+    {
+      id: 'pitch-deck',
+      title: 'Product Pitch Deck',
+      description: 'Comprehensive presentation for investors and partners showcasing Daily Secrets vision, features, and market opportunity',
+      type: 'pitch',
+      icon: <Presentation className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/pitch-deck.pdf',
+      previewUrl: '/admin/preview/pitch-deck',
+      lastUpdated: '2024-01-15',
+      size: '2.4 MB'
+    },
+    {
+      id: 'business-plan',
+      title: 'Business Plan & Strategy',
+      description: 'Detailed business plan including market analysis, revenue models, and growth strategies',
+      type: 'business',
+      icon: <BarChart className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/business-plan.pdf',
+      previewUrl: '/admin/preview/business-plan',
+      lastUpdated: '2024-01-14',
+      size: '3.1 MB'
+    },
+    {
+      id: 'technical-specs',
+      title: 'Technical Specifications',
+      description: 'Complete technical documentation including architecture, APIs, security, and scalability',
+      type: 'technical',
+      icon: <Database className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/technical-specs.pdf',
+      previewUrl: '/admin/preview/technical-specs',
+      lastUpdated: '2024-01-13',
+      size: '4.2 MB'
+    },
+    {
+      id: 'product-overview',
+      title: 'Product Overview & Features',
+      description: 'Detailed product features, user journey, and competitive analysis',
+      type: 'pitch',
+      icon: <Star className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/product-overview.pdf',
+      previewUrl: '/admin/preview/product-overview',
+      lastUpdated: '2024-01-12',
+      size: '1.8 MB'
+    },
+    {
+      id: 'market-analysis',
+      title: 'Market Analysis Report',
+      description: 'Comprehensive market research including target audience, competitors, and market size',
+      type: 'business',
+      icon: <TrendingUp className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/market-analysis.pdf',
+      previewUrl: '/admin/preview/market-analysis',
+      lastUpdated: '2024-01-11',
+      size: '2.7 MB'
+    },
+    {
+      id: 'revenue-model',
+      title: 'Revenue Model & Pricing',
+      description: 'Detailed revenue streams, pricing strategy, and financial projections',
+      type: 'business',
+      icon: <DollarSign className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/revenue-model.pdf',
+      previewUrl: '/admin/preview/revenue-model',
+      lastUpdated: '2024-01-10',
+      size: '1.5 MB'
+    },
+    {
+      id: 'security-compliance',
+      title: 'Security & Compliance',
+      description: 'Security measures, data protection, GDPR compliance, and privacy policies',
+      type: 'legal',
+      icon: <Shield className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/security-compliance.pdf',
+      previewUrl: '/admin/preview/security-compliance',
+      lastUpdated: '2024-01-09',
+      size: '2.1 MB'
+    },
+    {
+      id: 'partnership-proposal',
+      title: 'Partnership Proposal Template',
+      description: 'Template for partnership proposals with different types of partners',
+      type: 'pitch',
+      icon: <Users className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/partnership-proposal.pdf',
+      previewUrl: '/admin/preview/partnership-proposal',
+      lastUpdated: '2024-01-08',
+      size: '1.2 MB'
+    },
+    {
+      id: 'demo-script',
+      title: 'Demo Script & Walkthrough',
+      description: 'Step-by-step demo script for client presentations and product demonstrations',
+      type: 'pitch',
+      icon: <Eye className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/demo-script.pdf',
+      previewUrl: '/admin/preview/demo-script',
+      lastUpdated: '2024-01-07',
+      size: '0.8 MB'
+    },
+    {
+      id: 'legal-documents',
+      title: 'Legal Documents & Contracts',
+      description: 'Terms of service, privacy policy, user agreements, and legal templates',
+      type: 'legal',
+      icon: <FileText className="w-6 h-6" />,
+      downloadUrl: '/admin/documents/legal-documents.pdf',
+      previewUrl: '/admin/preview/legal-documents',
+      lastUpdated: '2024-01-06',
+      size: '3.5 MB'
+    }
+  ]
+
+  const handleDownload = (url: string, filename: string) => {
+    // Create a temporary link to download the file
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    link.target = '_blank'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
-  const recentUsers = [
-    { id: 1, name: 'Sarah Johnson', email: 'sarah@example.com', signupDate: '2024-01-15', status: 'Premium' },
-    { id: 2, name: 'Mike Chen', email: 'mike@example.com', signupDate: '2024-01-14', status: 'Guest' },
-    { id: 3, name: 'Emma Wilson', email: 'emma@example.com', signupDate: '2024-01-13', status: 'Premium' },
-    { id: 4, name: 'David Brown', email: 'david@example.com', signupDate: '2024-01-12', status: 'Guest' },
-    { id: 5, name: 'Lisa Garcia', email: 'lisa@example.com', signupDate: '2024-01-11', status: 'Premium' }
+  const handlePreview = (url: string) => {
+    window.open(url, '_blank')
+  }
+
+  const categories = [
+    { id: 'all', name: 'All Documents', count: documents.length },
+    { id: 'pitch', name: 'Pitch Documents', count: documents.filter(d => d.type === 'pitch').length },
+    { id: 'business', name: 'Business Plans', count: documents.filter(d => d.type === 'business').length },
+    { id: 'technical', name: 'Technical Docs', count: documents.filter(d => d.type === 'technical').length },
+    { id: 'legal', name: 'Legal Documents', count: documents.filter(d => d.type === 'legal').length }
   ]
 
-  const systemStatus = [
-    { name: 'Western Astrology', status: 'Active', accuracy: '94%', users: 1247 },
-    { name: 'Vedic Astrology', status: 'Active', accuracy: '96%', users: 892 },
-    { name: 'Chinese Astrology', status: 'Active', accuracy: '92%', users: 654 },
-    { name: 'Sri Lankan Astrology', status: 'Active', accuracy: '95%', users: 423 },
-    { name: 'Arabic Astrology', status: 'Active', accuracy: '93%', users: 312 },
-    { name: 'Mayan Astrology', status: 'Active', accuracy: '91%', users: 287 },
-    { name: 'Celtic Astrology', status: 'Active', accuracy: '89%', users: 198 },
-    { name: 'Hybrid AI System', status: 'Active', accuracy: '98%', users: 156 }
-  ]
+  const filteredDocuments = documents.filter(doc => {
+    const matchesCategory = selectedCategory === 'all' || doc.type === selectedCategory
+    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.description.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesCategory && matchesSearch
+  })
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'pitch': return 'text-purple-400 bg-purple-500/20'
+      case 'business': return 'text-green-400 bg-green-500/20'
+      case 'technical': return 'text-blue-400 bg-blue-500/20'
+      case 'legal': return 'text-orange-400 bg-orange-500/20'
+      default: return 'text-gray-400 bg-gray-500/20'
+    }
+  }
 
   return (
     <div className="min-h-screen relative main-content">
-      {/* Starfield Background */}
       <StarfieldBackground />
-      
-      {/* Navigation */}
+      {/* Floating cosmic particles */}
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
+      <div className="cosmic-particle"></div>
       <Navigation />
 
-      {/* Main Content */}
       <main className="relative z-10 pt-16">
-        {/* Hero Section */}
-        <section className="text-center py-20 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-cosmic">
+        <div className="max-w-7xl mx-auto p-6">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
               Admin Dashboard
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Manage your Daily Secrets application with comprehensive admin tools.
+            <p className="text-xl text-gray-300 mb-6">
+              Client & Partner Documentation Center
             </p>
-          </div>
-        </section>
+            <div className="flex items-center justify-center gap-4 text-gray-400">
+              <Shield className="w-5 h-5" />
+              <span className="text-lg">Secure Access Only</span>
+              <Lock className="w-5 h-5 ml-4" />
+              <span className="text-lg">Confidential Documents</span>
+            </div>
+          </motion.div>
 
-        {/* Admin Navigation */}
-        <section className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
+          {/* Quick Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12"
+          >
+            <Card className="p-6 text-center cosmic-glow">
+              <FileText className="w-8 h-8 mx-auto mb-3 text-purple-400" />
+              <div className="text-2xl font-bold text-white mb-1">{documents.length}</div>
+              <div className="text-gray-300">Total Documents</div>
+            </Card>
+            <Card className="p-6 text-center cosmic-glow">
+              <Users className="w-8 h-8 mx-auto mb-3 text-green-400" />
+              <div className="text-2xl font-bold text-white mb-1">50+</div>
+              <div className="text-gray-300">Active Partners</div>
+            </Card>
+            <Card className="p-6 text-center cosmic-glow">
+              <DollarSign className="w-8 h-8 mx-auto mb-3 text-blue-400" />
+              <div className="text-2xl font-bold text-white mb-1">$2.5M</div>
+              <div className="text-gray-300">Revenue Target</div>
+            </Card>
+            <Card className="p-6 text-center cosmic-glow">
+              <TrendingUp className="w-8 h-8 mx-auto mb-3 text-orange-400" />
+              <div className="text-2xl font-bold text-white mb-1">150%</div>
+              <div className="text-gray-300">Growth Rate</div>
+            </Card>
+          </motion.div>
+
+          {/* Search and Filter */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
             <Card className="p-6 cosmic-glow">
-              <div className="flex flex-wrap justify-center gap-4">
-                {[
-                  { id: 'dashboard', name: 'Dashboard', icon: '📊' },
-                  { id: 'users', name: 'Users', icon: '👥' },
-                  { id: 'systems', name: 'Systems', icon: '⚙️' },
-                  { id: 'analytics', name: 'Analytics', icon: '📈' },
-                  { id: 'settings', name: 'Settings', icon: '⚙️' },
-                  { id: 'theme', name: 'Theme', icon: '🎨' }
-                ].map((tab) => (
-                  <Button
-                    key={tab.id}
-                    variant={activeTab === tab.id ? 'cosmic' : 'secondary'}
-                    size="lg"
-                    onClick={() => setActiveTab(tab.id)}
-                    className="flex items-center space-x-2"
-                  >
-                    <span className="text-xl">{tab.icon}</span>
-                    <span>{tab.name}</span>
-                  </Button>
-                ))}
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Search documents..."
+                    className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {categories.map((category) => (
+                    <Button
+                      key={category.id}
+                      variant={selectedCategory === category.id ? 'cosmic' : 'secondary'}
+                      size="sm"
+                      onClick={() => setSelectedCategory(category.id)}
+                      className="whitespace-nowrap"
+                    >
+                      {category.name} ({category.count})
+                    </Button>
+                  ))}
+                </div>
               </div>
             </Card>
-          </div>
-        </section>
+          </motion.div>
 
-        {/* Dashboard Tab */}
-        {activeTab === 'dashboard' && (
-          <section className="py-12 px-4">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Dashboard Overview</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <Card className="p-6 text-center cosmic-glow">
-                  <div className="text-4xl mb-4">👥</div>
-                  <h3 className="text-2xl font-bold mb-2 text-cosmic">{adminStats.totalUsers.toLocaleString()}</h3>
-                  <p className="text-gray-300">Total Users</p>
-                </Card>
-
-                <Card className="p-6 text-center cosmic-glow">
-                  <div className="text-4xl mb-4">👑</div>
-                  <h3 className="text-2xl font-bold mb-2 text-cosmic">{adminStats.premiumUsers.toLocaleString()}</h3>
-                  <p className="text-gray-300">Premium Users</p>
-                </Card>
-
-                <Card className="p-6 text-center cosmic-glow">
-                  <div className="text-4xl mb-4">💰</div>
-                  <h3 className="text-2xl font-bold mb-2 text-cosmic">${adminStats.totalRevenue.toLocaleString()}</h3>
-                  <p className="text-gray-300">Total Revenue</p>
-                </Card>
-
-                <Card className="p-6 text-center cosmic-glow">
-                  <div className="text-4xl mb-4">📈</div>
-                  <h3 className="text-2xl font-bold mb-2 text-cosmic">${adminStats.monthlyRevenue.toLocaleString()}</h3>
-                  <p className="text-gray-300">Monthly Revenue</p>
-                </Card>
-
-                <Card className="p-6 text-center cosmic-glow">
-                  <div className="text-4xl mb-4">⚙️</div>
-                  <h3 className="text-2xl font-bold mb-2 text-cosmic">{adminStats.activeSystems}</h3>
-                  <p className="text-gray-300">Active Systems</p>
-                </Card>
-
-                <Card className="p-6 text-center cosmic-glow">
-                  <div className="text-4xl mb-4">🔮</div>
-                  <h3 className="text-2xl font-bold mb-2 text-cosmic">{adminStats.totalReadings.toLocaleString()}</h3>
-                  <p className="text-gray-300">Total Readings</p>
-                </Card>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Users Tab */}
-        {activeTab === 'users' && (
-          <section className="py-12 px-4">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">User Management</h2>
-              
-              <Card className="p-8 cosmic-glow">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-white/20">
-                        <th className="text-left py-4 px-2">Name</th>
-                        <th className="text-left py-4 px-2">Email</th>
-                        <th className="text-left py-4 px-2">Signup Date</th>
-                        <th className="text-left py-4 px-2">Status</th>
-                        <th className="text-left py-4 px-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentUsers.map((user) => (
-                        <tr key={user.id} className="border-b border-white/10">
-                          <td className="py-4 px-2 font-semibold">{user.name}</td>
-                          <td className="py-4 px-2 text-gray-300">{user.email}</td>
-                          <td className="py-4 px-2 text-gray-300">{user.signupDate}</td>
-                          <td className="py-4 px-2">
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              user.status === 'Premium' 
-                                ? 'bg-purple-500/20 text-purple-400' 
-                                : 'bg-gray-500/20 text-gray-400'
-                            }`}>
-                              {user.status}
-                            </span>
-                          </td>
-                          <td className="py-4 px-2">
-                            <Button variant="ghost" size="sm">
-                              View
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-            </div>
-          </section>
-        )}
-
-        {/* Systems Tab */}
-        {activeTab === 'systems' && (
-          <section className="py-12 px-4">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">System Management</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {systemStatus.map((system, index) => (
-                  <Card key={index} className="p-6 cosmic-glow">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-semibold">{system.name}</h3>
-                      <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs">
-                        {system.status}
-                      </span>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Accuracy:</span>
-                        <span className="text-green-400 font-semibold">{system.accuracy}</span>
+          {/* Documents Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {filteredDocuments.map((doc, index) => (
+              <motion.div
+                key={doc.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="p-6 cosmic-glow hover:scale-105 transition-transform">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="text-purple-400">
+                        {doc.icon}
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Users:</span>
-                        <span className="text-white font-semibold">{system.users.toLocaleString()}</span>
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">{doc.title}</h3>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(doc.type)}`}>
+                          {doc.type.toUpperCase()}
+                        </span>
                       </div>
                     </div>
-                    
-                    <div className="mt-4 flex space-x-2">
-                      <Button variant="primary" size="sm">
-                        Configure
+                  </div>
+                  
+                  <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                    {doc.description}
+                  </p>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
+                    <span>Updated: {doc.lastUpdated}</span>
+                    <span>{doc.size}</span>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    {doc.previewUrl && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => handlePreview(doc.previewUrl!)}
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Preview
                       </Button>
-                      <Button variant="secondary" size="sm">
-                        Analytics
+                    )}
+                    {doc.downloadUrl && (
+                      <Button
+                        variant="cosmic"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => handleDownload(doc.downloadUrl!, `${doc.title}.pdf`)}
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
                       </Button>
-                    </div>
-                  </Card>
-                ))}
+                    )}
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Quick Actions */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-12"
+          >
+            <Card className="p-8 cosmic-glow">
+              <h2 className="text-2xl font-bold text-center mb-8 text-cosmic">Quick Actions</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Button
+                  variant="cosmic"
+                  size="lg"
+                  className="flex flex-col items-center p-6 h-auto"
+                  onClick={() => handleDownload('/admin/documents/pitch-deck.pdf', 'Pitch Deck.pdf')}
+                >
+                  <Presentation className="w-8 h-8 mb-3" />
+                  <span className="font-semibold">Pitch Deck</span>
+                  <span className="text-sm opacity-80">Investor Presentation</span>
+                </Button>
+                
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="flex flex-col items-center p-6 h-auto"
+                  onClick={() => handleDownload('/admin/documents/business-plan.pdf', 'Business Plan.pdf')}
+                >
+                  <BarChart className="w-8 h-8 mb-3" />
+                  <span className="font-semibold">Business Plan</span>
+                  <span className="text-sm opacity-80">Strategy & Analysis</span>
+                </Button>
+                
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="flex flex-col items-center p-6 h-auto"
+                  onClick={() => handleDownload('/admin/documents/technical-specs.pdf', 'Technical Specs.pdf')}
+                >
+                  <Database className="w-8 h-8 mb-3" />
+                  <span className="font-semibold">Tech Specs</span>
+                  <span className="text-sm opacity-80">Technical Details</span>
+                </Button>
+                
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="flex flex-col items-center p-6 h-auto"
+                  onClick={() => handleDownload('/admin/documents/partnership-proposal.pdf', 'Partnership Proposal.pdf')}
+                >
+                  <Users className="w-8 h-8 mb-3" />
+                  <span className="font-semibold">Partnership</span>
+                  <span className="text-sm opacity-80">Partner Proposals</span>
+                </Button>
               </div>
-            </div>
-          </section>
-        )}
-
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <section className="py-12 px-4">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Analytics Dashboard</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card className="p-6 cosmic-glow">
-                  <h3 className="text-xl font-semibold mb-4">User Growth</h3>
-                  <div className="h-64 bg-white/10 rounded-lg flex items-center justify-center">
-                    <p className="text-gray-400">Chart Placeholder</p>
-                  </div>
-                </Card>
-
-                <Card className="p-6 cosmic-glow">
-                  <h3 className="text-xl font-semibold mb-4">Revenue Trends</h3>
-                  <div className="h-64 bg-white/10 rounded-lg flex items-center justify-center">
-                    <p className="text-gray-400">Chart Placeholder</p>
-                  </div>
-                </Card>
-
-                <Card className="p-6 cosmic-glow">
-                  <h3 className="text-xl font-semibold mb-4">System Usage</h3>
-                  <div className="h-64 bg-white/10 rounded-lg flex items-center justify-center">
-                    <p className="text-gray-400">Chart Placeholder</p>
-                  </div>
-                </Card>
-
-                <Card className="p-6 cosmic-glow">
-                  <h3 className="text-xl font-semibold mb-4">Geographic Distribution</h3>
-                  <div className="h-64 bg-white/10 rounded-lg flex items-center justify-center">
-                    <p className="text-gray-400">Map Placeholder</p>
-                  </div>
-                </Card>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Settings Tab */}
-        {activeTab === 'settings' && (
-          <section className="py-12 px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">System Settings</h2>
-              
-              <Card className="p-8 cosmic-glow">
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">General Settings</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Maintenance Mode</span>
-                        <Button variant="secondary" size="sm">Toggle</Button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Auto Updates</span>
-                        <Button variant="secondary" size="sm">Toggle</Button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Email Notifications</span>
-                        <Button variant="secondary" size="sm">Toggle</Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Security Settings</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Two-Factor Authentication</span>
-                        <Button variant="secondary" size="sm">Enable</Button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">API Rate Limiting</span>
-                        <Button variant="secondary" size="sm">Configure</Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </section>
-        )}
-
-        {/* Theme Tab */}
-        {activeTab === 'theme' && (
-          <section className="py-12 px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-cosmic">Theme Management</h2>
-              
-              <Card className="p-8 cosmic-glow">
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Current Theme</h3>
-                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4 rounded-lg">
-                      <p className="text-white font-semibold">Cosmic Theme (Active)</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Available Themes</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {[
-                        { name: 'Cosmic', status: 'Active', color: 'from-purple-500 to-pink-500' },
-                        { name: 'Minimal', status: 'Available', color: 'from-gray-500 to-gray-700' },
-                        { name: 'Ocean', status: 'Available', color: 'from-blue-500 to-cyan-500' },
-                        { name: 'Forest', status: 'Available', color: 'from-green-500 to-emerald-500' }
-                      ].map((theme, index) => (
-                        <div key={index} className={`p-4 rounded-lg bg-gradient-to-r ${theme.color}`}>
-                          <div className="flex items-center justify-between">
-                            <span className="text-white font-semibold">{theme.name}</span>
-                            <span className="text-white/80 text-sm">{theme.status}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </section>
-        )}
+            </Card>
+          </motion.div>
+        </div>
       </main>
     </div>
   )

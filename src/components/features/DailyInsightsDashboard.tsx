@@ -28,6 +28,7 @@ import {
 } from 'lucide-react'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'
+import { usePersonalInfo } from '@/contexts/PersonalInfoContext'
 
 interface DailyInsight {
   id: string
@@ -49,6 +50,8 @@ interface CosmicEnergy {
 }
 
 export default function DailyInsightsDashboard() {
+  const { personalInfo, zodiacInfo, isPersonalized } = usePersonalInfo()
+  
   const [insights, setInsights] = useState<DailyInsight[]>([])
   const [cosmicEnergy, setCosmicEnergy] = useState<CosmicEnergy>({
     level: 85,
@@ -238,6 +241,30 @@ export default function DailyInsightsDashboard() {
               {currentTime.toLocaleDateString()}
             </span>
           </div>
+          
+          {/* Personalized Welcome Message */}
+          {isPersonalized && personalInfo && zodiacInfo && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 p-6 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-2xl border border-purple-500/30 backdrop-blur-sm max-w-2xl mx-auto"
+            >
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <Sparkles className="w-6 h-6 text-yellow-400" />
+                <h2 className="text-2xl font-bold text-white">
+                  Welcome back, {personalInfo.name}!
+                </h2>
+                <Sparkles className="w-6 h-6 text-yellow-400" />
+              </div>
+              <p className="text-lg text-purple-200">
+                Your personalized {zodiacInfo.name} insights are ready for today
+              </p>
+              <div className="mt-3 text-sm text-gray-300">
+                Born: {personalInfo.birthDate} • {personalInfo.birthLocation}
+              </div>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Daily Affirmation */}

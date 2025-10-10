@@ -5,6 +5,7 @@ import Navigation from '@/components/readdy/Navigation'
 import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'
+import { usePersonalInfo } from '@/contexts/PersonalInfoContext'
 
 interface CommunityMember {
   id: number
@@ -28,6 +29,8 @@ interface CommunityPost {
 }
 
 export default function CommunityPage() {
+  const { personalInfo, zodiacInfo, isPersonalized } = usePersonalInfo()
+  
   const [activeTab, setActiveTab] = useState('discover')
   const [showInfoModal, setShowInfoModal] = useState(false)
   const [infoContent, setInfoContent] = useState('')
@@ -158,6 +161,25 @@ export default function CommunityPage() {
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
               Connect with like-minded cosmic seekers, share experiences, and discover your spiritual tribe.
             </p>
+            
+            {/* Personalized Welcome Message */}
+            {isPersonalized && personalInfo && zodiacInfo && (
+              <div className="mt-8 p-6 bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-2xl border border-purple-500/30 backdrop-blur-sm max-w-2xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <span className="text-2xl">🌟</span>
+                  <h2 className="text-2xl font-bold text-white">
+                    Welcome back, {personalInfo.name}!
+                  </h2>
+                  <span className="text-2xl">🌟</span>
+                </div>
+                <p className="text-lg text-purple-200">
+                  Connect with fellow {zodiacInfo.name} community members
+                </p>
+                <div className="mt-3 text-sm text-gray-300">
+                  Born: {personalInfo.birthDate} • {personalInfo.birthLocation}
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

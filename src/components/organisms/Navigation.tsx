@@ -6,8 +6,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Button } from '@/components/atoms/Button'
-import { Badge } from '@/components/atoms/Badge'
+import Button from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 import { useAppStore, useUser, useSidebarOpen, useUIActions } from '@/lib/stores/app-store'
 import { useAuth } from '@/lib/contexts/auth-context'
 import { cn } from '@/lib/utils'
@@ -251,3 +251,4 @@ const Navigation: React.FC<NavigationProps> = ({ className }) => {
 
 export { Navigation }
 export type { NavigationProps }
+export default Navigation
