@@ -8,13 +8,10 @@ import {
   Users, 
   DollarSign, 
   Target, 
-  Globe,
   Shield,
   Zap,
   Star,
-  Award,
   CheckCircle,
-  ArrowRight,
   Download,
   ExternalLink
 } from 'lucide-react'

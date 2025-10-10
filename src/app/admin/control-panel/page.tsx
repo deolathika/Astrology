@@ -7,7 +7,7 @@ import CosmicCard from '@/components/ui/CosmicCard';
 import CosmicButton from '@/components/ui/CosmicButton';
 
 const ControlPanel: React.FC = () => {
-  const [systemStatus, setSystemStatus] = useState({
+  const [systemStatus] = useState({
     database: 'healthy',
     api: 'healthy',
     cache: 'warning',
@@ -131,7 +131,10 @@ const ControlPanel: React.FC = () => {
                     variant="gradient"
                     size="lg"
                     className="w-full"
-                    onClick={() => console.log('Clear cache')}
+                    onClick={() => {
+                      // Clear cache functionality
+                      // Implementation would go here
+                    }}
                   >
                     Clear Cache
                   </CosmicButton>
@@ -139,7 +142,10 @@ const ControlPanel: React.FC = () => {
                     variant="primary"
                     size="lg"
                     className="w-full"
-                    onClick={() => console.log('Restart services')}
+                    onClick={() => {
+                      // Restart services functionality
+                      // Implementation would go here
+                    }}
                   >
                     Restart Services
                   </CosmicButton>
@@ -147,7 +153,10 @@ const ControlPanel: React.FC = () => {
                     variant="primary"
                     size="lg"
                     className="w-full"
-                    onClick={() => console.log('Backup database')}
+                    onClick={() => {
+                      // Backup database functionality
+                      // Implementation would go here
+                    }}
                   >
                     Backup Database
                   </CosmicButton>
@@ -155,7 +164,10 @@ const ControlPanel: React.FC = () => {
                     variant="primary"
                     size="lg"
                     className="w-full"
-                    onClick={() => console.log('Update system')}
+                    onClick={() => {
+                      // Update system functionality
+                      // Implementation would go here
+                    }}
                   >
                     Update System
                   </CosmicButton>

@@ -68,6 +68,15 @@ export default function DailyInsightsDashboard() {
     luckyMoments: '2:30 PM - 4:00 PM',
     energyLevel: 'High & Vibrant'
   })
+  // Modal state for tap-to-see-more
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalContent, setModalContent] = useState<{ title: string; description: string; extra?: React.ReactNode } | null>(null)
+
+  const openModal = (title: string, description: string, extra?: React.ReactNode) => {
+    setModalContent({ title, description, extra })
+    setIsModalOpen(true)
+  }
+  const closeModal = () => setIsModalOpen(false)
 
   const categories = [
     { id: 'all', name: 'All Insights', icon: Sparkles },
@@ -217,6 +226,40 @@ export default function DailyInsightsDashboard() {
 
   return (
     <div className="min-h-screen">
+      {/* Modal for card details */}
+      <AnimatePresence>
+        {isModalOpen && modalContent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-lg bg-cosmic-navy/80 backdrop-blur-md border border-electric-violet/30 rounded-2xl p-6 text-white"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between">
+                <h3 className="text-2xl font-bold text-cosmic">{modalContent.title}</h3>
+                <button aria-label="Close" className="text-gray-300 hover:text-white" onClick={closeModal}>✕</button>
+              </div>
+              <p className="mt-3 text-gray-200 leading-relaxed">{modalContent.description}</p>
+              {modalContent.extra && (
+                <div className="mt-4">
+                  {modalContent.extra}
+                </div>
+              )}
+              <div className="mt-6 text-right">
+                <Button variant="secondary" onClick={closeModal}>Close</Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Header */}
       <div className="relative z-10 py-12 px-4">
         <div className="max-w-6xl mx-auto">
@@ -287,56 +330,80 @@ export default function DailyInsightsDashboard() {
           </Card>
         </motion.div>
 
-        {/* Daily Cosmic Snapshot */}
+        {/* Daily Quick Cards - Minimalist, tappable */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="mb-8"
         >
           <Card className="p-8 cosmic-glow">
-            <h2 className="text-3xl font-bold text-center mb-8 text-cosmic">Your Daily Cosmic Snapshot</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Your Energy */}
-              <div className="text-center">
+            <h2 className="text-3xl font-bold text-center mb-8 text-cosmic">Today at a Glance</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* 🌤️ Daily Cosmic Energy */}
+              <button className="text-center" onClick={() => openModal('Daily Cosmic Energy', 'A calm, balanced day — your intuition will guide you well. Stay present, choose simplicity, and let small wins compound through the day.')}> 
                 <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Zap className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-cosmic">Your Energy</h3>
-                <p className="text-sm text-gray-300 mb-2">{dailyCosmicData.energyLevel}</p>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Daily Cosmic Energy</h3>
+                <p className="text-sm text-gray-300 mb-2">A calm, balanced day — intuition leads.</p>
                 <div className="w-full bg-gray-700 rounded-full h-2">
                   <div className="bg-gradient-to-r from-yellow-400 to-orange-400 h-2 rounded-full" style={{width: `${dailyCosmicData.energy}%`}}></div>
                 </div>
-              </div>
+              </button>
 
-              {/* Focus Area */}
-              <div className="text-center">
+              {/* ♌ Your Sign & Focus Area */}
+              <button className="text-center" onClick={() => openModal('Your Sign & Focus Area', `${zodiacInfo?.name || 'Your sign'} — focus on ${dailyCosmicData.focusArea.toLowerCase()} today. Align your actions with your core strengths.`)}>
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Target className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-cosmic">Focus Area</h3>
-                <p className="text-sm text-gray-300 mb-2">{dailyCosmicData.focusArea}</p>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">{zodiacInfo?.name || 'Your Sign'} & Focus</h3>
+                <p className="text-sm text-gray-300 mb-2">Focus: {dailyCosmicData.focusArea}</p>
                 <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">Today's Priority</span>
-              </div>
+              </button>
 
-              {/* Cosmic Message */}
-              <div className="text-center">
+              {/* 🔢 Today’s Numerology */}
+              <button className="text-center" onClick={() => openModal("Today's Numerology", 'Number 7 — your mind seeks quiet reflection. Give yourself mindful pauses and let clarity arrive on its own.')}> 
                 <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-cosmic">Cosmic Message</h3>
-                <p className="text-sm text-gray-300 mb-2">"{dailyCosmicData.cosmicMessage}"</p>
-                <Button variant="secondary" size="sm">Read More</Button>
-              </div>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Today’s Numerology</h3>
+                <p className="text-sm text-gray-300 mb-2">Number 7 — quiet reflection</p>
+                <Button variant="secondary" size="sm">See all numbers</Button>
+              </button>
 
-              {/* Lucky Moments */}
-              <div className="text-center">
+              {/* 🕉️ Chakra of the Day */}
+              <button className="text-center" onClick={() => openModal('Chakra of the Day', 'Heart Chakra — compassion opens your path. Breathe into your chest and send kindness inward and outward.', (
+                <div className="mt-2 h-2 w-full bg-rose-300/20 rounded-full overflow-hidden">
+                  <div className="h-2 w-3/4 bg-rose-400 animate-pulse" />
+                </div>
+              ))}>
+                <div className="w-16 h-16 bg-gradient-to-r from-rose-400 to-fuchsia-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Heart className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Chakra of the Day</h3>
+                <p className="text-sm text-gray-300 mb-2">Heart Chakra — compassion</p>
+                <span className="text-xs bg-rose-500/20 text-rose-300 px-2 py-1 rounded-full">Mind-Body</span>
+              </button>
+
+              {/* 💫 Lucky Elements */}
+              <button className="text-center" onClick={() => openModal('Lucky Elements', 'Color: Aqua • Stone: Amethyst. Keep these nearby to amplify calm focus and protective clarity.')}> 
                 <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Star className="w-8 h-8 text-white" />
                 </div>
+                <h3 className="text-lg font-semibold mb-2 text-cosmic">Lucky Elements</h3>
+                <p className="text-sm text-gray-300 mb-2">Color: Aqua • Stone: Amethyst</p>
+                <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">Daily Boost</span>
+              </button>
+
+              {/* Lucky Moments (kept) */}
+              <button className="text-center" onClick={() => openModal('Lucky Moments', `Best windows today: ${dailyCosmicData.luckyMoments}. Use these times for key decisions or outreach.`)}>
+                <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock className="w-8 h-8 text-white" />
+                </div>
                 <h3 className="text-lg font-semibold mb-2 text-cosmic">Lucky Moments</h3>
                 <p className="text-sm text-gray-300 mb-2">{dailyCosmicData.luckyMoments}</p>
-                <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">Best Time</span>
-              </div>
+                <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-full">Best Time</span>
+              </button>
             </div>
             
             {/* Complete Reading CTA */}
@@ -358,104 +425,102 @@ export default function DailyInsightsDashboard() {
           </Card>
         </motion.div>
 
-        {/* Category Filter */}
+        {/* Smart Insights - Minimalist Approach */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category) => {
-              const Icon = category.icon
-              return (
-                <Button
-                  key={category.id}
-                  variant={selectedCategory === category.id ? 'cosmic' : 'secondary'}
-                  size="md"
-                  onClick={() => setSelectedCategory(category.id)}
-                  className="flex items-center gap-2"
-                >
-                  <Icon className="w-4 h-4" />
-                  {category.name}
-                </Button>
-              )
-            })}
-          </div>
-        </motion.div>
+          <Card className="p-6 cosmic-glow">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-cosmic">Today's Focus</h2>
+              <div className="flex gap-2">
+                {categories.slice(0, 4).map((category) => {
+                  const Icon = category.icon
+                  return (
+                    <Button
+                      key={category.id}
+                      variant={selectedCategory === category.id ? 'cosmic' : 'ghost'}
+                      size="sm"
+                      onClick={() => setSelectedCategory(category.id)}
+                      className="flex items-center gap-1"
+                    >
+                      <Icon className="w-3 h-3" />
+                      <span className="text-xs">{category.name.split(' ')[0]}</span>
+                    </Button>
+                  )
+                })}
+              </div>
+            </div>
 
-        {/* Insights Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <AnimatePresence>
-            {filteredInsights.map((insight, index) => (
-              <motion.div
-                key={insight.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: index * 0.1 }}
-                className="group"
-              >
-                <Card className="p-6 hover:scale-105 transition-all duration-300 cursor-pointer">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${insight.color} flex items-center justify-center text-white`}>
-                      {insight.icon}
+            {/* Single Focused Insight */}
+            <div className="text-center">
+              {(() => {
+                const currentInsight = filteredInsights[0] || insights[0]
+                if (!currentInsight) return null
+                
+                return (
+                  <motion.div
+                    key={currentInsight.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="cursor-pointer"
+                    onClick={() => openModal(currentInsight.title, currentInsight.description)}
+                  >
+                    <div className={`w-20 h-20 rounded-full bg-gradient-to-r ${currentInsight.color} flex items-center justify-center mx-auto mb-4`}>
+                      {currentInsight.icon}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{getPriorityIcon(insight.priority)}</span>
-                      <span className={`text-sm font-medium ${getPriorityColor(insight.priority)}`}>
-                        {insight.priority.toUpperCase()}
+                    <h3 className="text-2xl font-bold mb-3 text-cosmic">{currentInsight.title}</h3>
+                    <p className="text-gray-300 mb-4 text-lg leading-relaxed max-w-2xl mx-auto">
+                      {currentInsight.description}
+                    </p>
+                    <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <span className="text-2xl">{getPriorityIcon(currentInsight.priority)}</span>
+                        {currentInsight.priority.toUpperCase()}
                       </span>
+                      <span>•</span>
+                      <span>Tap for details</span>
                     </div>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold mb-3 text-white group-hover:text-purple-300 transition-colors">
-                    {insight.title}
-                  </h3>
-                  
-                  <p className="text-gray-300 mb-4 leading-relaxed">
-                    {insight.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Clock className="w-4 h-4" />
-                      <span>{insight.timestamp.toLocaleTimeString()}</span>
-                    </div>
-                    {insight.personalized && (
-                      <div className="flex items-center gap-1 text-purple-400">
-                        <Sparkles className="w-4 h-4" />
-                        <span className="text-sm font-medium">Personalized</span>
-                      </div>
-                    )}
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                  </motion.div>
+                )
+              })()}
+            </div>
+
+            {/* Quick Actions */}
+            <div className="mt-8 flex justify-center gap-4">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={() => setSelectedCategory(selectedCategory === 'all' ? 'love' : 'all')}
+              >
+                {selectedCategory === 'all' ? 'Show All' : 'Back to All'}
+              </Button>
+              <Button variant="cosmic" size="sm">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Get Full Reading
+              </Button>
+            </div>
+          </Card>
         </motion.div>
 
-        {/* Action Buttons */}
+        {/* Minimalist Footer */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-12 text-center"
+          className="mt-8 text-center"
         >
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button variant="cosmic" size="lg" className="btn-cosmic">
-              <Sparkles className="w-5 h-5 mr-2" />
-              Get Detailed Reading
-            </Button>
-            <Button variant="secondary" size="lg">
-              <BookOpen className="w-5 h-5 mr-2" />
+          <p className="text-gray-400 text-sm mb-4">
+            Insights update every 2 hours • Tap any card for details
+          </p>
+          <div className="flex justify-center gap-4">
+            <Button variant="ghost" size="sm">
+              <BookOpen className="w-4 h-4 mr-2" />
               Learn More
             </Button>
-            <Button variant="secondary" size="lg">
-              <Users className="w-5 h-5 mr-2" />
-              Share Insights
+            <Button variant="ghost" size="sm">
+              <Users className="w-4 h-4 mr-2" />
+              Share
             </Button>
           </div>
         </motion.div>

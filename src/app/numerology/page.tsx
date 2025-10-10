@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Clock, Calendar, Star, Sparkles, Target, Eye, Heart, Brain, Shield, Flame, Waves, Mountain, Wind, Gem, Crown, BookOpen, Settings, Download, Share, RotateCcw, Play, Pause, SkipForward, SkipBack } from 'lucide-react'
+import { Clock, Calendar, Star, Sparkles, Target, Heart, Brain, Shield, Flame, Waves, Mountain, Wind, Gem, Crown, BookOpen, Settings, Download, Share, RotateCcw, Play, Pause, SkipForward, SkipBack } from 'lucide-react'
 import Navigation from '@/components/readdy/Navigation'
 import StarfieldBackground from '@/components/readdy/StarfieldBackground'
 import Card from '@/components/readdy/Card'

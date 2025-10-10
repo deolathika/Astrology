@@ -13,7 +13,6 @@ import {
   Code,
   Settings,
   CheckCircle,
-  ArrowRight,
   Download,
   ExternalLink
 } from 'lucide-react'

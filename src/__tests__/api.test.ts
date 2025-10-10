@@ -1,10 +1,9 @@
 import { mockUser, mockProfile } from './fixtures/mock-data'
-import { NextRequest } from 'next/server'
 
 // Mock Next.js server components
 jest.mock('next/server', () => ({
   NextRequest: class MockNextRequest {
-    constructor(public _url: string) {}
+    constructor(public url: string) {}
     async json() {
       return {}
     }
