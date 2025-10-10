@@ -11,21 +11,13 @@ import {
   Users, 
   BarChart3, 
   Settings, 
-  Shield, 
   TrendingUp,
   Activity,
   DollarSign,
   MessageSquare,
   Star,
   AlertTriangle,
-  CheckCircle,
-  Clock,
-  Eye,
-  Edit,
-  Trash2,
-  Plus,
-  Filter,
-  Search
+  CheckCircle
 } from 'lucide-react'
 import AppShell from '@/components/layout/AppShell'
 import Button from '@/components/readdy/Button'

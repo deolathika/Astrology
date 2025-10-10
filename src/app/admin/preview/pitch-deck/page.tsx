@@ -11,7 +11,6 @@ import {
   Zap, 
   Target, 
   Award,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   Download,

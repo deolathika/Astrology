@@ -13,19 +13,8 @@ import {
   Eye,
   Star,
   TrendingUp,
-  Globe,
-  Smartphone,
-  Zap,
-  Target,
-  Award,
-  BookOpen,
-  Settings,
   Database,
-  Cloud,
-  Lock,
-  CheckCircle,
-  ArrowRight,
-  ExternalLink
+  Lock
 } from 'lucide-react'
 import Card from '@/components/readdy/Card'
 import Button from '@/components/readdy/Button'

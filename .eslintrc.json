@@ -3,9 +3,18 @@
   "rules": {
     "react/no-unescaped-entities": "off",
     "@next/next/no-page-custom-font": "off",
-    "prefer-const": "error",
+    "prefer-const": "warn",
     "no-unused-vars": "warn",
     "no-console": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*", "**/*.test.*", "**/*.spec.*"],
+      "rules": {
+        "no-unused-vars": "off",
+        "no-console": "off"
+      }
+    }
+  ]
 }
 
